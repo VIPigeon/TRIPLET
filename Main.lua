@@ -1,14 +1,18 @@
 
 Tile = {}
-Tile.SIZE = {
-    x = 14,
-    y = 14,
+Tile.HITBOX = {
+    -- обе границы включены
+    x1 = 1,
+    y1 = 1,
+    x2 = 14,
+    y2 = 14,
 }
 Tile.STATUS_SPRITE = {
     scared = 32,
     held = 34,
 }
-
+Tile.back = 96 -- BICYCLE_BACK
+Tile.SHADOW = 128
 function Tile:new(x, y, value)
     local object = {
         x = x,
@@ -39,8 +43,8 @@ function Tile:update()
         return
     end
 
-    if not (self.x <= x and x < self.x + Tile.SIZE.x + 2 and 
-        self.y <= y and y < self.y + Tile.SIZE.y + 2) then
+    if not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+        self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
         self.status = 'chill'
         return
     end
@@ -56,20 +60,26 @@ function Tile:update()
 end
 
 function Tile:draw()
-    if self.is_face then
-        spr(self.value, self.x, self.y, 4, 1,0,0,2,2)
-    else
-        -- ...
-    end
-    if self.status ~= 'chill' then
-        spr(Tile.STATUS_SPRITE[self.status], self.x, self.y, 11, 1,0,0,2,2)
+    if self.status == 'scared' then
+        spr(Tile.back, self.x, self.y, 0, 1,0,0,2,2)
+        spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,0,0,2,2)
+    elseif self.status == 'held' then
+        -- поднимаем вверх
+        spr(Tile.back, self.x, self.y-1, 0, 1,0,0,2,2)
+        spr(Tile.STATUS_SPRITE.held, self.x, self.y-1, 0, 1,0,0,2,2)
+        spr(Tile.SHADOW, self.x, self.y, 0, 1,0,0,2,2)
+    elseif self.status == 'chill' then
+        spr(Tile.back, self.x, self.y, 0, 1,0,0,2,2)
     end
 end
 
 Tile.__index = Tile
 
 game = {
-    tiles = {Tile:new(40, 40, 256)},
+    tiles = {
+        Tile:new(40, 40, 256),
+        -- Tile:new(41, 41, 256),
+    },
 }
 
 function game.update()
