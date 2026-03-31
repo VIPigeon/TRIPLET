@@ -40,7 +40,8 @@ end
 
 
 function game.draw()
-    cls(0)
+    -- cls(15)
+    map(0, 0)
     -- hand.draw_hitbox()
     -- hand.draw()
     for _, tile in ipairs(game.tiles) do
