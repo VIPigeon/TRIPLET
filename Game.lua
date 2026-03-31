@@ -1,23 +1,37 @@
 game = {
     tiles = {
         Tile:new(40, 40, 256),
-        Tile:new(40, 40, 256),
-        Tile:new(40, 40, 256),
-        Tile:new(40, 40, 256),
+        Tile:new(50, 50, 256),
+        Tile:new(60, 60, 256),
+        Tile:new(70, 70, 256),
+        Tile:new(70, 70, 256),
+        Tile:new(70, 70, 256),
+        Tile:new(70, 70, 256),
+        Tile:new(70, 70, 256),
         -- Tile:new(41, 41, 256),
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
 }
+
+function game.init()
+    -- design test
+    game.tiles[1].is_face = true
+    game.tiles[2].is_face = true
+    --
+    hand.init()
+end
 
 function game.update()
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
 
+    local is_any_tile_held = false  -- для анимации
     for i = #game.tiles, 1, -1 do
         tile = game.tiles[i]
         local res = tile:what_are_you_doing_with_me()
         if res == 'hold' then
+            is_any_tile_held = true
             tile:set_status('held')
             -- всегда удерживается верхняя карта в таблице
             local temp = table.remove(game.tiles, i)
@@ -35,6 +49,12 @@ function game.update()
         tile:set_status('chill')
     end
 
+    if is_any_tile_held then
+        hand.update_animation()
+    else
+        -- сбрасываем таймер, чтобы анимация начиналась мгновенно по клику. для перфекционистов
+        hand.animation_timer = 0
+    end
     game.draw()
 end
 
