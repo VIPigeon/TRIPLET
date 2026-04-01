@@ -14,10 +14,6 @@ game = {
 }
 
 function game.init()
-    -- design test
-    game.tiles[1].is_face = true
-    game.tiles[2].is_face = true
-    --
     hand.init()
 end
 
@@ -44,6 +40,10 @@ function game.update()
             end
             game.scared_tile = i
             game.tiles[game.scared_tile]:set_status('scared')
+            break
+        elseif res == 'going to hand' then
+            tile:set_status('chill')
+            tile:set_hand_status('to')  -- nice
             break
         end
         tile:set_status('chill')

@@ -20,15 +20,21 @@ function Tile:new(x, y, value)
         y = y,
         value = value,
         status = 'chill',
-        is_face = false,  -- будет использоваться в туториале
+        -- chill — карту никто не трогает
+        -- scared — на карту навели курсор
+        -- held — на карте удерживают курсор
+
+        hand_status = 'outside',
+        -- outside — тайл лежит вне руки
+        -- in — тайл находится в руке
+        -- to — игрок отпустил тайл и она должна перейти в руку
+        -- from — игрок взял тайл из руки
+
+        is_face = false,
         held_point = {
             x = 0,
             y = 0
         },
-        -- возможные status:
-        -- chill — обычное состояние
-        -- scared — на тайл навели курсор
-        -- held — тайл удерживают и перемещают курсором
     }
 
     setmetatable(object, self)
@@ -39,22 +45,57 @@ function Tile:update()
     if self.status == 'held' then
         self:move_by_cursor()
     end
+    if self.hand_status == 'to' then
+        self:set_hand_status('in')
+        self.in_hand = true
+        local nearest_slot_i = hand.add(self)
+        self.hand_slot_i = nearest_slot_i
+        self.is_face = true
+        hand.insert_into_slot(self)
+    end
 end
 
 function Tile:set_status(status)
     self.status = status
 end
 
+function Tile:set_hand_status(hand_status)
+    self.hand_status = hand_status
+end
+
 function Tile:what_are_you_doing_with_me()
     local x, y, left, middle, right = mouse()
 
-    if not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+    if not left or not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
+
+        if self.status == 'held' and hand.is_tile_should_go_to_hand(self) then
+            return 'going to hand'
+        end
+
+        if self.hand_status == 'from' then
+            self.is_face = false
+            self.hand_status = 'outside'
+        end
+
+        if (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+            self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
+            return 'scare'
+        end
         return 'nothing'
     end
 
-    if not left then
-        return 'scare'
+    -- if not left then
+    --     if self.status == 'held' and hand.is_tile_should_go_to_hand(self) then
+    --         return 'going to hand'
+    --     end
+    --     return 'scare'
+    -- end
+
+    if self.hand_status == 'in' then
+        self:set_hand_status('from')
+        hand.remove(self.hand_slot_i)
+        self.hand_slot_i = 0  -- испортим на всякий случай
     end
 
     self.held_point.x = x - self.x
@@ -72,6 +113,16 @@ function Tile:move_by_cursor()
     local y1 = (new_y + Tile.HITBOX.y1) / 8
     local x2 = (new_x + Tile.HITBOX.x2) / 8
     local y2 = (new_y + Tile.HITBOX.y2) / 8
+    if hand.full() then
+        if (BOARD[mget(x1, y1)]) and 
+           (BOARD[mget(x1, y2)]) and 
+           (BOARD[mget(x2, y1)]) and 
+           (BOARD[mget(x2, y2)]) then
+            self.x = new_x
+            self.y = new_y
+        end
+        return
+    end
     if (BOARD[mget(x1, y1)] or HAND[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
        (BOARD[mget(x1, y2)] or HAND[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
        (BOARD[mget(x2, y1)] or HAND[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
