@@ -14,6 +14,7 @@ Tile.STATUS_SPRITE = {
 Tile.back = 96 -- BICYCLE_BACK
 Tile.face = 98 -- EMPTY FACE
 Tile.SHADOW = 128
+
 function Tile:new(x, y, value)
     local object = {
         x = x,
@@ -27,14 +28,21 @@ function Tile:new(x, y, value)
         hand_status = 'outside',
         -- outside — тайл лежит вне руки
         -- in — тайл находится в руке
-        -- to — игрок отпустил тайл и она должна перейти в руку
-        -- from — игрок взял тайл из руки
+        -- to — игрок отпустил тайл и она должна перейти в руку. ДЛЯ АНИМАЦИИ
+        -- from — игрок взял тайл из руки. для обработки is_face
+
+        triplet_status = 'no',
+        -- no — не входит в триплет
+        -- animation — находится в процессе анимации триплета
+        -- done — находится в процессе уничтожения
 
         is_face = false,
         held_point = {
             x = 0,
             y = 0
         },
+
+        move_animator = nil,
     }
 
     setmetatable(object, self)

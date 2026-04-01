@@ -108,3 +108,10 @@ function hand.insert_into_slot(tile)
     -- tile.x = slot.x
     -- tile.y = slot.y
 end
+
+function hand.is_there_a_triplet()
+    if not hand.full() then
+        return false
+    end
+    return hand.values[1] == hand.values[2] and hand.values[2] == hand.values[3]
+end
