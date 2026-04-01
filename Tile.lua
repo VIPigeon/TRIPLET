@@ -14,6 +14,7 @@ Tile.STATUS_SPRITE = {
 Tile.back = 96 -- BICYCLE_BACK
 Tile.face = 98 -- EMPTY FACE
 Tile.SHADOW = 128
+
 function Tile:new(x, y, value)
     local object = {
         x = x,
@@ -27,14 +28,21 @@ function Tile:new(x, y, value)
         hand_status = 'outside',
         -- outside — тайл лежит вне руки
         -- in — тайл находится в руке
-        -- to — игрок отпустил тайл и она должна перейти в руку
-        -- from — игрок взял тайл из руки
+        -- to — игрок отпустил тайл и она должна перейти в руку. ДЛЯ АНИМАЦИИ
+        -- from — игрок взял тайл из руки. для обработки is_face
+
+        triplet_status = 'no',
+        -- no — не входит в триплет
+        -- animation — находится в процессе анимации триплета
+        -- done — находится в процессе уничтожения
 
         is_face = false,
         held_point = {
             x = 0,
             y = 0
         },
+
+        move_animator = nil,
     }
 
     setmetatable(object, self)
@@ -46,12 +54,24 @@ function Tile:update()
         self:move_by_cursor()
     end
     if self.hand_status == 'to' then
-        self:set_hand_status('in')
-        self.in_hand = true
-        local nearest_slot_i = hand.add(self)
-        self.hand_slot_i = nearest_slot_i
         self.is_face = true
-        hand.insert_into_slot(self)
+
+        self.move_animator:update()
+        self.x = self.move_animator.x
+        self.y = self.move_animator.y
+
+        if self.move_animator:is_end() then
+            self:set_hand_status('in')
+            self.in_hand = true
+            -- local nearest_slot_i = hand.add(self)
+            -- self.hand_slot_i = nearest_slot_i
+            hand.insert_into_slot(self)
+        end
+
+        -- в момент попадания тайла в руку может собраться триплет
+        if hand.is_there_a_triplet() then
+            trace('TRIPLET')
+        end
     end
 end
 
@@ -61,6 +81,12 @@ end
 
 function Tile:set_hand_status(hand_status)
     self.hand_status = hand_status
+    if hand_status == 'to' then
+        local nearest_slot_i = hand.add(self)
+        self.hand_slot_i = nearest_slot_i
+        local slot = hand.slots[nearest_slot_i]
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 0.5)
+    end
 end
 
 function Tile:what_are_you_doing_with_me()
