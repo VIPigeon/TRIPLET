@@ -3,17 +3,16 @@ MoveAnimator = {}
 
 function MoveAnimator:new(x1, y1, x2, y2, v)
     -- переводим скорость в скорость по x и по y
-    local c = {x=x2-x1, y=y2-y1}
-    local a = {x=x2-x1, y=0}
-    local b = {x=0, y=y2-y1}
-    local v_x = vector2d.dot(c, a) / vector2d.abs(a)
-    local v_y = vector2d.dot(c, b) / vector2d.abs(b)
+    trace(x1..' '..y1..' '..x2..' '..y2)
+    local c = vector2d.normalize( {x=x2-x1, y=y2-y1} )
+    local v_x = c.x * v
+    local v_y = c.y * v
     -- 🤡 движение расчитывается по кадрам!
 
     local object = {
         -- текущая точка
-        x=x1,
-        y=y1,
+        start_x = x1,
+        start_y = y1,
         -- конечная точка
         end_x = x2,
         end_y = y2,
@@ -25,22 +24,25 @@ function MoveAnimator:new(x1, y1, x2, y2, v)
     return object
 end
 
-function MoveAnimator:update()
-    if math.abs(self.x - self.end_x) <= self.v_x then
-        self.x = self.end_x
+function MoveAnimator:update(object)
+    -- trace(math.abs(object.x - self.end_x))
+    if (self.v_x > 0 and self.end_x <= object.x) or
+        (self.v_x < 0 and self.end_x >= object.x) then
+        object.x = self.end_x
     else
-        self.x = self.x + self.v_x
+        object.x = object.x + self.v_x
     end
 
-    if math.abs(self.y - self.end_y) <= self.v_y then
-        self.y = self.end_y
+    if (self.v_y > 0 and self.end_y <= object.y) or
+        (self.v_y < 0 and self.end_y >= object.y) then
+        object.y = self.end_y
     else
-        self.y = self.y + self.v_y
+        object.y = object.y + self.v_y
     end
 end
 
-function MoveAnimator:is_end()
-    return self.x == self.end_x and self.y == self.end_y
+function MoveAnimator:is_end(object)
+    return object.x == self.end_x and object.y == self.end_y
 end
 
 MoveAnimator.__index = MoveAnimator

@@ -42,16 +42,22 @@ function Tile:new(x, y, value)
 end
 
 function Tile:update()
+    trace(tostring(self)..' hand status = '..self.hand_status)
+    -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
     if self.status == 'held' then
         self:move_by_cursor()
     end
     if self.hand_status == 'to' then
-        self:set_hand_status('in')
-        self.in_hand = true
-        local nearest_slot_i = hand.add(self)
-        self.hand_slot_i = nearest_slot_i
-        self.is_face = true
-        hand.insert_into_slot(self)
+        self.move_animator:update(self)
+        if self.move_animator:is_end(self) then
+            self:set_hand_status('in')
+            self.in_hand = true
+            hand.insert_into_slot(self)
+        end
+        -- local nearest_slot_i = hand.add(self)
+        -- self.hand_slot_i = nearest_slot_i
+        -- self.is_face = true
+        -- hand.insert_into_slot(self)
     end
 end
 
@@ -61,6 +67,16 @@ end
 
 function Tile:set_hand_status(hand_status)
     self.hand_status = hand_status
+    if hand_status == 'to' then
+        local nearest_slot_i = hand.add(self)
+        self.hand_slot_i = nearest_slot_i
+        self.is_face = true
+        local slot = hand.slots[self.hand_slot_i]
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 1)
+    elseif hand_status == 'from' then
+        hand.remove(self.hand_slot_i)
+        self.hand_slot_i = 0  -- испортим на всякий случай
+    end
 end
 
 function Tile:what_are_you_doing_with_me()
@@ -94,8 +110,6 @@ function Tile:what_are_you_doing_with_me()
 
     if self.hand_status == 'in' then
         self:set_hand_status('from')
-        hand.remove(self.hand_slot_i)
-        self.hand_slot_i = 0  -- испортим на всякий случай
     end
 
     self.held_point.x = x - self.x

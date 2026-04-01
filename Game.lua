@@ -1,13 +1,13 @@
 game = {
     tiles = {
         Tile:new(40, 40, 256),
-        Tile:new(50, 50, 256),
-        Tile:new(60, 60, 256),
-        Tile:new(70, 70, 256),
-        Tile:new(70, 70, 256),
-        Tile:new(70, 70, 256),
-        Tile:new(70, 70, 256),
-        Tile:new(70, 70, 256),
+        Tile:new(50, 50, 258),
+        Tile:new(60, 60, 260),
+        Tile:new(70, 70, 262),
+        -- Tile:new(70, 70, 256),
+        -- Tile:new(70, 70, 256),
+        -- Tile:new(70, 70, 256),
+        -- Tile:new(70, 70, 256),
         -- Tile:new(41, 41, 256),
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
@@ -25,6 +25,11 @@ function game.update()
     local is_any_tile_held = false  -- для анимации
     for i = #game.tiles, 1, -1 do
         tile = game.tiles[i]
+        if tile.hand_status == 'to' then
+            -- пропускаем тайл во время анимации добавления в руку. можно было и не фиксить тот* баг
+            goto continue
+        end
+
         local res = tile:what_are_you_doing_with_me()
         if res == 'hold' then
             is_any_tile_held = true
@@ -47,6 +52,7 @@ function game.update()
             break
         end
         tile:set_status('chill')
+        ::continue::
     end
 
     if is_any_tile_held then

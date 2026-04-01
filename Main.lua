@@ -48,6 +48,8 @@ HAND_BORDER = {
     [235] = true,
 }
 
+require 'Vector2D'
+require 'MoveAnimator'
 require 'Tile'
 require 'Hand'
 -- require 'Cursor' -- курсора не будет

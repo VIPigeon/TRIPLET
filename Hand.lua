@@ -105,7 +105,6 @@ end
 function hand.insert_into_slot(tile)
     local slot = hand.slots[tile.hand_slot_i]
     hand.values[tile.hand_slot_i] = tile.value
-
-    tile.x = slot.x
-    tile.y = slot.y
+    -- tile.x = slot.x
+    -- tile.y = slot.y
 end
