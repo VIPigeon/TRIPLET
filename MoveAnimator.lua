@@ -3,7 +3,7 @@ MoveAnimator = {}
 
 function MoveAnimator:new(x1, y1, x2, y2, v)
     -- переводим скорость в скорость по x и по y
-    trace(x1..' '..y1..' '..x2..' '..y2)
+    -- trace(x1..' '..y1..' '..x2..' '..y2)
     local c = vector2d.normalize( {x=x2-x1, y=y2-y1} )
     local v_x = c.x * v
     local v_y = c.y * v

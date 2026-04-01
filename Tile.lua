@@ -50,7 +50,7 @@ function Tile:new(x, y, value)
 end
 
 function Tile:update()
-    trace(tostring(self)..' hand status = '..self.hand_status)
+    -- trace(tostring(self)..' hand status = '..self.hand_status)
     -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
     if self.status == 'held' then
         self:move_by_cursor()
