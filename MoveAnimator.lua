@@ -10,9 +10,8 @@ function MoveAnimator:new(x1, y1, x2, y2, v)
     -- 🤡 движение расчитывается по кадрам!
 
     local object = {
-        -- текущая точка
-        start_x = x1,
-        start_y = y1,
+        -- start_x = x1,
+        -- start_y = y1,
         -- конечная точка
         end_x = x2,
         end_y = y2,
@@ -25,6 +24,7 @@ function MoveAnimator:new(x1, y1, x2, y2, v)
 end
 
 function MoveAnimator:update(object)
+    -- какую скорость не ставь, линейное движение остается линейным и ощущается топорно
     -- trace(math.abs(object.x - self.end_x))
     if (self.v_x > 0 and self.end_x <= object.x) or
         (self.v_x < 0 and self.end_x >= object.x) then

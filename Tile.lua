@@ -49,6 +49,10 @@ function Tile:new(x, y, value)
     return object
 end
 
+function Tile:in_move_animation()
+    return self.hand_status == 'to' or self.triplet_status ~= 'no'
+end
+
 function Tile:update()
     -- trace(tostring(self)..' hand status = '..self.hand_status)
     -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
@@ -67,6 +71,13 @@ function Tile:update()
         -- self.is_face = true
         -- hand.insert_into_slot(self)
     end
+    if self.triplet_status == 'animation' then
+        self.move_animator:update(self)
+        if self.move_animator:is_end(self) then
+            -- trace('TRIPLET')
+            self:set_triplet_status('done')
+        end
+    end
 end
 
 function Tile:set_status(status)
@@ -80,10 +91,20 @@ function Tile:set_hand_status(hand_status)
         self.hand_slot_i = nearest_slot_i
         self.is_face = true
         local slot = hand.slots[self.hand_slot_i]
-        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 1)
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 2)
     elseif hand_status == 'from' then
         hand.remove(self.hand_slot_i)
         self.hand_slot_i = 0  -- испортим на всякий случай
+    end
+end
+
+Tile.TRIPLET_POINT = {x=81, y=42}
+function Tile:set_triplet_status(triplet_status)
+    self.triplet_status = triplet_status
+    if triplet_status == 'animation' then
+        self:set_status('chill')
+        self:set_hand_status('from')
+        self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x, Tile.TRIPLET_POINT.y, 4)
     end
 end
 

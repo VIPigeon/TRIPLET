@@ -4,6 +4,8 @@ game = {
         Tile:new(50, 50, 258),
         Tile:new(60, 60, 260),
         Tile:new(70, 70, 262),
+        Tile:new(70, 70, 262),
+        Tile:new(70, 70, 262),
         -- Tile:new(70, 70, 256),
         -- Tile:new(70, 70, 256),
         -- Tile:new(70, 70, 256),
@@ -11,6 +13,7 @@ game = {
         -- Tile:new(41, 41, 256),
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
+    current_triplet_tiles_indexes = {},
 }
 
 function game.init()
@@ -18,6 +21,19 @@ function game.init()
 end
 
 function game.update()
+    if #game.current_triplet_tiles_indexes == 3 and
+        game.tiles[game.current_triplet_tiles_indexes[1]].triplet_status == 'done' and 
+        game.tiles[game.current_triplet_tiles_indexes[2]].triplet_status == 'done' and 
+        game.tiles[game.current_triplet_tiles_indexes[3]].triplet_status == 'done' then
+        for _, i in ipairs(game.current_triplet_tiles_indexes) do
+            if game.tiles[i].triplet_status == 'done' then
+                -- тайл должен быть удален после триплета
+                table.remove(game.tiles, i)
+            end
+        end
+        game.current_triplet_tiles_indexes = {}
+    end
+
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
@@ -25,8 +41,8 @@ function game.update()
     local is_any_tile_held = false  -- для анимации
     for i = #game.tiles, 1, -1 do
         tile = game.tiles[i]
-        if tile.hand_status == 'to' then
-            -- пропускаем тайл во время анимации добавления в руку. можно было и не фиксить тот* баг
+        if tile:in_move_animation() then
+            -- пропускаем тайл во время анимации перемещения
             goto continue
         end
 
@@ -60,6 +76,16 @@ function game.update()
     else
         -- сбрасываем таймер, чтобы анимация начиналась мгновенно по клику. для перфекционистов
         hand.animation_timer = 0
+    end
+
+    if hand.is_there_a_triplet() then
+        for i = #game.tiles, 1, -1 do
+            local tile = game.tiles[i]
+            if tile.hand_status == 'in' then
+                table.insert(game.current_triplet_tiles_indexes, i)
+                tile:set_triplet_status('animation')
+            end
+        end
     end
     game.draw()
 end
