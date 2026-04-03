@@ -1,48 +1,59 @@
-
 MoveAnimator = {}
 
-function MoveAnimator:new(x1, y1, x2, y2, v)
-    -- переводим скорость в скорость по x и по y
-    -- trace(x1..' '..y1..' '..x2..' '..y2)
-    local c = vector2d.normalize( {x=x2-x1, y=y2-y1} )
-    local v_x = c.x * v
-    local v_y = c.y * v
-    -- 🤡 движение расчитывается по кадрам!
+-- ОСТОРОЖНО!!!
+-- ВАЙБКОД!!!
 
+function MoveAnimator:new(x1, y1, x2, y2, speed)
+    local distance = math.sqrt((x2-x1)^2 + (y2-y1)^2)
+    local duration = distance / speed
     local object = {
-        -- start_x = x1,
-        -- start_y = y1,
-        -- конечная точка
+        start_x = x1,
+        start_y = y1,
+
         end_x = x2,
         end_y = y2,
 
-        v_x = v_x,
-        v_y = v_y,
+        duration = duration or 1, -- сколько длится движение
+        t = 0, -- прогресс [0..1]
     }
     setmetatable(object, self)
     return object
 end
 
-function MoveAnimator:update(object)
-    -- какую скорость не ставь, линейное движение остается линейным и ощущается топорно
-    -- trace(math.abs(object.x - self.end_x))
-    if (self.v_x > 0 and self.end_x <= object.x) or
-        (self.v_x < 0 and self.end_x >= object.x) then
-        object.x = self.end_x
-    else
-        object.x = object.x + self.v_x
-    end
+-- easing функция (ease-out)
+local function easeOutQuad(t)
+    return 1 - (1 - t) * (1 - t)
+end
+local function easeOutCubic(t)
+    return 1 - (1 - t)^3
+end
+local function easeInOut(t)
+    local p = 1.8 -- 👈 регулируешь тут
 
-    if (self.v_y > 0 and self.end_y <= object.y) or
-        (self.v_y < 0 and self.end_y >= object.y) then
-        object.y = self.end_y
+    if t < 0.5 then
+        return 0.5 * (2 * t)^p
     else
-        object.y = object.y + self.v_y
+        return 1 - 0.5 * (2 * (1 - t))^p
     end
 end
 
-function MoveAnimator:is_end(object)
-    return object.x == self.end_x and object.y == self.end_y
+function MoveAnimator:update(object)
+    if self.t >= 1 then return end
+
+    -- увеличиваем прогресс
+    self.t = self.t + Time.dt() / self.duration
+    if self.t > 1 then self.t = 1 end
+
+    -- применяем easing
+    local k = easeInOut(self.t)
+
+    -- интерполяция
+    object.x = self.start_x + (self.end_x - self.start_x) * k
+    object.y = self.start_y + (self.end_y - self.start_y) * k
+end
+
+function MoveAnimator:is_end()
+    return self.t >= 1
 end
 
 MoveAnimator.__index = MoveAnimator

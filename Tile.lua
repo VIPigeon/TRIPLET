@@ -28,7 +28,8 @@ function Tile:new(x, y, value)
         hand_status = 'outside',
         -- outside — тайл лежит вне руки
         -- in — тайл находится в руке
-        -- to — игрок отпустил тайл и она должна перейти в руку. ДЛЯ АНИМАЦИИ
+        -- to — игрок отпустил тайл и она должна перейти в руку
+        --      нужно было для анимации, сейчас это глупость
         -- from — игрок взял тайл из руки. для обработки is_face
 
         triplet_status = 'no',
@@ -91,7 +92,7 @@ function Tile:set_hand_status(hand_status)
         self.hand_slot_i = nearest_slot_i
         self.is_face = true
         local slot = hand.slots[self.hand_slot_i]
-        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 2)
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 60)
     elseif hand_status == 'from' then
         hand.remove(self.hand_slot_i)
         self.hand_slot_i = 0  -- испортим на всякий случай
@@ -104,7 +105,7 @@ function Tile:set_triplet_status(triplet_status)
     if triplet_status == 'animation' then
         self:set_status('chill')
         self:set_hand_status('from')
-        self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x, Tile.TRIPLET_POINT.y, 4)
+        self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x, Tile.TRIPLET_POINT.y, 90)
     end
 end
 

@@ -31,6 +31,7 @@ function game.update()
                 table.remove(game.tiles, i)
             end
         end
+        game.scared_tile = -1
         game.current_triplet_tiles_indexes = {}
     end
 
