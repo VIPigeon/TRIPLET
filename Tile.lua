@@ -158,10 +158,10 @@ function Tile:move_by_cursor()
     local x2 = (new_x + Tile.HITBOX.x2) / 8
     local y2 = (new_y + Tile.HITBOX.y2) / 8
     if hand.full() then
-        if (BOARD[mget(x1, y1)]) and 
-           (BOARD[mget(x1, y2)]) and 
-           (BOARD[mget(x2, y1)]) and 
-           (BOARD[mget(x2, y2)]) then
+        if (BOARD[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
+           (BOARD[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
+           (BOARD[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
+           (BOARD[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)]) then
             self.x = new_x
             self.y = new_y
         end

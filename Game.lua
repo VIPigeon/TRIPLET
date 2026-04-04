@@ -1,4 +1,4 @@
-CENTER = {x=88, y=67}
+CENTER = {x=14*8, y=8*8}
 
 game = {
     tiles = {
@@ -11,45 +11,60 @@ game = {
         Tile:new(CENTER.x, CENTER.y, 260),
         Tile:new(CENTER.x, CENTER.y, 260),
         Tile:new(CENTER.x, CENTER.y, 260),
-        Tile:new(CENTER.x, CENTER.y, 262),
-        Tile:new(CENTER.x, CENTER.y, 262),
-        Tile:new(CENTER.x, CENTER.y, 262),
-        Tile:new(CENTER.x, CENTER.y, 264),
-        Tile:new(CENTER.x, CENTER.y, 264),
-        Tile:new(CENTER.x, CENTER.y, 264),
-        Tile:new(CENTER.x, CENTER.y, 266),
-        Tile:new(CENTER.x, CENTER.y, 266),
-        Tile:new(CENTER.x, CENTER.y, 266),
-        Tile:new(CENTER.x, CENTER.y, 268),
-        Tile:new(CENTER.x, CENTER.y, 268),
-        Tile:new(CENTER.x, CENTER.y, 268),
-        Tile:new(CENTER.x, CENTER.y, 270),
-        Tile:new(CENTER.x, CENTER.y, 270),
-        Tile:new(CENTER.x, CENTER.y, 270),
-        Tile:new(CENTER.x, CENTER.y, 288),
-        Tile:new(CENTER.x, CENTER.y, 288),
-        Tile:new(CENTER.x, CENTER.y, 288),
-        Tile:new(CENTER.x, CENTER.y, 290),
-        Tile:new(CENTER.x, CENTER.y, 290),
-        Tile:new(CENTER.x, CENTER.y, 290),
-        Tile:new(CENTER.x, CENTER.y, 292),
-        Tile:new(CENTER.x, CENTER.y, 292),
-        Tile:new(CENTER.x, CENTER.y, 292),
-        Tile:new(CENTER.x, CENTER.y, 294),
-        Tile:new(CENTER.x, CENTER.y, 294),
-        Tile:new(CENTER.x, CENTER.y, 294),
-        Tile:new(CENTER.x, CENTER.y, 296),
-        Tile:new(CENTER.x, CENTER.y, 296),
-        Tile:new(CENTER.x, CENTER.y, 296),
-        Tile:new(CENTER.x, CENTER.y, 298),
-        Tile:new(CENTER.x, CENTER.y, 298),
-        Tile:new(CENTER.x, CENTER.y, 298),
-        Tile:new(CENTER.x, CENTER.y, 300),
-        Tile:new(CENTER.x, CENTER.y, 300),
-        Tile:new(CENTER.x, CENTER.y, 300),
-        Tile:new(CENTER.x, CENTER.y, 302),
-        Tile:new(CENTER.x, CENTER.y, 302),
-        Tile:new(CENTER.x, CENTER.y, 302),
+        -- Tile:new(CENTER.x, CENTER.y, 262),
+        -- Tile:new(CENTER.x, CENTER.y, 262),
+        -- Tile:new(CENTER.x, CENTER.y, 262),
+        -- Tile:new(CENTER.x, CENTER.y, 264),
+        -- Tile:new(CENTER.x, CENTER.y, 264),
+        -- Tile:new(CENTER.x, CENTER.y, 264),
+        -- Tile:new(CENTER.x, CENTER.y, 266),
+        -- Tile:new(CENTER.x, CENTER.y, 266),
+        -- Tile:new(CENTER.x, CENTER.y, 266),
+        -- Tile:new(CENTER.x, CENTER.y, 268),
+        -- Tile:new(CENTER.x, CENTER.y, 268),
+        -- Tile:new(CENTER.x, CENTER.y, 268),
+        -- Tile:new(CENTER.x, CENTER.y, 270),
+        -- Tile:new(CENTER.x, CENTER.y, 270),
+        -- Tile:new(CENTER.x, CENTER.y, 270),
+        -- Tile:new(CENTER.x, CENTER.y, 288),
+        -- Tile:new(CENTER.x, CENTER.y, 288),
+        -- Tile:new(CENTER.x, CENTER.y, 288),
+        -- Tile:new(CENTER.x, CENTER.y, 290),
+        -- Tile:new(CENTER.x, CENTER.y, 290),
+        -- Tile:new(CENTER.x, CENTER.y, 290),
+        -- Tile:new(CENTER.x, CENTER.y, 292),
+        -- Tile:new(CENTER.x, CENTER.y, 292),
+        -- Tile:new(CENTER.x, CENTER.y, 292),
+        -- Tile:new(CENTER.x, CENTER.y, 294),
+        -- Tile:new(CENTER.x, CENTER.y, 294),
+        -- Tile:new(CENTER.x, CENTER.y, 294),
+        -- Tile:new(CENTER.x, CENTER.y, 296),
+        -- Tile:new(CENTER.x, CENTER.y, 296),
+        -- Tile:new(CENTER.x, CENTER.y, 296),
+        -- Tile:new(CENTER.x, CENTER.y, 298),
+        -- Tile:new(CENTER.x, CENTER.y, 298),
+        -- Tile:new(CENTER.x, CENTER.y, 298),
+        -- Tile:new(CENTER.x, CENTER.y, 300),
+        -- Tile:new(CENTER.x, CENTER.y, 300),
+        -- Tile:new(CENTER.x, CENTER.y, 300),
+        -- Tile:new(CENTER.x, CENTER.y, 302),
+        -- Tile:new(CENTER.x, CENTER.y, 302),
+        -- Tile:new(CENTER.x, CENTER.y, 302),
+        -- Tile:new(CENTER.x, CENTER.y, 320),
+        -- Tile:new(CENTER.x, CENTER.y, 320),
+        -- Tile:new(CENTER.x, CENTER.y, 320),
+        -- Tile:new(CENTER.x, CENTER.y, 322),
+        -- Tile:new(CENTER.x, CENTER.y, 322),
+        -- Tile:new(CENTER.x, CENTER.y, 322),
+        -- Tile:new(CENTER.x, CENTER.y, 324),
+        -- Tile:new(CENTER.x, CENTER.y, 324),
+        -- Tile:new(CENTER.x, CENTER.y, 324),
+        -- Tile:new(CENTER.x, CENTER.y, 326),
+        -- Tile:new(CENTER.x, CENTER.y, 326),
+        -- Tile:new(CENTER.x, CENTER.y, 326),
+        -- Tile:new(CENTER.x, CENTER.y, 328),
+        -- Tile:new(CENTER.x, CENTER.y, 328),
+        -- Tile:new(CENTER.x, CENTER.y, 328),
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
     current_triplet_tiles_indexes = {},
@@ -62,28 +77,14 @@ function game.init()
         local j = math.random(i)
         local t = game.tiles
         t[i], t[j] = t[j], t[i]
-        t[i].x = t[i].x + math.random(-30, 30)
-        t[i].y = t[i].y + math.random(-20, 20)
+        t[i].x = t[i].x + math.random(-55, 55)
+        t[i].y = t[i].y + math.random(-27, 22)
     end
     --
     hand.init()
 end
 
 function game.update()
-    if #game.current_triplet_tiles_indexes == 3 and
-        game.tiles[game.current_triplet_tiles_indexes[1]].triplet_status == 'done' and 
-        game.tiles[game.current_triplet_tiles_indexes[2]].triplet_status == 'done' and 
-        game.tiles[game.current_triplet_tiles_indexes[3]].triplet_status == 'done' then
-        for _, i in ipairs(game.current_triplet_tiles_indexes) do
-            if game.tiles[i].triplet_status == 'done' then
-                -- тайл должен быть удален после триплета
-                table.remove(game.tiles, i)
-            end
-        end
-        game.scared_tile = -1
-        game.current_triplet_tiles_indexes = {}
-    end
-
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
