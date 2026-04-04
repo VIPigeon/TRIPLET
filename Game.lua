@@ -68,10 +68,12 @@ game = {
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
     current_triplet_tiles_indexes = {},
+    triplets_count = 0,
 }
 
 function game.init()
-    math.randomseed(time())
+    -- trace(time())
+    math.randomseed(time()*1e7)
     -- shuffle
     for i = #game.tiles, 2, -1 do
         local j = math.random(i)
@@ -130,6 +132,7 @@ function game.update()
     end
 
     if hand.is_there_a_triplet() then
+        game.triplets_count = game.triplets_count + 1
         for i = #game.tiles, 1, -1 do
             local tile = game.tiles[i]
             if tile.hand_status == 'in' then

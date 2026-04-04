@@ -99,13 +99,14 @@ function Tile:set_hand_status(hand_status)
     end
 end
 
-Tile.TRIPLET_POINT = {x=0, y=0}
+Tile.TRIPLET_SHIFT = 8
+Tile.TRIPLET_POINT = {x=-Tile.TRIPLET_SHIFT, y=0}
 function Tile:set_triplet_status(triplet_status)
     self.triplet_status = triplet_status
     if triplet_status == 'animation' then
         self:set_status('chill')
         self:set_hand_status('from')
-        self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x, Tile.TRIPLET_POINT.y, 90)
+        self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x + Tile.TRIPLET_SHIFT*game.triplets_count, Tile.TRIPLET_POINT.y, 90)
     end
 end
 
