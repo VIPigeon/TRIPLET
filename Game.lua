@@ -1,22 +1,71 @@
+CENTER = {x=88, y=67}
+
 game = {
     tiles = {
-        Tile:new(40, 40, 256),
-        Tile:new(50, 50, 258),
-        Tile:new(60, 60, 260),
-        Tile:new(70, 70, 262),
-        Tile:new(70, 70, 262),
-        Tile:new(70, 70, 262),
-        -- Tile:new(70, 70, 256),
-        -- Tile:new(70, 70, 256),
-        -- Tile:new(70, 70, 256),
-        -- Tile:new(70, 70, 256),
-        -- Tile:new(41, 41, 256),
+        Tile:new(CENTER.x, CENTER.y, 256),
+        Tile:new(CENTER.x, CENTER.y, 256),
+        Tile:new(CENTER.x, CENTER.y, 256),
+        Tile:new(CENTER.x, CENTER.y, 258),
+        Tile:new(CENTER.x, CENTER.y, 258),
+        Tile:new(CENTER.x, CENTER.y, 258),
+        Tile:new(CENTER.x, CENTER.y, 260),
+        Tile:new(CENTER.x, CENTER.y, 260),
+        Tile:new(CENTER.x, CENTER.y, 260),
+        Tile:new(CENTER.x, CENTER.y, 262),
+        Tile:new(CENTER.x, CENTER.y, 262),
+        Tile:new(CENTER.x, CENTER.y, 262),
+        Tile:new(CENTER.x, CENTER.y, 264),
+        Tile:new(CENTER.x, CENTER.y, 264),
+        Tile:new(CENTER.x, CENTER.y, 264),
+        Tile:new(CENTER.x, CENTER.y, 266),
+        Tile:new(CENTER.x, CENTER.y, 266),
+        Tile:new(CENTER.x, CENTER.y, 266),
+        Tile:new(CENTER.x, CENTER.y, 268),
+        Tile:new(CENTER.x, CENTER.y, 268),
+        Tile:new(CENTER.x, CENTER.y, 268),
+        Tile:new(CENTER.x, CENTER.y, 270),
+        Tile:new(CENTER.x, CENTER.y, 270),
+        Tile:new(CENTER.x, CENTER.y, 270),
+        Tile:new(CENTER.x, CENTER.y, 288),
+        Tile:new(CENTER.x, CENTER.y, 288),
+        Tile:new(CENTER.x, CENTER.y, 288),
+        Tile:new(CENTER.x, CENTER.y, 290),
+        Tile:new(CENTER.x, CENTER.y, 290),
+        Tile:new(CENTER.x, CENTER.y, 290),
+        Tile:new(CENTER.x, CENTER.y, 292),
+        Tile:new(CENTER.x, CENTER.y, 292),
+        Tile:new(CENTER.x, CENTER.y, 292),
+        Tile:new(CENTER.x, CENTER.y, 294),
+        Tile:new(CENTER.x, CENTER.y, 294),
+        Tile:new(CENTER.x, CENTER.y, 294),
+        Tile:new(CENTER.x, CENTER.y, 296),
+        Tile:new(CENTER.x, CENTER.y, 296),
+        Tile:new(CENTER.x, CENTER.y, 296),
+        Tile:new(CENTER.x, CENTER.y, 298),
+        Tile:new(CENTER.x, CENTER.y, 298),
+        Tile:new(CENTER.x, CENTER.y, 298),
+        Tile:new(CENTER.x, CENTER.y, 300),
+        Tile:new(CENTER.x, CENTER.y, 300),
+        Tile:new(CENTER.x, CENTER.y, 300),
+        Tile:new(CENTER.x, CENTER.y, 302),
+        Tile:new(CENTER.x, CENTER.y, 302),
+        Tile:new(CENTER.x, CENTER.y, 302),
     },
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
     current_triplet_tiles_indexes = {},
 }
 
 function game.init()
+    math.randomseed(time())
+    -- shuffle
+    for i = #game.tiles, 2, -1 do
+        local j = math.random(i)
+        local t = game.tiles
+        t[i], t[j] = t[j], t[i]
+        t[i].x = t[i].x + math.random(-30, 30)
+        t[i].y = t[i].y + math.random(-20, 20)
+    end
+    --
     hand.init()
 end
 

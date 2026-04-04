@@ -99,7 +99,7 @@ function Tile:set_hand_status(hand_status)
     end
 end
 
-Tile.TRIPLET_POINT = {x=81, y=42}
+Tile.TRIPLET_POINT = {x=0, y=0}
 function Tile:set_triplet_status(triplet_status)
     self.triplet_status = triplet_status
     if triplet_status == 'animation' then
