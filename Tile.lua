@@ -35,7 +35,7 @@ function Tile:new(x, y, value)
         triplet_status = 'no',
         -- no — не входит в триплет
         -- animation — находится в процессе анимации триплета
-        -- done — находится в процессе уничтожения
+        -- done — анимация закончилась и карта просто лежит неприкасаемая
 
         is_face = false,
         held_point = {
