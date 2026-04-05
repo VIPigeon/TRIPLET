@@ -132,12 +132,21 @@ function game.update()
     end
 
     if hand.is_there_a_triplet() then
-        game.triplets_count = game.triplets_count + 1
-        for i = #game.tiles, 1, -1 do
-            local tile = game.tiles[i]
+        local card_counter = 0
+        for _, tile in ipairs(game.tiles) do
             if tile.hand_status == 'in' then
-                table.insert(game.current_triplet_tiles_indexes, i)
-                tile:set_triplet_status('animation')
+                card_counter = card_counter + 1
+            end
+        end
+        -- весь этот card_counter нужен только для того, чтобы триплет засчитывался только после того как закончится анимация
+        if card_counter == 3 then
+            game.triplets_count = game.triplets_count + 1
+            for i = #game.tiles, 1, -1 do
+                local tile = game.tiles[i]
+                if tile.hand_status == 'in' then
+                    table.insert(game.current_triplet_tiles_indexes, i)
+                    tile:set_triplet_status('animation')
+                end
             end
         end
     end

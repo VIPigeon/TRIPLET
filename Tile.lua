@@ -64,8 +64,6 @@ function Tile:update()
         self.move_animator:update(self)
         if self.move_animator:is_end(self) then
             self:set_hand_status('in')
-            self.in_hand = true
-            hand.insert_into_slot(self)
         end
         -- local nearest_slot_i = hand.add(self)
         -- self.hand_slot_i = nearest_slot_i
@@ -93,6 +91,8 @@ function Tile:set_hand_status(hand_status)
         self.is_face = true
         local slot = hand.slots[self.hand_slot_i]
         self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 60)
+        hand.insert_into_slot(self)
+        self.in_hand = true
     elseif hand_status == 'from' then
         hand.remove(self.hand_slot_i)
         self.hand_slot_i = 0  -- испортим на всякий случай
@@ -141,6 +141,10 @@ function Tile:what_are_you_doing_with_me()
 
     if self.hand_status == 'in' then
         self:set_hand_status('from')
+    end
+
+    if not hand.full() and Click.double_left() then
+        return 'going to hand'
     end
 
     self.held_point.x = x - self.x
