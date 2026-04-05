@@ -99,8 +99,8 @@ function Tile:set_hand_status(hand_status)
     end
 end
 
-Tile.TRIPLET_SHIFT = 8
-Tile.TRIPLET_POINT = {x=-Tile.TRIPLET_SHIFT, y=0}
+Tile.TRIPLET_SHIFT = 4
+Tile.TRIPLET_POINT = {x=-Tile.TRIPLET_SHIFT-1, y=-1}
 function Tile:set_triplet_status(triplet_status)
     self.triplet_status = triplet_status
     if triplet_status == 'animation' then

@@ -49,12 +49,13 @@ HAND_BORDER = {
 }
 
 require 'Vector2D'
+require 'Basic'
+require 'Click'
 require 'MoveAnimator'
 require 'Tile'
 require 'Hand'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
-require 'Basic'
 require 'Game'
 
 -- TIC-80 🤖 обязывает нас объявлять функцию TIC, которую он будет
@@ -63,5 +64,8 @@ game.init()
 
 function TIC()
     Time.update()
+    
     game.update()
+
+    Click.update()
 end
