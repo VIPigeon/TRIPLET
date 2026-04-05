@@ -144,6 +144,10 @@ function game.update()
             for i = #game.tiles, 1, -1 do
                 local tile = game.tiles[i]
                 if tile.hand_status == 'in' then
+                    -- поднимаем тайл вверх чтобы обезопаситься от бага отрисовки триплетов
+                    local temp = table.remove(game.tiles, i)
+                    table.insert(game.tiles, temp)
+
                     table.insert(game.current_triplet_tiles_indexes, i)
                     tile:set_triplet_status('animation')
                 end

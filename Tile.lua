@@ -90,7 +90,7 @@ function Tile:set_hand_status(hand_status)
         self.hand_slot_i = nearest_slot_i
         self.is_face = true
         local slot = hand.slots[self.hand_slot_i]
-        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 60)
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 67)
         hand.insert_into_slot(self)
         self.in_hand = true
     elseif hand_status == 'from' then
@@ -112,6 +112,11 @@ end
 
 function Tile:what_are_you_doing_with_me()
     local x, y, left, middle, right = mouse()
+
+    if not hand.full() and (Click.right() or Click.double_left()) and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+        self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
+        return 'going to hand'
+    end
 
     if not left or not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
@@ -143,9 +148,9 @@ function Tile:what_are_you_doing_with_me()
         self:set_hand_status('from')
     end
 
-    if not hand.full() and Click.double_left() then
-        return 'going to hand'
-    end
+    -- if not hand.full() and Click.double_left() then
+    --     return 'going to hand'
+    -- end
 
     self.held_point.x = x - self.x
     self.held_point.y = y - self.y
