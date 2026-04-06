@@ -113,9 +113,16 @@ end
 function Tile:what_are_you_doing_with_me()
     local x, y, left, middle, right = mouse()
 
-    if not hand.full() and (Click.right() or Click.double_left()) and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+    if not hand.full() and self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
-        return 'going to hand'
+
+        if Settings.FAST_DRAW_BY_RIGHT_CLICK and Click.right() then
+            return 'going to hand'
+        end
+        if Settings.FAST_DRAW_BY_DOUBLE_CLICK and Click.double_left() then
+            return 'going to hand'
+        end
+        
     end
 
     if not left or not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 

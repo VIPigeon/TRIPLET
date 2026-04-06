@@ -54,6 +54,7 @@ require 'Click'
 require 'MoveAnimator'
 require 'Tile'
 require 'Hand'
+require 'Settings'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
 require 'Game'
