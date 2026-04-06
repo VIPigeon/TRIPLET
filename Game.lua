@@ -129,6 +129,7 @@ function game.update()
     else
         -- сбрасываем таймер, чтобы анимация начиналась мгновенно по клику. для перфекционистов
         hand.animation_timer = 0
+        hand.cancel_alarm()
     end
 
     if hand.is_there_a_triplet() then

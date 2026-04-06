@@ -1,19 +1,19 @@
 
 BOARD = {
-    [152] = true,
-    [153] = true,
-    [154] = true,
-    [155] = true,
+    [12] = true,
+    [13] = true,
+    [14] = true,
+    [15] = true,
 
-    [168] = true,
-    [169] = true,
-    [170] = true,
-    [171] = true,
+    [28] = true,
+    [29] = true,
+    [30] = true,
+    [31] = true,
 
-    [184] = true,
-    [185] = true,
-    [186] = true,
-    [187] = true,
+    [44] = true,
+    [45] = true,
+    [46] = true,
+    [47] = true,
 }
 
 HAND = {

@@ -52,7 +52,12 @@ function hand.update_animation()
         hand.animation_timer = hand.TIME_PER_ANIMATION_FRAME
         for i = 1, #hand.zone do
             hand.zone[i].value = hand.animation[ hand.zone[i].value ]
-            mset( hand.zone[i].x, hand.zone[i].y, hand.zone[i].value )
+            if hand.full() then
+                -- alarm
+                mset( hand.zone[i].x, hand.zone[i].y, hand.zone[i].value - 32)
+            else
+                mset( hand.zone[i].x, hand.zone[i].y, hand.zone[i].value )
+            end
         end
     end
 
@@ -114,4 +119,10 @@ function hand.is_there_a_triplet()
         return false
     end
     return hand.values[1] == hand.values[2] and hand.values[2] == hand.values[3]
+end
+
+function hand.cancel_alarm()
+    for i = 1, #hand.zone do
+        mset( hand.zone[i].x, hand.zone[i].y, hand.zone[i].value )
+    end
 end
