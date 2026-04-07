@@ -71,7 +71,7 @@ function ToggleButton:new(x, y, text_on, text_off, size_x, size_y, colors)
         text = {[true]=4, [false]=1},
         chill = {[true]=15, [false]=4},
         scared= {[true]=10, [false]=10},
-        pressed={[true]=9, [false]=11},
+        pressed={[true]=3, [false]=11},
         shadow = {[true]=4, [false]=1},
     }
     -- определяем хитбокс по тексту

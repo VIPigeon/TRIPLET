@@ -72,9 +72,7 @@ game = {
     buttons={
         Button:new(27*8 + 1, 14*8, 'Zoo'),
         Button:new(23*8 + 3, 15*8 + 7, 'Settings'),
-        -- ToggleButton:new(2, 2, ' on', 'off'),
-        ToggleButton:new(2, 20, 'on', 'off'),  -- тоггл моей мечты
-        -- ToggleButton:new(2, 40, '+', '-', 4, 6),
+        ToggleButton:new(2, 2, 'ON', 'OFF'),  -- тоггл моей мечты
     },
 }
 
