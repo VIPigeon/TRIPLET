@@ -29,6 +29,11 @@ function Click.left()
     return left and not Click.prev_left
 end
 
+function Click:release_left()
+    local x, y, left, middle, right = mouse()
+    return not left and Click.prev_left
+end
+
 function Click.right()
     local x, y, left, middle, right = mouse()
     return right and not Click.prev_right

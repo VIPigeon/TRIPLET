@@ -69,6 +69,10 @@ game = {
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
     current_triplet_tiles_indexes = {},
     triplets_count = 0,
+    buttons={
+        Button:new(27*8 + 1, 14*8, 'Zoo'),
+        Button:new(23*8 + 3, 15*8 + 7, 'Settings')
+    },
 }
 
 function game.init()
@@ -87,6 +91,14 @@ function game.init()
 end
 
 function game.update()
+    for _, button in ipairs(game.buttons) do
+        local prev_status = button.status
+        button:update()
+        if button.status == 'pressed' and prev_status ~= 'pressed' then
+            -- на кнопку только нажали
+        end
+    end
+
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
@@ -166,5 +178,8 @@ function game.draw()
     -- hand.draw()
     for _, tile in ipairs(game.tiles) do
         tile:draw()
+    end
+    for _, button in ipairs(game.buttons) do
+        button:draw()
     end
 end
