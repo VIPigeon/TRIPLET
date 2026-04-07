@@ -56,6 +56,7 @@ HAND = {
 
 require 'Vector2D'
 require 'FunFacts'
+require 'Table'
 require 'gui'
 require 'Basic'
 require 'Click'

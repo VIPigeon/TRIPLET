@@ -71,7 +71,10 @@ game = {
     triplets_count = 0,
     buttons={
         Button:new(27*8 + 1, 14*8, 'Zoo'),
-        Button:new(23*8 + 3, 15*8 + 7, 'Settings')
+        Button:new(23*8 + 3, 15*8 + 7, 'Settings'),
+        -- ToggleButton:new(2, 2, ' on', 'off'),
+        ToggleButton:new(2, 20, 'on', 'off'),  -- тоггл моей мечты
+        -- ToggleButton:new(2, 40, '+', '-', 4, 6),
     },
 }
 
@@ -94,8 +97,12 @@ function game.update()
     for _, button in ipairs(game.buttons) do
         local prev_status = button.status
         button:update()
-        if button.status == 'pressed' and prev_status ~= 'pressed' then
-            -- на кнопку только нажали
+        local x, y, left, middle, right = mouse()
+        if button.status ~= 'pressed' and prev_status == 'pressed' and not left then
+            -- реагируем на отпускание кнопки
+            if button.is_toggle then
+                button.is_on = not button.is_on
+            end
         end
     end
 
