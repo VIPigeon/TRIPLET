@@ -2,6 +2,10 @@
 --[[
 размер кнопки автоматически подстраивается под текст кнопки
 вся гуишная логика будет лежать в этом файле, для удобства
+
+ОСТОРОЖНО!!!
+ПРИ СОЗДАНИИ КНОПКИ ОНА СОЗДАЕТСЯ НЕВИДИМОЙ
+Чтобы включить кнопку, нужно еще вызвать :set_visibility(true)
 ]]
 
 
@@ -56,6 +60,10 @@ function Button:draw()
     end
 end
 
+function Button:set_visibility(flag)
+    self.visibility = flag
+end
+
 Button.__index = Button
 
 ToggleButton = table.copy(Button)
@@ -63,11 +71,6 @@ ToggleButton = table.copy(Button)
 -- копипаст > наследования
 function ToggleButton:new(x, y, text_on, text_off, size_x, size_y, colors)
     colors = colors or {
-        -- text = {[true]=5, [false]=14},
-        -- chill = {[true]=11, [false]=6},
-        -- scared= {[true]=12, [false]=9},
-        -- pressed={[true]=14, [false]=5},
-        -- shadow = {[true]=5, [false]=1},
         text = {[true]=4, [false]=1},
         chill = {[true]=15, [false]=4},
         scared= {[true]=10, [false]=10},
@@ -114,3 +117,34 @@ end
 ToggleButton.__index = ToggleButton
 
 
+SpriteButton = table.copy(Button)
+function SpriteButton:new(x, y, sprites, size_x, size_y)
+    -- определяем хитбокс по тексту
+    local object = {
+        -- вбиваем координаты хитбокса. граница кнопки не включена
+        x1=x+1,
+        y1=y+1,
+        x2=x + size_x -2,
+        y2=y + size_y -2,
+        status='chill',
+        sprite=sprites,
+        is_on=true,
+
+        is_toggle = true, -- для идентификации
+        -- chill — никто не трогает
+        -- scared — на кнопку навели мышку
+        -- pressed — на кнопку нажали
+    }
+    setmetatable(object, self)
+    return object
+end
+
+function SpriteButton:draw()
+    -- я не уверен что эти формулы корректны, нужно тестить
+    local width = (self.x2-self.x1+2+7)/8
+    local height = (self.y2-self.y1+2+7)/8
+    spr(self.sprite[self.status], self.x1-1, self.y1-1, 0, 1,0,0, width,height)
+end
+
+
+SpriteButton.__index = SpriteButton

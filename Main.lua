@@ -55,10 +55,11 @@ HAND = {
 
 
 require 'Vector2D'
-require 'FunFacts'
-require 'Table'
-require 'gui'
 require 'Basic'
+require 'Table'
+require 'TileInfo'
+require 'ProgressBar'
+require 'gui'
 require 'Click'
 require 'MoveAnimator'
 require 'Tile'
