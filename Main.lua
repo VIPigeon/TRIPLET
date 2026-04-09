@@ -64,6 +64,7 @@ require 'Click'
 require 'MoveAnimator'
 require 'Tile'
 require 'Hand'
+require 'Spectator'
 require 'Settings'
 -- require 'Cursor' -- курсора не будет
 require 'Time'

@@ -1,4 +1,5 @@
 CENTER = {x=14*8, y=8*8}
+INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0})
 
 game = {
     tiles = {},
@@ -22,9 +23,10 @@ game = {
     },
 
     -- невидимый ProgressBar в начале игры
-    progress_bar = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0}),
+    progress_bar = INVISIBLE_BAR,
 
-    levels = {
+    -- количество троек в уровне
+    triplets_in_levels = {
         3,
         7,
         11,
@@ -37,12 +39,15 @@ game = {
 
     current_level = nil,
 
+    spectator = nil,
+
     status = "levels",
     -- burger — меню, которое выводится при нажатом бургере
     -- settings — игрок в настройках (туду)
     -- levels — игрок в меню выбора уровня
     -- zoo — игрок смотрит свою коллекцию (туду)
     -- game — основная игра
+    -- done — уровень пройден
 }
 
 function game.shuffle()
@@ -73,7 +78,7 @@ function game.init_level()
         table.remove(rare_bank, i)
     end
     -- теперь обычные
-    for _ = 1, game.levels[game.current_level] - (game.current_level - 1) do
+    for _ = 1, game.triplets_in_levels[game.current_level] - (game.current_level - 1) do
         local i = math.random(#common_bank)
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, common_bank[i]))
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, common_bank[i]))
@@ -83,7 +88,8 @@ function game.init_level()
 
     game.shuffle()
 
-    game.progress_bar = ProgressBar:new(4*8-1, 1, game.levels[game.current_level])
+    game.progress_bar = ProgressBar:new(4*8-1, 1, game.triplets_in_levels[game.current_level])
+    game.spectator = Spectator:new()
 end
 
 function game.set_status(status)
@@ -94,12 +100,23 @@ function game.set_status(status)
     end
 
     if status == "levels" then
-        for i = 1, #game.levels do
+        for i = 1, #game.triplets_in_levels do
             game.buttons[i]:set_visibility(true)
         end
     elseif status == "game" then
         game.buttons.burger:set_visibility(true)
         game.init_level()
+    elseif status == "done" then
+        game.progress_bar = INVISIBLE_BAR
+        game.spectator:hide()  -- скрываем spectator
+
+        local clock = 0.6
+        local increment_clock = 0.15
+        -- for i = #game.tiles, 1, -1 do
+        for i = 1, #game.tiles do
+            game.tiles[i]:start_score_animation(clock)
+            clock = clock + increment_clock
+        end
     end
     game.status = status
 end
@@ -140,11 +157,32 @@ function game.update()
         end
     end
 
+    if game.status == "done" then
+        -- анимация окончания
+        -- все тайлы из прогресс бара идут в зачет
+    end
+
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
 
     if game.status == "game" then
+
+        -- проверяем, что игра окончена
+        if game.progress_bar:full() then
+            -- проверяем, что анимация закончилась
+            local flag = true
+            for i = #game.tiles, #game.tiles-3, -1 do
+                if game.tiles[i].triplet_status ~= "done" then
+                    flag = false
+                    break
+                end
+            end
+            if flag then
+                game.set_status("done")
+            end
+        end
+
         local is_any_tile_held = false  -- для анимации
         for i = #game.tiles, 1, -1 do
             tile = game.tiles[i]
@@ -212,6 +250,10 @@ function game.update()
         end
     end
 
+    if game.spectator and game.status ~= "done" then
+        game.spectator:update()
+    end
+
     game.draw()
 end
 
@@ -220,6 +262,8 @@ function game.draw()
     -- cls(15)
     if game.status == "game" then
         map(0, 0)
+    elseif game.status == "done" then
+        map(30, 0)
     elseif game.status == "levels" then
         map(30, 0)
     end
@@ -233,5 +277,8 @@ function game.draw()
         if button.visibility then
             button:draw()
         end
+    end
+    if game.spectator then
+        game.spectator:draw()
     end
 end

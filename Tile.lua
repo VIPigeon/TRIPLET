@@ -24,6 +24,9 @@ function Tile:new(x, y, value)
         -- chill — карту никто не трогает
         -- scared — на карту навели курсор
         -- held — на карте удерживают курсор
+        -- для анимации уничтожения:
+        -- destroying — карта находится в процессе уничтожения
+        -- destroyed — карта уничтожена
 
         hand_status = 'outside',
         -- outside — тайл лежит вне руки
@@ -44,6 +47,8 @@ function Tile:new(x, y, value)
         },
 
         move_animator = nil,
+
+        scoring_status = 'no',
     }
 
     setmetatable(object, self)
@@ -54,9 +59,25 @@ function Tile:in_move_animation()
     return self.hand_status == 'to' or self.triplet_status ~= 'no'
 end
 
+SCORE_SLOT = {x=10*8, y=5*8}
+function Tile:start_score_animation(clock)
+    self.scoring_status = 'scoring'
+    self.animation_delay = clock
+    self.move_animator = MoveAnimator:new(self.x, self.y, SCORE_SLOT.x, SCORE_SLOT.y, 88)
+end
+
 function Tile:update()
     -- trace(tostring(self)..' hand status = '..self.hand_status)
     -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
+    if self.scoring_status == 'scoring' then
+        if self.animation_delay > 0 then
+            self.animation_delay = Basic.tick_timer(self.animation_delay)
+        else
+            self.move_animator:update(self)
+        end
+        return
+    end
+
     if self.status == 'held' then
         self:move_by_cursor()
     end
@@ -117,10 +138,10 @@ function Tile:what_are_you_doing_with_me()
     if not hand.full() and self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
 
-        if Settings.FAST_DRAW_BY_RIGHT_CLICK and Click.right() then
+        if Settings.QUICK_DRAW_BY_RIGHT_CLICK and Click.right() then
             return 'going to hand'
         end
-        if Settings.FAST_DRAW_BY_DOUBLE_CLICK and Click.double_left() then
+        if Settings.QUICK_DRAW_BY_DOUBLE_CLICK and Click.double_left() then
             return 'going to hand'
         end
         

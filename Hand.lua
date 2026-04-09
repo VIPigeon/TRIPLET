@@ -7,6 +7,17 @@ hand = {
     slots = {}
 }
 
+function hand.size()
+    -- возвращает количество карт в руке
+    local counter = 0
+    for _, v in ipairs(hand.values) do
+        if v ~= -1 then
+            counter = counter + 1
+        end
+    end
+    return counter
+end
+
 
 function hand.init()
     -- ищем руку на map, фиксируем тайлы руки
