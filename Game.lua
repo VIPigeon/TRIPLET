@@ -40,6 +40,7 @@ game = {
     current_level = nil,
 
     spectator = nil,
+    scoring_animator = nil,
 
     status = "levels",
     -- burger — меню, которое выводится при нажатом бургере
@@ -107,8 +108,13 @@ function game.set_status(status)
         game.buttons.burger:set_visibility(true)
         game.init_level()
     elseif status == "done" then
-        game.progress_bar = INVISIBLE_BAR
+        game.scoring_animator = ScoringAnimator:new(game.spectator.time, game.spectator.turns)
+        game.progress_bar = INVISIBLE_BAR  -- скрываем бар
         game.spectator:hide()  -- скрываем spectator
+        -- не спрашивайте, почему одно и то же действие реализовано через два механизма
+        -- дело в том, что эти два объекта писали два разных человека
+        -- я вчерашний и я сегодняшний
+
 
         local clock = 0.6
         local increment_clock = 0.15
@@ -160,6 +166,7 @@ function game.update()
     if game.status == "done" then
         -- анимация окончания
         -- все тайлы из прогресс бара идут в зачет
+        game.scoring_animator:update(game.tiles)
     end
 
     for _, tile in ipairs(game.tiles) do
@@ -263,7 +270,7 @@ function game.draw()
     if game.status == "game" then
         map(0, 0)
     elseif game.status == "done" then
-        map(30, 0)
+        map(60, 0)
     elseif game.status == "levels" then
         map(30, 0)
     end
@@ -280,5 +287,16 @@ function game.draw()
     end
     if game.spectator then
         game.spectator:draw()
+    end
+
+    if game.status == "done" then
+        local score = game.scoring_animator:get_score_for_tiles()
+        if score > 0 then
+            print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
+        end
+        if game.scoring_animator:is_end(game.tiles) then
+            print(game.spectator.time, ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
+            print(game.spectator.turns, ScoringAnimator.TEXT_SLOTS.turns.x, ScoringAnimator.TEXT_SLOTS.turns.y, ScoringAnimator.TEXT_COLOR.turns)
+        end
     end
 end

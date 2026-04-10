@@ -5,6 +5,6 @@ Settings = {
     SFX = true,
     QUICK_DRAW_BY_DOUBLE_CLICK = true,  -- (left)
     QUICK_DRAW_BY_RIGHT_CLICK = true,
-    SHOW_TIME_DURING_GAME = true,
-    SHOW_TURNS_DURING_GAME = true,  -- ходом считается добор тайла в руку
+    SHOW_TIME_DURING_GAME = false,
+    SHOW_TURNS_DURING_GAME = false,  -- ходом считается добор тайла в руку
 }

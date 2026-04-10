@@ -59,9 +59,13 @@ function Tile:in_move_animation()
     return self.hand_status == 'to' or self.triplet_status ~= 'no'
 end
 
-SCORE_SLOT = {x=10*8, y=5*8}
+function Tile:set_scoring_status(status)
+    self.scoring_status = status
+end
+
+SCORE_SLOT = {x=4*8, y=13*8}
 function Tile:start_score_animation(clock)
-    self.scoring_status = 'scoring'
+    self:set_scoring_status('scoring')
     self.animation_delay = clock
     self.move_animator = MoveAnimator:new(self.x, self.y, SCORE_SLOT.x, SCORE_SLOT.y, 88)
 end
@@ -72,6 +76,8 @@ function Tile:update()
     if self.scoring_status == 'scoring' then
         if self.animation_delay > 0 then
             self.animation_delay = Basic.tick_timer(self.animation_delay)
+        elseif self.move_animator:is_end() then
+            self:set_scoring_status('scored')
         else
             self.move_animator:update(self)
         end
@@ -246,5 +252,10 @@ function Tile:draw()
         end
     end    
 end
+
+function Tile:is_scored()
+    return self.scoring_status == 'scored'
+end
+
 
 Tile.__index = Tile
