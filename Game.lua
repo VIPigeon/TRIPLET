@@ -291,12 +291,34 @@ function game.draw()
 
     if game.status == "done" then
         local score = game.scoring_animator:get_score_for_tiles()
-        if score > 0 then
-            print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
-        end
         if game.scoring_animator:is_end(game.tiles) then
-            print(game.spectator.time, ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
-            print(game.spectator.turns, ScoringAnimator.TEXT_SLOTS.turns.x, ScoringAnimator.TEXT_SLOTS.turns.y, ScoringAnimator.TEXT_COLOR.turns)
+            print("TIME: "..string.format("%.1f", game.spectator.time), ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
+            print("TURNS: "..game.spectator.turns, ScoringAnimator.TEXT_SLOTS.turns.x, ScoringAnimator.TEXT_SLOTS.turns.y, ScoringAnimator.TEXT_COLOR.turns)
+            local x = ScoringAnimator.TEXT_SLOTS.score.x
+            local y = ScoringAnimator.TEXT_SLOTS.score.y
+            local text = "TOTAL SCORE: "
+            print(text, x, y, ScoringAnimator.TEXT_COLOR.score)
+
+            x = ScoringAnimator.TEXT_SLOTS.tiles.x
+            y = ScoringAnimator.TEXT_SLOTS.tiles.y
+            text = score.." "
+            print(text, x, y, ScoringAnimator.TEXT_COLOR.tiles)
+            x = x + 5*#text + 1
+
+            local turns_score = game.spectator.turns*10
+            text = "- "..turns_score.." "
+            print(text, x, y, ScoringAnimator.TEXT_COLOR.turns)
+            x = x + 5*#text
+
+            local time_score = math.floor(game.spectator.time*10 + 0.5)
+            text = "- "..time_score
+            print(text, x, y, ScoringAnimator.TEXT_COLOR.time)
+            x = x + 5*#text
+
+            print(" = "..(score - time_score - turns_score), x, y, ScoringAnimator.TEXT_COLOR.score)
+
+        elseif score > 0 then
+            print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     end
 end

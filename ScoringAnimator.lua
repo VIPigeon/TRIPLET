@@ -4,14 +4,17 @@ ScoringAnimator = {}
 ScoringAnimator.SCORE_BY_TILE = 50
 ScoringAnimator.SCORE_BY_TURN = 10
 ScoringAnimator.TEXT_SLOTS = {
-    tiles = {x=7*8-4, y=13*8+5},
-    turns = {x=7*8-4, y=13*8+5-14},
-    time = {x=7*8-4, y=13*8+5-28},
+    tiles = {x=7*8 - 6, y=13*8+5},
+    turns = {x=7*8-23, y=13*8+5-18 - 28 + 14 + 4},
+    time = {x=7*8-23, y=13*8+5-29 - 3 - 28 + 14 + 4},
+    -- score = {x=13*8+6 - 15, y=13*8+5-28-4},
+    score = {x=7*8-23, y=13*8+5-28 + 10 + 4},
 }
 ScoringAnimator.TEXT_COLOR = {
     tiles=14,
     turns=13,
     time=6,
+    score=15,
 }
 
 function ScoringAnimator:new(time, turns)
