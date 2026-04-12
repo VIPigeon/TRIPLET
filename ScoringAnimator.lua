@@ -1,7 +1,7 @@
 
 ScoringAnimator = {}
 
-ScoringAnimator.SCORE_BY_TILE = 50
+ScoringAnimator.SCORE_BY_TILE = 150
 ScoringAnimator.SCORE_BY_TURN = 10
 ScoringAnimator.TEXT_SLOTS = {
     tiles = {x=7*8 - 6, y=13*8+5},

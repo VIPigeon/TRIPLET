@@ -310,7 +310,7 @@ function game.draw()
             print(text, x, y, ScoringAnimator.TEXT_COLOR.turns)
             x = x + 5*#text
 
-            local time_score = math.floor(game.spectator.time*10 + 0.5)
+            local time_score = math.floor(game.spectator.time*10 + 0.5)  -- округление, хули
             text = "- "..time_score
             print(text, x, y, ScoringAnimator.TEXT_COLOR.time)
             x = x + 5*#text
