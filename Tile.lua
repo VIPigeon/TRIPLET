@@ -107,10 +107,23 @@ function Tile:update()
 end
 
 function Tile:set_status(status)
+    if status == 'held' and self.status ~= 'held' then
+        Sound.tile_click()
+        if hand.full() then
+            Sound.hand_is_full()
+        end
+    end
+    if self.status == 'held' and status ~= 'held' then
+        Sound.tile_drop()
+    end
     self.status = status
 end
 
 function Tile:set_hand_status(hand_status)
+    if hand_status == 'to' and self.hand_status ~= 'to' then
+        Sound.tile_draw()
+    end
+
     self.hand_status = hand_status
     if hand_status == 'to' then
         local nearest_slot_i = hand.add(self)
@@ -141,16 +154,15 @@ end
 function Tile:what_are_you_doing_with_me()
     local x, y, left, middle, right = mouse()
 
-    if not hand.full() and self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
+    if self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
 
         if Settings.QUICK_DRAW_BY_RIGHT_CLICK and Click.right() then
-            return 'going to hand'
+            if not hand.full() then
+                return 'going to hand'
+            end
+            Sound.cant_get_a_card()
         end
-        if Settings.QUICK_DRAW_BY_DOUBLE_CLICK and Click.double_left() then
-            return 'going to hand'
-        end
-        
     end
 
     if not left or not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
