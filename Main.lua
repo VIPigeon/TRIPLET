@@ -35,6 +35,13 @@ BOARD = {
     [221] = true,
     [236] = true,
     [237] = true,
+
+
+    [222] = true,
+    [223] = true,
+    [238] = true,
+    [239] = true,
+    [207] = true,
 }
 HAND_BORDER = {}  -- чтобы игра не крашилась, лень ходить по файлам и удалять его
 
@@ -62,6 +69,7 @@ HAND = {
 require 'Vector2D'
 require 'pslib'
 require 'Palette'
+require 'ScoreCounter'
 require 'Basic'
 require 'Table'
 require 'TileInfo'

@@ -1,4 +1,10 @@
 CENTER = {x=14*8, y=8*8}
+CENTER_AREA = {
+    x1 = 9*8 - 1,
+    y1 = 6*8 - 1,
+    x2 = 15*8 + 4,
+    y2 = 9*8 + 4,
+}
 INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0})
 LEVEL_BUTTON_X_SIZE = 39
 
@@ -75,10 +81,13 @@ function game.shuffle()
         local j = math.random(i)
         local t = game.tiles
         t[i], t[j] = t[j], t[i]
-        t[i].x = t[i].x + math.random(-20, 20)
+        t[i].x = math.random(CENTER_AREA.x1, CENTER_AREA.x2)
+        t[i].y = math.random(CENTER_AREA.y1, CENTER_AREA.y2)
         -- t[i].x = t[i].x + math.random(-56, 56)
         -- t[i].y = t[i].y + math.random(-27, 23)
-        t[i].y = t[i].y + math.random(-10, 10)
+
+        -- t[i].x = t[i].x + math.random(-20, 20)
+        -- t[i].y = t[i].y + math.random(-10, 10)
     end
 end
 
@@ -114,7 +123,7 @@ function game.init_level()
 
     game.shuffle()
 
-    game.progress_bar = ProgressBar:new(3*8-1, 1, game.triplets_in_levels[game.current_level])
+    game.progress_bar = ProgressBar:new(3*8-5, 1, game.triplets_in_levels[game.current_level])
     game.spectator = Spectator:new()
 end
 
@@ -151,6 +160,7 @@ function game.set_status(status)
     elseif status == "game" then
         palette.make_normal()  -- делаем палитру нормальной
         game.buttons.burger:set_visibility(true)
+        game.score_counter = ScoreCounter:new(22*8+4, 16*8 + 3)
         -- если вернулись в игру, не надо ее инициализировать еще раз
         if not is_undo then
             game.init_level()
@@ -265,6 +275,7 @@ function game.update()
     end
 
     if game.status == "game" then
+        game.score_counter:update()
 
         -- проверяем, что игра окончена
         if game.progress_bar:full() then
@@ -331,6 +342,7 @@ function game.update()
             end
             -- весь этот card_counter нужен только для того, чтобы триплет засчитывался только после того как закончится анимация
             if card_counter == 3 then
+                game.score_counter:triplet()
                 Sound.triplet()
                 game.triplets_count = game.triplets_count + 1
                 game.progress_bar:add()  -- смещаем tile_slot
@@ -369,10 +381,9 @@ function game.draw()
             break
         end
     end
+    cls(0)
     if mini_status == 'game' then
         map(0, 0)
-    else
-        cls(0)
     end
     -- hand.draw_hitbox()
     -- hand.draw()
@@ -419,10 +430,15 @@ function game.draw()
 
         print(" = "..(score - time_score - turns_score), x, y, ScoringAnimator.TEXT_COLOR.score)
     end
-    
+
     for _, button in pairs(game.buttons) do
         if button.visibility then
             button:draw()
         end
+    end
+
+    if mini_status == 'game' then
+        -- print("SCORE: 1234", 22*8+4, 16*8 + 3, 12)
+        game.score_counter:draw()
     end
 end
