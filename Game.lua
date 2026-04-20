@@ -7,7 +7,9 @@ game = {
     current_triplet_tiles_indexes = {},
     triplets_count = 0,
     buttons = {
+        start = Button:new(1, 1*8-3, 'Start'),
         burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 13, 13),
+        undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 13, 13),
         levels = Button:new(1, 3*8-3, 'Levels'),
         settings = Button:new(1, 5*8-3, 'Settings'),
         zoo = Button:new(1, 7*8-3, 'Zoo'),
@@ -20,6 +22,9 @@ game = {
         [6] = Button:new(19*8, 6*8, '6. [69]'),
         [7] = Button:new(19*8, 8*8, '7. [81]'),
         [8] = Button:new(19*8, 10*8, '8. [99]'),
+        toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
+        toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
+        toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
     },
 
     -- невидимый ProgressBar в начале игры
@@ -49,6 +54,7 @@ game = {
     -- zoo — игрок смотрит свою коллекцию (туду)
     -- game — основная игра
     -- done — уровень пройден
+    prev_statuses = {},  -- таблица, в которой будут храниться предыдущие состояния.
 }
 
 function game.shuffle()
@@ -64,6 +70,8 @@ function game.shuffle()
 end
 
 function game.init_level()
+    game.prev_statuses = {}  -- чистим историю статусов в начале игры
+
     -- local i = game.current_level
     math.randomseed(time()*1e7)
 
@@ -102,14 +110,33 @@ function game.set_status(status)
         b:set_visibility(false)
     end
 
+    local is_undo = false
+    if status == 'undo' then
+        is_undo = true
+        status = game.prev_statuses[#game.prev_statuses]
+        -- удаляем последний элемент. стек, хули
+        table.remove(game.prev_statuses, #game.prev_statuses)
+    end
+
     if status == "levels" then
+        game.buttons.undo:set_visibility(true)
         for i = 1, #game.triplets_in_levels do
             game.buttons[i]:set_visibility(true)
         end
+    elseif status == 'main' then
+        game.buttons.start:set_visibility(true)
+        game.buttons.levels:set_visibility(true)
+        game.buttons.settings:set_visibility(true)
+        game.buttons.zoo:set_visibility(true)
+    elseif status == 'settings' then
+        game.buttons.undo:set_visibility(true)
+        game.buttons.toggle_sfx:set_visibility(true)
+        game.buttons.toggle_music:set_visibility(true)
+        game.buttons.toggle_quick:set_visibility(true)
     elseif status == "game" then
         game.buttons.burger:set_visibility(true)
-        -- если вернулись в игру из бургера, не надо ее инициализировать еще раз
-        if game.status ~= 'burger' then
+        -- если вернулись в игру, не надо ее инициализировать еще раз
+        if not is_undo then
             game.init_level()
         end
     elseif status == "done" then
@@ -128,12 +155,18 @@ function game.set_status(status)
             game.tiles[i]:start_score_animation(clock)
             clock = clock + increment_clock
         end
+        game.buttons.levels:set_visibility(true)
     elseif status == "burger" then
         -- включаем бургерные кнопки
-        game.buttons.burger:set_visibility(true)
+        game.buttons.undo:set_visibility(true)
         game.buttons.zoo:set_visibility(true)
         game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
+    end
+    -- пополняем историю статусов
+    -- история чиститься при запуске игры
+    if not is_undo then
+        table.insert(game.prev_statuses, game.status)
     end
     game.status = status
 end
@@ -141,7 +174,7 @@ end
 function game.init()
     math.randomseed(time()*1e7)
 
-    game.set_status("levels")
+    game.set_status("main")
 
     hand.init()
 end
@@ -166,17 +199,28 @@ function game.update()
                     name == 8 then
                     game.current_level = name
                     game.set_status("game")
-                end
-                if button.is_toggle then
+                elseif button.is_toggle then
                     button.is_on = not button.is_on
-                end
-                if name == 'burger' then
-                    if game.status ~= 'burger' then
-                        game.prev_status = game.status  -- статус, к которому возвращаемся после выключения бургера
-                        game.set_status('burger')
-                    else
-                        game.set_status(game.prev_status)
+                    if name == 'toggle_sfx' then
+                        Settings.SFX = not Settings.SFX
+                    elseif name == 'toggle_music' then
+                        Settings.MUSIC = not Settings.MUSIC
+                    elseif name == 'toggle_quick' then
+                        Settings.QUICK = not Settings.QUICK
                     end
+                elseif name == 'burger' then
+                    game.set_status('burger')
+                elseif name == 'undo' then
+                    game.set_status('undo')
+                elseif name == 'levels' then
+                    game.set_status('levels')
+                elseif name == 'settings' then
+                    game.set_status('settings')
+                elseif name == 'zoo' then
+                    game.set_status('zoo')
+                elseif name == 'start' then
+                    game.current_level = 1
+                    game.set_status('game')
                 end
             end
         end
@@ -287,22 +331,17 @@ end
 
 function game.draw()
     -- cls(15)
-    if game.status == "game" then
+    if game.status == "game" or game.status == "burger" then
         map(0, 0)
-    elseif game.status == "done" then
-        map(60, 0)
-    elseif game.status == "levels" then
-        map(30, 0)
-    elseif game.status == "burger" then
-        map(30, 0)
+    else
+        -- map(60, 0)
+        cls(0)
     end
     -- hand.draw_hitbox()
     -- hand.draw()
     game.progress_bar:draw()
-    if game.status ~= "burger" then
-        for _, tile in ipairs(game.tiles) do
-            tile:draw()
-        end
+    for _, tile in ipairs(game.tiles) do
+        tile:draw()
     end
     for _, button in pairs(game.buttons) do
         if button.visibility then

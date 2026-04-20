@@ -67,7 +67,12 @@ SCORE_SLOT = {x=4*8, y=13*8}
 function Tile:start_score_animation(clock)
     self:set_scoring_status('scoring')
     self.animation_delay = clock
-    self.move_animator = MoveAnimator:new(self.x, self.y, SCORE_SLOT.x, SCORE_SLOT.y, 88)
+
+    local v = 88
+    if Settings.QUICK then
+        v = 121
+    end
+    self.move_animator = MoveAnimator:new(self.x, self.y, SCORE_SLOT.x, SCORE_SLOT.y, v)
 end
 
 function Tile:update()
@@ -130,7 +135,13 @@ function Tile:set_hand_status(hand_status)
         self.hand_slot_i = nearest_slot_i
         self.is_face = true
         local slot = hand.slots[self.hand_slot_i]
-        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, 67)
+
+        local v = 67
+        if Settings.QUICK then
+            v = 101
+        end
+        self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, v)
+
         hand.insert_into_slot(self)
         self.in_hand = true
     elseif hand_status == 'from' then
@@ -147,7 +158,11 @@ function Tile:set_triplet_status(triplet_status)
         self:set_status('chill')
         self:set_hand_status('from')
         -- self.move_animator = MoveAnimator:new(self.x, self.y, Tile.TRIPLET_POINT.x + Tile.TRIPLET_SHIFT*game.triplets_count, Tile.TRIPLET_POINT.y, 90)
-        self.move_animator = MoveAnimator:new(self.x, self.y, game.progress_bar.tile_slot.x, game.progress_bar.tile_slot.y, 88)
+        local v = 88
+        if Settings.QUICK then
+            v = 121
+        end
+        self.move_animator = MoveAnimator:new(self.x, self.y, game.progress_bar.tile_slot.x, game.progress_bar.tile_slot.y, v)
     end
 end
 

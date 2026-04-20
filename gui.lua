@@ -69,12 +69,14 @@ Button.__index = Button
 ToggleButton = table.copy(Button)
 
 -- копипаст > наследования
-function ToggleButton:new(x, y, text_on, text_off, size_x, size_y, colors)
+function ToggleButton:new(x, y, text_on, text_off, init_state, text_right, size_x, size_y, colors)
+    text_right = text_right or ''  -- текста справа от кнопки
     colors = colors or {
         text = {[true]=4, [false]=1},
         chill = {[true]=15, [false]=4},
-        scared= {[true]=10, [false]=10},
-        pressed={[true]=3, [false]=11},
+        scared= {[true]=10, [false]=9},
+        -- pressed={[true]=3, [false]=11},
+        pressed={[true]=14, [false]=14},
         shadow = {[true]=4, [false]=1},
     }
     -- определяем хитбокс по тексту
@@ -88,7 +90,8 @@ function ToggleButton:new(x, y, text_on, text_off, size_x, size_y, colors)
         text={[true]=text_on, [false]=text_off},
         status='chill',
         color=colors,
-        is_on=true,
+        is_on=init_state,
+        text_right = text_right,
 
         is_toggle = true, -- для идентификации
         -- chill — никто не трогает
@@ -112,6 +115,8 @@ function ToggleButton:draw()
         rect(self.x1-1, self.y1-1 +1, self.x2-self.x1 +3, self.y2-self.y1 +2, self.color.pressed[self.is_on])
         print(self.text[self.is_on], self.x1+1, self.y1+1 +1, self.color.text[self.is_on])
     end
+
+    print(self.text_right, self.x2 + 4, self.y1 + 1, self.color.scared[self.is_on])
 end
 
 ToggleButton.__index = ToggleButton
@@ -126,11 +131,10 @@ function SpriteButton:new(x, y, sprites, size_x, size_y)
         y1=y+1,
         x2=x + size_x -2,
         y2=y + size_y -2,
-        status='chill',
         sprite=sprites,
         is_on=true,
 
-        is_toggle = true, -- для идентификации
+        status='chill',
         -- chill — никто не трогает
         -- scared — на кнопку навели мышку
         -- pressed — на кнопку нажали
