@@ -18,6 +18,10 @@ function hand.size()
     return counter
 end
 
+function hand.clear()
+    hand.values = {-1, -1, -1}
+end
+
 
 function hand.init()
     -- ищем руку на map, фиксируем тайлы руки

@@ -1,5 +1,6 @@
 CENTER = {x=14*8, y=8*8}
 INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0})
+LEVEL_BUTTON_X_SIZE = 39
 
 game = {
     tiles = {},
@@ -13,15 +14,20 @@ game = {
         levels = Button:new(1, 3*8-3, 'Levels'),
         settings = Button:new(1, 5*8-3, 'Settings'),
         zoo = Button:new(1, 7*8-3, 'Zoo'),
-        -- ToggleButton:new(2, 20, 'ON', 'OFF'),  -- тоггл моей мечты
-        [1] = Button:new(7*8, 4*8, '1. [9] '),
-        [2] = Button:new(7*8, 6*8, '2. [21]'),
-        [3] = Button:new(7*8, 8*8, '3. [33]'),
-        [4] = Button:new(7*8, 10*8, '4. [45]'),
-        [5] = Button:new(19*8, 4*8, '5. [57]'),
-        [6] = Button:new(19*8, 6*8, '6. [69]'),
-        [7] = Button:new(19*8, 8*8, '7. [81]'),
-        [8] = Button:new(19*8, 10*8, '8. [99]'),
+        [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
+        [2] = Button:new(1, 5 + 2*12, '1. [12]', LEVEL_BUTTON_X_SIZE),
+        [3] = Button:new(1, 5 + 3*12, '2. [15]', LEVEL_BUTTON_X_SIZE),
+        [4] = Button:new(1, 5 + 4*12, '3. [18]', LEVEL_BUTTON_X_SIZE),
+        [5] = Button:new(1, 5 + 5*12, '4. [21]', LEVEL_BUTTON_X_SIZE),
+        [6] = Button:new(1, 5 + 6*12, '5. [24]', LEVEL_BUTTON_X_SIZE),
+        [7] = Button:new(1, 5 + 7*12, '6. [30]', LEVEL_BUTTON_X_SIZE),
+        [8] = Button:new(60, 5 + 1*12, '7. [36]', LEVEL_BUTTON_X_SIZE),
+        [9] = Button:new(60, 5 + 2*12, '8. [45]', LEVEL_BUTTON_X_SIZE),
+        [10]= Button:new(60, 5 + 3*12, '9. [54]', LEVEL_BUTTON_X_SIZE),
+        [11]= Button:new(60, 5 + 4*12, '10. [63]', LEVEL_BUTTON_X_SIZE),
+        [12]= Button:new(60, 5 + 5*12, '11. [75]', LEVEL_BUTTON_X_SIZE),
+        [13]= Button:new(60, 5 + 6*12, '12. [87]', LEVEL_BUTTON_X_SIZE),
+        [14]= Button:new(60, 5 + 7*12, '13. [99]', LEVEL_BUTTON_X_SIZE),
         toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
         toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
         toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
@@ -33,13 +39,19 @@ game = {
     -- количество троек в уровне
     triplets_in_levels = {
         3,
+        4,
+        5,
+        6,
         7,
-        11,
+        8,
+        10,
+        12,
         15,
-        19,
-        23,
-        27,
-        31,
+        18,
+        21,
+        25,
+        29,
+        33,
     },
 
     current_level = nil,
@@ -72,6 +84,8 @@ end
 function game.init_level()
     game.prev_statuses = {}  -- чистим историю статусов в начале игры
 
+    hand.clear()
+
     -- local i = game.current_level
     math.randomseed(time()*1e7)
 
@@ -81,7 +95,8 @@ function game.init_level()
     local common_bank = table.copy(common_tiles[game.current_level])
     local rare_bank = table.copy(rare_tiles)
     -- сначала добавляем редкие тайлы
-    for _ = 1, game.current_level - 1 do
+    local rare_tiles_count = math.floor(0.28*game.triplets_in_levels[game.current_level])
+    for _ = 1, rare_tiles_count do
         local i = math.random(#rare_bank)
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, rare_bank[i]))
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, rare_bank[i]))
@@ -89,7 +104,7 @@ function game.init_level()
         table.remove(rare_bank, i)
     end
     -- теперь обычные
-    for _ = 1, game.triplets_in_levels[game.current_level] - (game.current_level - 1) do
+    for _ = 1, game.triplets_in_levels[game.current_level] - rare_tiles_count do
         local i = math.random(#common_bank)
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, common_bank[i]))
         table.insert(game.tiles, Tile:new(CENTER.x, CENTER.y, common_bank[i]))
@@ -196,7 +211,13 @@ function game.update()
                     name == 5 or
                     name == 6 or
                     name == 7 or
-                    name == 8 then
+                    name == 8 or
+                    name == 9 or
+                    name == 10 or
+                    name == 11 or
+                    name == 12 or
+                    name == 13 or
+                    name == 14 then
                     game.current_level = name
                     game.set_status("game")
                 elseif button.is_toggle then

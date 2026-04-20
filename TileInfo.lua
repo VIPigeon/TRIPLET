@@ -49,10 +49,13 @@ table.insert(tile_values, 418)
 
 -- с каждым уровнем добавляются обычные тайлы
 common_tiles = {}
-local need_to_add = {3, 6, 4, 5, 4, 5, 2, 1}
+local need_to_add = {
+    4, 2, 2, 2, 2, 2, 3,
+    3, 3, 3, 1, 1, 1, 1,
+}
 local current_i = 1
 local current_tiles = {}
-for level = 1, 8 do
+for level = 1, 14 do
     for _ = 1, need_to_add[level] do
         table.insert(current_tiles, tile_values[current_i])
         current_i = current_i + 1
@@ -61,7 +64,7 @@ for level = 1, 8 do
 end
 -- чем позже добавляются обычные тайлы, тем более копиумные у них факты
 
--- тайлы общие на все уровни
+-- редкие тайлы общие на все уровни
 rare_tiles = {
     364, 366,
     384, 386, 388, 390, 392, 394, 396, 398,
