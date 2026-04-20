@@ -60,6 +60,8 @@ HAND = {
 
 
 require 'Vector2D'
+require 'pslib'
+require 'Palette'
 require 'Basic'
 require 'Table'
 require 'TileInfo'

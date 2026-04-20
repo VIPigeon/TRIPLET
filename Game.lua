@@ -12,6 +12,7 @@ game = {
         burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 13, 13),
         undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 13, 13),
         levels = Button:new(1, 3*8-3, 'Levels'),
+        done = Button:new(20*8, 9*8, 'Done'),
         settings = Button:new(1, 5*8-3, 'Settings'),
         zoo = Button:new(1, 7*8-3, 'Zoo'),
         [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
@@ -83,7 +84,6 @@ end
 
 function game.init_level()
     game.prev_statuses = {}  -- чистим историю статусов в начале игры
-
     hand.clear()
 
     -- local i = game.current_level
@@ -149,11 +149,17 @@ function game.set_status(status)
         game.buttons.toggle_music:set_visibility(true)
         game.buttons.toggle_quick:set_visibility(true)
     elseif status == "game" then
+        palette.make_normal()  -- делаем палитру нормальной
         game.buttons.burger:set_visibility(true)
         -- если вернулись в игру, не надо ее инициализировать еще раз
         if not is_undo then
             game.init_level()
         end
+    elseif status == "zoo" then
+        game.buttons.undo:set_visibility(true)
+    elseif status == "well done" then  -- анимация done закончилась
+        game.buttons.burger:set_visibility(true)
+        palette.make_normal()  -- делаем палитру нормальной
     elseif status == "done" then
         game.scoring_animator = ScoringAnimator:new(game.spectator.time, game.spectator.turns)
         game.progress_bar = INVISIBLE_BAR  -- скрываем бар
@@ -162,7 +168,6 @@ function game.set_status(status)
         -- дело в том, что эти два объекта писали два разных человека
         -- я вчерашний и я сегодняшний
 
-
         local clock = 0.6
         local increment_clock = 0.15
         -- for i = #game.tiles, 1, -1 do
@@ -170,13 +175,13 @@ function game.set_status(status)
             game.tiles[i]:start_score_animation(clock)
             clock = clock + increment_clock
         end
-        game.buttons.levels:set_visibility(true)
     elseif status == "burger" then
         -- включаем бургерные кнопки
         game.buttons.undo:set_visibility(true)
         game.buttons.zoo:set_visibility(true)
         game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
+        palette.make_dark()  -- делаем палитру темной
     end
     -- пополняем историю статусов
     -- история чиститься при запуске игры
@@ -242,6 +247,8 @@ function game.update()
                 elseif name == 'start' then
                     game.current_level = 1
                     game.set_status('game')
+                -- elseif name == 'done' then
+                --     game.set_status('levels')
                 end
             end
         end
@@ -352,10 +359,19 @@ end
 
 function game.draw()
     -- cls(15)
-    if game.status == "game" or game.status == "burger" then
+    local mini_status = game.status
+    local i_mini_status = #game.prev_statuses + 1
+    while true do
+        if mini_status == 'burger' or mini_status == 'levels' or mini_status == 'settings' then
+            i_mini_status = i_mini_status - 1
+            mini_status = game.prev_statuses[i_mini_status]
+        else
+            break
+        end
+    end
+    if mini_status == 'game' then
         map(0, 0)
     else
-        -- map(60, 0)
         cls(0)
     end
     -- hand.draw_hitbox()
@@ -364,11 +380,6 @@ function game.draw()
     for _, tile in ipairs(game.tiles) do
         tile:draw()
     end
-    for _, button in pairs(game.buttons) do
-        if button.visibility then
-            button:draw()
-        end
-    end
     if game.spectator then
         game.spectator:draw()
     end
@@ -376,33 +387,42 @@ function game.draw()
     if game.status == "done" then
         local score = game.scoring_animator:get_score_for_tiles()
         if game.scoring_animator:is_end(game.tiles) then
-            print("TIME: "..string.format("%.1f", game.spectator.time), ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
-            print("TURNS: "..game.spectator.turns, ScoringAnimator.TEXT_SLOTS.turns.x, ScoringAnimator.TEXT_SLOTS.turns.y, ScoringAnimator.TEXT_COLOR.turns)
-            local x = ScoringAnimator.TEXT_SLOTS.score.x
-            local y = ScoringAnimator.TEXT_SLOTS.score.y
-            local text = "TOTAL SCORE: "
-            print(text, x, y, ScoringAnimator.TEXT_COLOR.score)
-
-            x = ScoringAnimator.TEXT_SLOTS.tiles.x
-            y = ScoringAnimator.TEXT_SLOTS.tiles.y
-            text = score.." "
-            print(text, x, y, ScoringAnimator.TEXT_COLOR.tiles)
-            x = x + 5*#text + 1
-
-            local turns_score = game.spectator.turns*10
-            text = "- "..turns_score.." "
-            print(text, x, y, ScoringAnimator.TEXT_COLOR.turns)
-            x = x + 5*#text
-
-            local time_score = math.floor(game.spectator.time*10 + 0.5)  -- округление, хули
-            text = "- "..time_score
-            print(text, x, y, ScoringAnimator.TEXT_COLOR.time)
-            x = x + 5*#text
-
-            print(" = "..(score - time_score - turns_score), x, y, ScoringAnimator.TEXT_COLOR.score)
-
+            game.set_status("well done")
         elseif score > 0 then
             print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
+        end
+    elseif mini_status == "well done" then
+        local score = game.scoring_animator:get_score_for_tiles()
+        -- game.buttons.done:set_visibility(true)
+        print("TIME: "..string.format("%.1f", game.scoring_animator.time), ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
+        print("TURNS: "..game.scoring_animator.turns, ScoringAnimator.TEXT_SLOTS.turns.x, ScoringAnimator.TEXT_SLOTS.turns.y, ScoringAnimator.TEXT_COLOR.turns)
+        local x = ScoringAnimator.TEXT_SLOTS.score.x
+        local y = ScoringAnimator.TEXT_SLOTS.score.y
+        local text = "TOTAL SCORE: "
+        print(text, x, y, ScoringAnimator.TEXT_COLOR.score)
+
+        x = ScoringAnimator.TEXT_SLOTS.tiles.x
+        y = ScoringAnimator.TEXT_SLOTS.tiles.y
+        text = score.." "
+        print(text, x, y, ScoringAnimator.TEXT_COLOR.tiles)
+        x = x + 5*#text + 1
+
+        local turns_score = game.scoring_animator.turns*10
+        text = "- "..turns_score.." "
+        print(text, x, y, ScoringAnimator.TEXT_COLOR.turns)
+        x = x + 5*#text
+
+        local time_score = math.floor(game.scoring_animator.time*10 + 0.5)  -- округление, хули
+        text = "- "..time_score
+        print(text, x, y, ScoringAnimator.TEXT_COLOR.time)
+        x = x + 5*#text
+
+        print(" = "..(score - time_score - turns_score), x, y, ScoringAnimator.TEXT_COLOR.score)
+    end
+    
+    for _, button in pairs(game.buttons) do
+        if button.visibility then
+            button:draw()
         end
     end
 end

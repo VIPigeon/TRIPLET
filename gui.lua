@@ -150,5 +150,29 @@ function SpriteButton:draw()
     spr(self.sprite[self.status], self.x1-1, self.y1-1, 0, 1,0,0, width,height)
 end
 
-
 SpriteButton.__index = SpriteButton
+
+
+
+AnimalButton = {}
+
+function AnimalButton:new(id, x, y, is_explored)
+    local object = {
+        id = id,
+        x = x,
+        y = y,
+        is_explored = is_explored,
+        status = 'chill',
+        -- chill — обычное состояние
+        -- scared — навели курсор
+        -- pressed — на карточку нажали
+        -- active — карточку сейчас читают
+    }
+    setmetatable(object, self)
+    return object
+end
+
+function AnimalButton:draw()
+end
+
+AnimalButton.__index = AnimalButton

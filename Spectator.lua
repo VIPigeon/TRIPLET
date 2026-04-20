@@ -6,12 +6,16 @@ function Spectator:new()
         turns = 0,
         prev_hand_size = 0,
         visible = true,
+        stop = false
     }
     setmetatable(object, self)
     return object
 end
 
 function Spectator:update()
+    if self.stop then
+        return
+    end
     self.time = self.time + Time.dt()
     local hand_size = hand.size()
     if hand_size > self.prev_hand_size then
@@ -37,6 +41,10 @@ end
 
 function Spectator:hide()
     self.visible = false
+end
+
+function Spectator:stop()
+    self.stop = true
 end
 
 
