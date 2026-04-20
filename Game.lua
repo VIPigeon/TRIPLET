@@ -8,9 +8,9 @@ game = {
     triplets_count = 0,
     buttons = {
         burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 13, 13),
-        zoo = Button:new(27*8+1, 15*8 + 7, 'Zoo'),
-        levels = Button:new(12*8+5, 15*8 + 7, 'Levels'),
-        settings = Button:new(1, 15*8 + 7, 'Settings'),
+        levels = Button:new(1, 3*8-3, 'Levels'),
+        settings = Button:new(1, 5*8-3, 'Settings'),
+        zoo = Button:new(1, 7*8-3, 'Zoo'),
         -- ToggleButton:new(2, 20, 'ON', 'OFF'),  -- тоггл моей мечты
         [1] = Button:new(7*8, 4*8, '1. [9] '),
         [2] = Button:new(7*8, 6*8, '2. [21]'),
@@ -56,8 +56,10 @@ function game.shuffle()
         local j = math.random(i)
         local t = game.tiles
         t[i], t[j] = t[j], t[i]
-        t[i].x = t[i].x + math.random(-56, 56)
-        t[i].y = t[i].y + math.random(-27, 23)
+        t[i].x = t[i].x + math.random(-20, 20)
+        -- t[i].x = t[i].x + math.random(-56, 56)
+        -- t[i].y = t[i].y + math.random(-27, 23)
+        t[i].y = t[i].y + math.random(-10, 10)
     end
 end
 
@@ -89,7 +91,7 @@ function game.init_level()
 
     game.shuffle()
 
-    game.progress_bar = ProgressBar:new(4*8-1, 1, game.triplets_in_levels[game.current_level])
+    game.progress_bar = ProgressBar:new(3*8-1, 1, game.triplets_in_levels[game.current_level])
     game.spectator = Spectator:new()
 end
 
@@ -106,7 +108,10 @@ function game.set_status(status)
         end
     elseif status == "game" then
         game.buttons.burger:set_visibility(true)
-        game.init_level()
+        -- если вернулись в игру из бургера, не надо ее инициализировать еще раз
+        if game.status ~= 'burger' then
+            game.init_level()
+        end
     elseif status == "done" then
         game.scoring_animator = ScoringAnimator:new(game.spectator.time, game.spectator.turns)
         game.progress_bar = INVISIBLE_BAR  -- скрываем бар
@@ -123,6 +128,12 @@ function game.set_status(status)
             game.tiles[i]:start_score_animation(clock)
             clock = clock + increment_clock
         end
+    elseif status == "burger" then
+        -- включаем бургерные кнопки
+        game.buttons.burger:set_visibility(true)
+        game.buttons.zoo:set_visibility(true)
+        game.buttons.levels:set_visibility(true)
+        game.buttons.settings:set_visibility(true)
     end
     game.status = status
 end
@@ -158,6 +169,14 @@ function game.update()
                 end
                 if button.is_toggle then
                     button.is_on = not button.is_on
+                end
+                if name == 'burger' then
+                    if game.status ~= 'burger' then
+                        game.prev_status = game.status  -- статус, к которому возвращаемся после выключения бургера
+                        game.set_status('burger')
+                    else
+                        game.set_status(game.prev_status)
+                    end
                 end
             end
         end
@@ -274,12 +293,16 @@ function game.draw()
         map(60, 0)
     elseif game.status == "levels" then
         map(30, 0)
+    elseif game.status == "burger" then
+        map(30, 0)
     end
     -- hand.draw_hitbox()
     -- hand.draw()
     game.progress_bar:draw()
-    for _, tile in ipairs(game.tiles) do
-        tile:draw()
+    if game.status ~= "burger" then
+        for _, tile in ipairs(game.tiles) do
+            tile:draw()
+        end
     end
     for _, button in pairs(game.buttons) do
         if button.visibility then

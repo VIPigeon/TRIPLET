@@ -77,10 +77,11 @@ end
 
 
 function hand.is_tile_should_go_to_hand(tile)
-    local x1 = (tile.x + Tile.HITBOX.x1) / 8
-    local y1 = (tile.y + Tile.HITBOX.y1) / 8
-    local x2 = (tile.x + Tile.HITBOX.x2) / 8
-    local y2 = (tile.y + Tile.HITBOX.y2) / 8
+    -- считаем хитбокс на два пикселя меньше
+    local x1 = (tile.x + Tile.HITBOX.x1+1) / 8
+    local y1 = (tile.y + Tile.HITBOX.y1+1) / 8
+    local x2 = (tile.x + Tile.HITBOX.x2-1) / 8
+    local y2 = (tile.y + Tile.HITBOX.y2-1) / 8
     return HAND[mget(x1, y1)] or
         HAND[mget(x1, y2)] or
         HAND[mget(x2, y1)] or
