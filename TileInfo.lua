@@ -1,21 +1,21 @@
 
 -- у каждого животного будет своё имя. так мне будет легче ориентироваться
-FunFacts = {
-    ["Colorful lama"] = "It looks a bit lika a pinata. Please don't hit it",
-    Hippopotamus = "Often confused with a river-horse",
-    ["River horse"] = "Often confused with a hippopotamus",
-    Peacock = "The peacock’s tail span reaches 9 pixels",
-    Crow = "The wingspan of a crow can reach up to about 1 meter",
-    Capibara = "It has a mandarin on it's head",
-    ["Pink lama"] = "I love you",
-    Panda = "Coffee makes panda insane",
-    Hedgehog = "A hedgehog can be surprisingly fast. There is a known case of a hedgehog being discovered that could exceed the speed of sound.",
-    ["Baby elephant"] = "Normal elephant didn't fit on the card",
-    Sloth = "",  -- лень писать факт
-    Goldfish = "The goldfish grants wishes. I wish you like this game",
-    Snail = "я еще не придумал. но если будет анимация вывода букв, я замедлю ее",
-    Butterfly = "There is no butter",  -- нужно написать шутку в духе каракатица никуда не катится
-}
+-- FunFacts = {
+--     ["Colorful lama"] = "It looks a bit lika a pinata. Please don't hit it",
+--     Hippopotamus = "Often confused with a river-horse",
+--     ["River horse"] = "Often confused with a hippopotamus",
+--     Peacock = "The peacock’s tail span reaches 9 pixels",
+--     Crow = "The wingspan of a crow can reach up to about 1 meter",
+--     Capibara = "It has a mandarin on it's head",
+--     ["Pink lama"] = "I love you",
+--     Panda = "Coffee makes panda insane",
+--     Hedgehog = "A hedgehog can be surprisingly fast. There is a known case of a hedgehog being discovered that could exceed the speed of sound.",
+--     ["Baby elephant"] = "Normal elephant didn't fit on the card",
+--     Sloth = "",  -- лень писать факт
+--     Goldfish = "The goldfish grants wishes. I wish you like this game",
+--     Snail = "я еще не придумал. но если будет анимация вывода букв, я замедлю ее",
+--     Butterfly = "There is no butter",  -- нужно написать шутку в духе каракатица никуда не катится
+-- }
 
 --[[
 всего 42 вида животных и 8 уровней, включая туториал.

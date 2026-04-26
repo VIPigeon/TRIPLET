@@ -68,11 +68,13 @@ HAND = {
 
 require 'Vector2D'
 require 'pslib'
+require 'Levels'
 require 'Palette'
 require 'ScoreCounter'
 require 'Basic'
 require 'Table'
 require 'TileInfo'
+require 'LevelInfo'
 require 'ProgressBar'
 require 'gui'
 require 'Click'

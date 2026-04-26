@@ -6,6 +6,7 @@ CENTER_AREA = {
     y2 = 9*8 + 4,
 }
 INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0})
+INVISIBLE_BAR:set_visibility(false)
 LEVEL_BUTTON_X_SIZE = 39
 
 game = {
@@ -20,7 +21,7 @@ game = {
         levels = Button:new(1, 3*8-3, 'Levels'),
         done = Button:new(20*8, 9*8, 'Done'),
         settings = Button:new(1, 5*8-3, 'Settings'),
-        zoo = Button:new(1, 7*8-3, 'Zoo'),
+        map = Button:new(1, 7*8-3, 'Map'),
         [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
         [2] = Button:new(1, 5 + 2*12, '1. [12]', LEVEL_BUTTON_X_SIZE),
         [3] = Button:new(1, 5 + 3*12, '2. [15]', LEVEL_BUTTON_X_SIZE),
@@ -70,10 +71,12 @@ game = {
     -- burger — меню, которое выводится при нажатом бургере
     -- settings — игрок в настройках (туду)
     -- levels — игрок в меню выбора уровня
-    -- zoo — игрок смотрит свою коллекцию (туду)
     -- game — основная игра
     -- done — уровень пройден
+    -- map — игрок в НОВОМ меню выбора уровня
     prev_statuses = {},  -- таблица, в которой будут храниться предыдущие состояния.
+
+    level_map = LevelMap:new(30, 0)
 }
 
 function game.shuffle()
@@ -127,12 +130,21 @@ function game.init_level()
     game.spectator = Spectator:new()
 end
 
+function game.set_game_visibility(flag)
+    -- скрывает или открывает активную игру
+    game.progress_bar:set_visibility(flag)
+    for _, t in ipairs(game.tiles) do
+        t:set_visibility(flag)
+    end
+end
+
 function game.set_status(status)
     -- перед сменой статуса скрываем все кнопки
     -- а потом включаем только те что нужны
     for _, b in pairs(game.buttons) do
         b:set_visibility(false)
     end
+
 
     local is_undo = false
     if status == 'undo' then
@@ -151,7 +163,7 @@ function game.set_status(status)
         game.buttons.start:set_visibility(true)
         game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
-        game.buttons.zoo:set_visibility(true)
+        game.buttons.map:set_visibility(true)
     elseif status == 'settings' then
         game.buttons.undo:set_visibility(true)
         game.buttons.toggle_sfx:set_visibility(true)
@@ -165,8 +177,10 @@ function game.set_status(status)
         if not is_undo then
             game.init_level()
         end
-    elseif status == "zoo" then
+    elseif status == "map" then
+        game.set_game_visibility(false)
         game.buttons.undo:set_visibility(true)
+        palette.make_normal()  -- делаем палитру нормальной
     elseif status == "well done" then  -- анимация done закончилась
         game.buttons.burger:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
@@ -188,7 +202,7 @@ function game.set_status(status)
     elseif status == "burger" then
         -- включаем бургерные кнопки
         game.buttons.undo:set_visibility(true)
-        game.buttons.zoo:set_visibility(true)
+        game.buttons.map:set_visibility(true)
         game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         palette.make_dark()  -- делаем палитру темной
@@ -199,6 +213,10 @@ function game.set_status(status)
         table.insert(game.prev_statuses, game.status)
     end
     game.status = status
+    
+    if game.calc_ministatus() == 'game' then
+        game.set_game_visibility(true)
+    end
 end
 
 function game.init()
@@ -252,8 +270,8 @@ function game.update()
                     game.set_status('levels')
                 elseif name == 'settings' then
                     game.set_status('settings')
-                elseif name == 'zoo' then
-                    game.set_status('zoo')
+                elseif name == 'map' then
+                    game.set_status('map')
                 elseif name == 'start' then
                     game.current_level = 1
                     game.set_status('game')
@@ -262,6 +280,10 @@ function game.update()
                 end
             end
         end
+    end
+
+    if game.status == "map" then
+        game.level_map:update()
     end
 
     if game.status == "done" then
@@ -369,8 +391,7 @@ function game.update()
 end
 
 
-function game.draw()
-    -- cls(15)
+function game.calc_ministatus()
     local mini_status = game.status
     local i_mini_status = #game.prev_statuses + 1
     while true do
@@ -381,9 +402,17 @@ function game.draw()
             break
         end
     end
+    return mini_status
+end
+
+function game.draw()
+    -- cls(15)
+    local mini_status = game.calc_ministatus()
     cls(0)
     if mini_status == 'game' then
         map(0, 0)
+    elseif mini_status == 'map' then
+        game.level_map:draw()
     end
     -- hand.draw_hitbox()
     -- hand.draw()

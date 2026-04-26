@@ -17,6 +17,7 @@ function ProgressBar:new(x, y, count_tiles, colors)
         n = n,
         shift = TRIPLET_SHIFT,
         tile_slot = {x=x-1 - TRIPLET_SHIFT, y=y-1},
+        visibility = true,
     }
     setmetatable(object, self)
     return object
@@ -27,11 +28,18 @@ function ProgressBar:add()
     self.tile_slot.x = self.tile_slot.x + self.shift
 end
 
+function ProgressBar:set_visibility(flag)
+    self.visibility = flag
+end
+
 function ProgressBar:full()
     return self.n == 0
 end
 
 function ProgressBar:draw()
+    if not self.visibility then
+        return
+    end
     local function draw_bar(x, y, length, height, color)
         rect(x, y+2, length, height-4, color)
         rect(x+1, y+1, length-2, height-2, color)

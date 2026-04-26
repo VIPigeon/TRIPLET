@@ -49,6 +49,8 @@ function Tile:new(x, y, value)
         move_animator = nil,
 
         scoring_status = 'no',
+
+        visibility = true,
     }
 
     setmetatable(object, self)
@@ -57,6 +59,10 @@ end
 
 function Tile:in_move_animation()
     return self.hand_status == 'to' or self.triplet_status ~= 'no'
+end
+
+function Tile:set_visibility(flag)
+    self.visibility = flag
 end
 
 function Tile:set_scoring_status(status)
@@ -76,6 +82,9 @@ function Tile:start_score_animation(clock)
 end
 
 function Tile:update()
+    if not self.visibility then
+        return
+    end
     -- trace(tostring(self)..' hand status = '..self.hand_status)
     -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
     if self.scoring_status == 'scoring' then
@@ -167,6 +176,9 @@ function Tile:set_triplet_status(triplet_status)
 end
 
 function Tile:what_are_you_doing_with_me()
+    if not self.visibility then
+        return 'nothing'
+    end
     local x, y, left, middle, right = mouse()
 
     if self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
@@ -249,6 +261,9 @@ function Tile:move_by_cursor()
 end
 
 function Tile:draw()
+    if not self.visibility then
+        return
+    end
     if self.status == 'scared' then
         spr(self.is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,0,0,2,2)
         spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,0,0,2,2)
