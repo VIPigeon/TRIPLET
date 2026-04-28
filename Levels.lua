@@ -69,10 +69,10 @@ function LevelMap:draw()
     end
 end
 
-function LevelMap:is_going_to_game()
+function LevelMap:get_starting_level()
     for _, level in ipairs(self.levels) do
         if level.state == 'game' then
-            return true
+            return level
         end
     end
     return false
@@ -168,6 +168,40 @@ function Level:new(x, y, level_type)
     object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     setmetatable(object, self)
     return object
+end
+
+function Level:get_tiles()
+    shuffle(self.pool)
+    local tiles = {}
+    local counter = self.triplets
+    local i = 1
+    while counter > 0 do
+        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+        counter = counter - 1
+        i = i % self.diversity + 1
+    end
+    return tiles
+end
+
+CENTER_AREA = {
+    x1 = 9*8 - 1,
+    y1 = 6*8 - 1,
+    x2 = 15*8 + 4,
+    y2 = 9*8 + 4,
+}
+function Level:get_layout()
+    -- возвращает конкретную последовательность точек для раскладки тайлов в начале игры
+    local layout = {}
+    if self.layout == 'random' then
+        for i = 1, self.triplets*3 do
+            local x = math.random(CENTER_AREA.x1, CENTER_AREA.x2)
+            local y = math.random(CENTER_AREA.y1, CENTER_AREA.y2)
+            table.insert(layout, {x=x, y=y})
+        end
+    end
+    return layout
 end
 
 function Level:set_state(state)
