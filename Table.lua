@@ -39,8 +39,18 @@ function table.clear(t)
 end
 
 -- Не deep equal
-function table.equals(t1, t2)
+function table.iequals(t1, t2)
     for i, value in ipairs(t1) do
+        if value ~= t2[i] then
+            return false
+        end
+    end
+    return true
+end
+
+-- Не deep equal
+function table.equals(t1, t2)
+    for i, value in pairs(t1) do
         if value ~= t2[i] then
             return false
         end

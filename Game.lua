@@ -284,6 +284,9 @@ function game.update()
 
     if game.status == "map" then
         game.level_map:update()
+        if game.level_map:is_going_to_game() then
+            game:set_status('game')
+        end
     end
 
     if game.status == "done" then

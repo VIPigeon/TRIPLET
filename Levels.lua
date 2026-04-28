@@ -41,6 +41,17 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
 end
 
 function LevelMap:update()
+    local flag = false
+    for _, level in ipairs(self.levels) do
+        if level.state ~= button then
+            level:update()
+            flag = true
+        end
+    end
+    if flag then
+        return
+    end
+
     for _, level in ipairs(self.levels) do
         level:update()
     end
@@ -51,6 +62,20 @@ function LevelMap:draw()
     for _, level in ipairs(self.levels) do
         level:draw()
     end
+    for _, level in ipairs(self.levels) do
+        if level.state ~= 'button' then
+            level:draw()
+        end
+    end
+end
+
+function LevelMap:is_going_to_game()
+    for _, level in ipairs(self.levels) do
+        if level.state == 'game' then
+            return true
+        end
+    end
+    return false
 end
 
 function LevelMap:add_event(event)
@@ -89,6 +114,7 @@ end
 LevelEvent.__index = LevelEvent
 
 Level = {}
+Level.window_box = {x1=4*8-4, y1=2*8-3, x2=26*8+10, y2=14*8+10}
 function Level:new(x, y, level_type)
     local object = {
         x = x,
@@ -96,6 +122,22 @@ function Level:new(x, y, level_type)
         is_available = (level_type == 'start'),
         is_scoring = (level_type == 'scoring' or level_type == 'secret-scoring'),
         is_secret = (level_type == 'secret' or level_type == 'secret-scoring'),
+        state = 'button',
+        -- button — уровень в состоянии кнопки
+        -- window — игрок открыл окно с описанием уровня
+        -- window_to_map
+        -- game
+        animator = nil,
+
+        window = {
+            back_button = Button:new(Level.window_box.x2 - 32, Level.window_box.y2 - 15, 'Back'),
+            play_button = SpriteButton:new(Level.window_box.x1 + 6, Level.window_box.y2 - 22,
+            {
+                chill=420, scared=422, pressed=424,
+            },
+            16, 16
+            ),
+        }
     }
     object.disabled_button_sprite = 10
     if object.is_scoring then
@@ -116,26 +158,125 @@ function Level:new(x, y, level_type)
         }
     end
     -- все параметры задаются if-ами по x и y уровня.
-    local level_id = tostring(x).." "..tostring(y)
-    object.name = LEVEL_NAME[level_id]
-    object.description = LEVEL_DESCRIPTION[level_id]
-    object.pool = LEVEL_POOL[level_id]  -- набор видов, которые могут попасться в этом уровне
-    object.diversity = LEVEL_DIVERSITY[level_id]  -- разнообразие видов на уровне
-    object.triplets = LEVEL_TRIPLETS[level_id]  -- количество триплетов
-    object.layout = LEVEL_LAYOUT[level_id]  -- тип расстановки
+    local level_code = tostring(x).." "..tostring(y)
+    object.id = LEVEL_ID[level_code]  -- номер уровня
+    object.name = LEVEL_NAME[level_code]
+    object.description = LEVEL_DESCRIPTION[level_code]
+    object.pool = LEVEL_POOL[level_code]  -- набор видов, которые могут попасться в этом уровне
+    object.diversity = LEVEL_DIVERSITY[level_code]  -- разнообразие видов на уровне
+    object.triplets = LEVEL_TRIPLETS[level_code]  -- количество триплетов
+    object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     setmetatable(object, self)
     return object
 end
 
+function Level:set_state(state)
+    if state == 'window' then
+        local x = self.x
+        local y = self.y
+        self.animator = StretchingAnimator:new(
+            {
+                x1=(x%30)*8,
+                y1=(y%17)*8,
+                x2=(x%30)*8+7,
+                y2=(y%17)*8+7
+            },
+            Level.window_box)
+    elseif state == 'window_to_button' then
+        self.animator.is_reverse = true
+    end
+
+    self.state = state
+end
+
 function Level:update()
-    if self.is_available then
-        self.button:update()
+    if self.state == 'window' then
+        self.button.status = 'chill'  -- мегакостыль
+        if not self.animator:is_end() then
+            self.animator:update()
+        else
+            self.window.back_button:update()
+            self.window.play_button:update()
+
+            if self.window.back_button:is_pressed() then
+                self:set_state('window_to_button')
+            elseif self.window.play_button:is_pressed() then
+                self:set_state('game')
+            end
+        end
+        return
+    end
+
+    if self.state == 'window_to_button' then
+        self.animator:update()
+        if self.animator:is_end() then
+            self:set_state('button')
+        end
+        return
+    end
+
+    if not self.is_available then
+        return
+    end
+    self.button:update()
+    if self.button:is_pressed() then
+        self:set_state('window')
     end
 end
 
+function Level:draw_window(box, c)
+    rect(box.x1, box.y1+1, 2, box.y2-box.y1-2, c)
+    rect(box.x2-2, box.y1+1, 2, box.y2-box.y1-2, c)
+    rect(box.x1+1, box.y1, box.x2-box.x1-2, 2, c)
+    rect(box.x1+1, box.y2-2, box.x2-box.x1-2, 2, c)
+
+    rect(box.x1 + 2, box.y1 + 2, 1, 1, c)
+    rect(box.x2 - 3, box.y1 + 2, 1, 1, c)
+    rect(box.x1 + 2, box.y2 - 3, 1, 1, c)
+    rect(box.x2 - 3, box.y2 - 3, 1, 1, c)
+end
+
 function Level:draw()
+    if self.state == 'window' then
+        local box = self.animator.current_box
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 0)        
+        local shadow_box = table.copy(box)
+        shadow_box.y1 = shadow_box.y1 + 1
+        shadow_box.y2 = shadow_box.y2 + 1
+        self:draw_window(shadow_box, self.is_scoring and 1 or 5)
+        self:draw_window(box, self.is_scoring and 13 or 11)
+
+        if self.animator:is_end() then
+            local y = box.y1 + 8
+            local dy = 9
+            print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
+            y = y + dy
+            for _, line in ipairs(self.description) do
+                print(line, box.x1 + 6, y)
+                y = y + dy
+            end
+            self.window.back_button:draw()
+            self.window.play_button:draw()
+        end
+        return
+    end
+
+    if self.state == 'window_to_button' then
+        local box = self.animator.current_box
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 0)        
+        local shadow_box = table.copy(box)
+        shadow_box.y1 = shadow_box.y1 + 1
+        shadow_box.y2 = shadow_box.y2 + 1
+        self:draw_window(shadow_box, self.is_scoring and 1 or 5)
+        self:draw_window(box, self.is_scoring and 13 or 11)
+        return
+    end
+
     if self.is_available then
         self.button:draw()
+        if self.button.status ~= 'chill' then
+            print(tostring(self.id)..'. '..self.name, 0, 16*8)
+        end
     else
         if self.is_secret then
             return

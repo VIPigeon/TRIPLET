@@ -1,9 +1,13 @@
 
+LEVEL_ID = {
+    ['34 5'] = 1,
+}
+
 LEVEL_NAME = {
-    ['34 5'] = 'TUTORIAL',
+    ['34 5'] = 'GETTING STARTED',
 }
 LEVEL_DESCRIPTION = {
-    ['34 5'] = "Use mouse for drag'n'drop cards. Collect a three same animals to gain a Triplet!",
+    ['34 5'] = {"", "Use mouse for drag'n'drop cards.", "", "Collect a three same animals", "to gain a Triplet!"},
 }
 LEVEL_POOL = {
     ['34 5'] = {396, 256, 328, 360},

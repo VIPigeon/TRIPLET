@@ -33,6 +33,7 @@ function Button:new(x, y, text, size_x, size_y, colors)
 end
 
 function Button:update()
+    self.prev_status = self.status
     local x, y, left, middle, right = mouse()
     if self.x1 <= x and x <= self.x2 and self.y1 <= y and y <= self.y2 then
         if left then
@@ -62,6 +63,10 @@ end
 
 function Button:set_visibility(flag)
     self.visibility = flag
+end
+
+function Button:is_pressed()
+    return self.prev_status == 'pressed' and self.status == 'scared'
 end
 
 Button.__index = Button

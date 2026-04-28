@@ -69,6 +69,7 @@ HAND = {
 require 'Vector2D'
 require 'pslib'
 require 'Levels'
+require 'StretchingAnimator'
 require 'Palette'
 require 'ScoreCounter'
 require 'Basic'
