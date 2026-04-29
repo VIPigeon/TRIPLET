@@ -1,8 +1,8 @@
 
 ScoringAnimator = {}
 
-ScoringAnimator.SCORE_BY_TILE = 150
-ScoringAnimator.SCORE_BY_TURN = 10
+-- ScoringAnimator.SCORE_BY_TILE = 150
+-- ScoringAnimator.SCORE_BY_TURN = 10
 ScoringAnimator.TEXT_SLOTS = {
     tiles = {x=7*8 - 6, y=13*8+5},
     turns = {x=7*8-23, y=13*8+5-18 - 28 + 14 + 4},
@@ -40,7 +40,8 @@ end
 
 function ScoringAnimator:get_score_for_tiles()
     -- для отрисовки
-    return (self.i-1) * ScoringAnimator.SCORE_BY_TILE
+    -- return (self.i-1) * ScoringAnimator.SCORE_BY_TILE
+    return 0
 end
 
 function ScoringAnimator:is_end(tiles)  -- извините

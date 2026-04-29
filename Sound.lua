@@ -89,3 +89,8 @@ function Sound.cant_get_a_card()
     -- звук, когда игрок пытается взять карты правым кликом, но рука полная
     sfx(6, 'A#2', -1, 1) -- то же самое что и hand_is_full, только немного громче
 end
+
+
+function Sound.level_complete()
+    Sound.triplet()  -- заглушка
+end

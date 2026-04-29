@@ -69,8 +69,7 @@ function Tile:set_scoring_status(status)
     self.scoring_status = status
 end
 
-SCORE_SLOT = {x=4*8, y=13*8}
-function Tile:start_score_animation(clock)
+function Tile:start_score_animation(clock, slot)
     self:set_scoring_status('scoring')
     self.animation_delay = clock
 
@@ -78,7 +77,7 @@ function Tile:start_score_animation(clock)
     if Settings.QUICK then
         v = 121
     end
-    self.move_animator = MoveAnimator:new(self.x, self.y, SCORE_SLOT.x, SCORE_SLOT.y, v)
+    self.move_animator = MoveAnimator:new(self.x, self.y, slot.x, slot.y, v)
 end
 
 function Tile:update()

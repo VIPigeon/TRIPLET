@@ -18,59 +18,59 @@ game = {
         start = Button:new(1, 1*8-3, 'Start'),
         burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 13, 13),
         undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 13, 13),
-        levels = Button:new(1, 3*8-3, 'Levels'),
+        -- levels = Button:new(1, 3*8-3, 'Levels'),
         done = Button:new(20*8, 9*8, 'Done'),
         settings = Button:new(1, 5*8-3, 'Settings'),
-        map = Button:new(1, 7*8-3, 'Map'),
-        [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
-        [2] = Button:new(1, 5 + 2*12, '1. [12]', LEVEL_BUTTON_X_SIZE),
-        [3] = Button:new(1, 5 + 3*12, '2. [15]', LEVEL_BUTTON_X_SIZE),
-        [4] = Button:new(1, 5 + 4*12, '3. [18]', LEVEL_BUTTON_X_SIZE),
-        [5] = Button:new(1, 5 + 5*12, '4. [21]', LEVEL_BUTTON_X_SIZE),
-        [6] = Button:new(1, 5 + 6*12, '5. [24]', LEVEL_BUTTON_X_SIZE),
-        [7] = Button:new(1, 5 + 7*12, '6. [30]', LEVEL_BUTTON_X_SIZE),
-        [8] = Button:new(60, 5 + 1*12, '7. [36]', LEVEL_BUTTON_X_SIZE),
-        [9] = Button:new(60, 5 + 2*12, '8. [45]', LEVEL_BUTTON_X_SIZE),
-        [10]= Button:new(60, 5 + 3*12, '9. [54]', LEVEL_BUTTON_X_SIZE),
-        [11]= Button:new(60, 5 + 4*12, '10. [63]', LEVEL_BUTTON_X_SIZE),
-        [12]= Button:new(60, 5 + 5*12, '11. [75]', LEVEL_BUTTON_X_SIZE),
-        [13]= Button:new(60, 5 + 6*12, '12. [87]', LEVEL_BUTTON_X_SIZE),
-        [14]= Button:new(60, 5 + 7*12, '13. [99]', LEVEL_BUTTON_X_SIZE),
+        map = Button:new(1, 3*8-3, 'Map'),
+        -- [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
+        -- [2] = Button:new(1, 5 + 2*12, '1. [12]', LEVEL_BUTTON_X_SIZE),
+        -- [3] = Button:new(1, 5 + 3*12, '2. [15]', LEVEL_BUTTON_X_SIZE),
+        -- [4] = Button:new(1, 5 + 4*12, '3. [18]', LEVEL_BUTTON_X_SIZE),
+        -- [5] = Button:new(1, 5 + 5*12, '4. [21]', LEVEL_BUTTON_X_SIZE),
+        -- [6] = Button:new(1, 5 + 6*12, '5. [24]', LEVEL_BUTTON_X_SIZE),
+        -- [7] = Button:new(1, 5 + 7*12, '6. [30]', LEVEL_BUTTON_X_SIZE),
+        -- [8] = Button:new(60, 5 + 1*12, '7. [36]', LEVEL_BUTTON_X_SIZE),
+        -- [9] = Button:new(60, 5 + 2*12, '8. [45]', LEVEL_BUTTON_X_SIZE),
+        -- [10]= Button:new(60, 5 + 3*12, '9. [54]', LEVEL_BUTTON_X_SIZE),
+        -- [11]= Button:new(60, 5 + 4*12, '10. [63]', LEVEL_BUTTON_X_SIZE),
+        -- [12]= Button:new(60, 5 + 5*12, '11. [75]', LEVEL_BUTTON_X_SIZE),
+        -- [13]= Button:new(60, 5 + 6*12, '12. [87]', LEVEL_BUTTON_X_SIZE),
+        -- [14]= Button:new(60, 5 + 7*12, '13. [99]', LEVEL_BUTTON_X_SIZE),
         toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
         toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
         toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
+        ok = Button:new(25*8, 14*8, 'OK'),
     },
 
     -- невидимый ProgressBar в начале игры
     progress_bar = INVISIBLE_BAR,
 
     -- количество троек в уровне
-    triplets_in_levels = {
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        10,
-        12,
-        15,
-        18,
-        21,
-        25,
-        29,
-        33,
-    },
+    -- triplets_in_levels = {
+    --     3,
+    --     4,
+    --     5,
+    --     6,
+    --     7,
+    --     8,
+    --     10,
+    --     12,
+    --     15,
+    --     18,
+    --     21,
+    --     25,
+    --     29,
+    --     33,
+    -- },
 
     current_level = nil,
 
     spectator = nil,
     scoring_animator = nil,
 
-    status = "levels",
+    status = "map",
     -- burger — меню, которое выводится при нажатом бургере
     -- settings — игрок в настройках (туду)
-    -- levels — игрок в меню выбора уровня
     -- game — основная игра
     -- done — уровень пройден
     -- map — игрок в НОВОМ меню выбора уровня
@@ -103,6 +103,7 @@ function game.init_level()
     game.spectator = Spectator:new()
 end
 
+--[[
 function game.init_numbered_level()  -- BACKUP
     game.prev_statuses = {}  -- чистим историю статусов в начале игры
     hand.clear()
@@ -138,6 +139,7 @@ function game.init_numbered_level()  -- BACKUP
     game.progress_bar = ProgressBar:new(3*8-5, 1, game.triplets_in_levels[game.current_level])
     game.spectator = Spectator:new()
 end
+]]
 
 function game.set_game_visibility(flag)
     -- скрывает или открывает активную игру
@@ -163,14 +165,14 @@ function game.set_status(status)
         table.remove(game.prev_statuses, #game.prev_statuses)
     end
 
-    if status == "levels" then
-        game.buttons.undo:set_visibility(true)
-        for i = 1, #game.triplets_in_levels do
-            game.buttons[i]:set_visibility(true)
-        end
-    elseif status == 'main' then
+    -- if status == "levels" then
+    --     game.buttons.undo:set_visibility(true)
+    --     for i = 1, #game.triplets_in_levels do
+    --         game.buttons[i]:set_visibility(true)
+    --     end
+    if status == 'main' then
         game.buttons.start:set_visibility(true)
-        game.buttons.levels:set_visibility(true)
+        -- game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.map:set_visibility(true)
     elseif status == 'settings' then
@@ -190,8 +192,10 @@ function game.set_status(status)
         game.set_game_visibility(false)
         game.buttons.undo:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
+        game.level_map:process_events()
     elseif status == "well done" then  -- анимация done закончилась
         game.buttons.burger:set_visibility(true)
+        game.buttons.ok:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
     elseif status == "done" then
         game.scoring_animator = ScoringAnimator:new(game.spectator.time, game.spectator.turns)
@@ -203,16 +207,29 @@ function game.set_status(status)
 
         local clock = 0.6
         local increment_clock = 0.15
-        -- for i = #game.tiles, 1, -1 do
+        local TILE_SIZE = 15 -- с отступом 1 пиксель
+        local SCORE_SLOT = {x=3*8, y=14*8}
+        local slot = table.copy(SCORE_SLOT)
+        local COUNTER = 5
+        local counter = COUNTER
         for i = 1, #game.tiles do
-            game.tiles[i]:start_score_animation(clock)
+            game.tiles[i]:start_score_animation(clock, slot)
             clock = clock + increment_clock
+            if i % 3 == 0 then
+                slot.x = slot.x + TILE_SIZE
+                counter = counter - 1
+                if counter == 0 then
+                    counter = COUNTER
+                    slot.x = SCORE_SLOT.x
+                    slot.y = slot.y - TILE_SIZE
+                end
+            end
         end
     elseif status == "burger" then
         -- включаем бургерные кнопки
         game.buttons.undo:set_visibility(true)
         game.buttons.map:set_visibility(true)
-        game.buttons.levels:set_visibility(true)
+        -- game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         palette.make_dark()  -- делаем палитру темной
     end
@@ -275,17 +292,31 @@ function game.update()
                     game.set_status('burger')
                 elseif name == 'undo' then
                     game.set_status('undo')
-                elseif name == 'levels' then
-                    game.set_status('levels')
+                -- elseif name == 'levels' then
+                --     game.set_status('levels')
                 elseif name == 'settings' then
                     game.set_status('settings')
                 elseif name == 'map' then
                     game.set_status('map')
-                -- elseif name == 'start' then
-                    -- game.current_level = 1
-                    -- game.set_status('game')
+                elseif name == 'start' then
+                    game.current_level = game.level_map:get_available_level()
+                    game.set_status('game')
                 -- elseif name == 'done' then
                 --     game.set_status('levels')
+                elseif name == 'ok' then
+                    local x = game.current_level.x
+                    local y = game.current_level.y
+                    local time = game.spectator.time
+                    local score = game.spectator.turns  -- TODO: заменить на очки за комбо
+                    if not game.current_level:is_completed() then
+                        local complete = LevelEvent:new('complete', x, y)
+                        game.level_map:add_event(complete)
+                        game.current_level:improve_result(time, score)
+                    else
+                        -- TODO: ивент улучшения результата
+                    end
+
+                    game.set_status('map')
                 end
             end
         end
@@ -345,7 +376,6 @@ function game.update()
                 table.insert(game.tiles, temp)
                 break
             elseif res == 'scare' then
-                -- trace(game.scared_tile)
                 if game.scared_tile ~= -1 then
                     game.tiles[game.scared_tile]:set_status('chill')
                 end
@@ -409,7 +439,8 @@ function game.calc_ministatus()
     local mini_status = game.status
     local i_mini_status = #game.prev_statuses + 1
     while true do
-        if mini_status == 'burger' or mini_status == 'levels' or mini_status == 'settings' then
+        -- if mini_status == 'burger' or mini_status == 'levels' or mini_status == 'settings' then
+        if mini_status == 'burger' or mini_status == 'settings' then
             i_mini_status = i_mini_status - 1
             mini_status = game.prev_statuses[i_mini_status]
         else
@@ -442,10 +473,11 @@ function game.draw()
         local score = game.scoring_animator:get_score_for_tiles()
         if game.scoring_animator:is_end(game.tiles) then
             game.set_status("well done")
-        elseif score > 0 then
-            print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
+        -- elseif score > 0 then
+        --     print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     elseif mini_status == "well done" then
+        --[[
         local score = game.scoring_animator:get_score_for_tiles()
         -- game.buttons.done:set_visibility(true)
         print("TIME: "..string.format("%.1f", game.scoring_animator.time), ScoringAnimator.TEXT_SLOTS.time.x, ScoringAnimator.TEXT_SLOTS.time.y, ScoringAnimator.TEXT_COLOR.time)
@@ -472,6 +504,7 @@ function game.draw()
         x = x + 5*#text
 
         print(" = "..(score - time_score - turns_score), x, y, ScoringAnimator.TEXT_COLOR.score)
+        ]]
     end
 
     for _, button in pairs(game.buttons) do

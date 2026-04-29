@@ -35,15 +35,16 @@ function ScoreCounter:draw()
         y = y - math.random(0, self.shake.y)
     end
     if self.combo > 1 then
-        print("combo x"..tostring(self.combo), x, y)
-    elseif self.score > 0 then
-        print("score: "..tostring(self.score), x, y)
+        print("combo", x+30, y-22)
+        print("x"..tostring(self.combo), x+40, y-11)
     end
+    print("score: "..tostring(self.score), x, y)
     -- print(tostring(self.combo), x+12, y-8)
 end
 
 function ScoreCounter:triplet()
-    self.score = self.score + self.combo*5
+    self.combo = self.combo + 1
+    self.score = self.score + self.combo*10
     -- if self.combo < 3 then
     --     self:_shake(0, 1)
     -- elseif self.combo < 5 then
@@ -57,7 +58,6 @@ function ScoreCounter:triplet()
     -- elseif self.combo >= 15 then
     --     self:_shake(3, 3)
     -- end
-    self.combo = self.combo + 1
 end
 
 function ScoreCounter:_drop_control()

@@ -15,6 +15,8 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
         show_mode = "donut",
         -- donut — показывает награды за очки
         -- medal — показывает награды за время
+        status = 'normal'
+        -- events — в процессе обработки ивентов. ждем конца анимации
     }
     local TILE = {
         [10] = 'normal',  -- обычный уровень
@@ -40,7 +42,41 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
     return object
 end
 
+
+function LevelMap:open_new_levels(x, y)
+    for _, level in ipairs(self.levels) do
+        -- плохой код!
+        if math.abs(level.x - x) + math.abs(level.y - y) == 2 then
+            if not level.is_available then
+                -- TODO: сделать лучше через ивенты
+                level.is_available = true
+            end
+        end
+    end
+end
+
+
+function LevelMap:update_events()
+    self.timer = Basic.tick_timer(self.timer)
+    if self.timer == 0 then
+        for _, event in ipairs(self.events) do
+            if event.type == 'complete' then
+                Sound.level_complete()
+                self:open_new_levels(event.x, event.y)
+                table.remove(self.events, _)   
+                return
+            end
+        end
+        self.status = 'normal'
+    end
+end
+
 function LevelMap:update()
+    if self.status == 'events' then
+        self:update_events()
+        return
+    end
+
     local flag = false
     for _, level in ipairs(self.levels) do
         if level.state ~= button then
@@ -72,6 +108,7 @@ end
 function LevelMap:get_starting_level()
     for _, level in ipairs(self.levels) do
         if level.state == 'game' then
+            level.state = 'button'
             return level
         end
     end
@@ -80,6 +117,27 @@ end
 
 function LevelMap:add_event(event)
     table.insert(self.events, event)
+end
+
+function LevelMap:process_events()
+    self.status = 'events'
+    self.timer = 0.3
+end
+
+function LevelMap:get_available_level()
+    -- для кнопки start
+    -- возвращает правый нижний доступный непройденный уровень
+    local not_completed = nil
+    local just_available = nil
+    for _, level in ipairs(self.levels) do
+        if level.is_available then
+            just_available = level
+            if not level:is_completed() then
+                not_completed = level
+            end
+        end
+    end
+    return not_completed or just_available  -- мегакрутой if. Как же он хорош
 end
 
 LevelMap.__index = LevelMap
@@ -127,6 +185,11 @@ function Level:new(x, y, level_type)
         -- window — игрок открыл окно с описанием уровня
         -- window_to_map
         -- game
+        -- TODO: window_to_game — анимация перехода на уровень
+
+        best_time = nil,
+        best_score = nil,
+
         animator = nil,
 
         window = {
@@ -168,6 +231,17 @@ function Level:new(x, y, level_type)
     object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     setmetatable(object, self)
     return object
+end
+
+function Level:is_completed()
+    return self.best_time
+end
+
+function Level:improve_result(time, score)
+    if not self:is_completed() then
+        self.best_time = {time=time, score=score}
+        self.best_score = {time=time, score=score}
+    end
 end
 
 function Level:get_tiles()
