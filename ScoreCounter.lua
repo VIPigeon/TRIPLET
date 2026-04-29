@@ -61,8 +61,9 @@ function ScoreCounter:triplet()
 end
 
 function ScoreCounter:_drop_control()
-    local cur_hand_size = hand.size()
-    if self.prev_hand_size - cur_hand_size == 1 then
+    -- local cur_hand_size = hand.size()
+    -- if self.prev_hand_size - cur_hand_size == 1 then
+    if hand.tile_was_drop() then
         -- комбо прерывается, если мы сбросили тайл
         if self.combo > 0 and self.combo < 3 then
             self:_shake(1, 0)

@@ -32,7 +32,7 @@ LEVEL_NAME = {
 }
 LEVEL_DESCRIPTION = {
     ['34 5'] = {"", "Use mouse for drag'n'drop cards.", "", "Collect a three same animals", "to gain a Triplet!"},
-    ['36 5'] = {"", "Why ten afraid of seven?", "Because 7 8 9!   xD",},
+    ['36 5'] = {"", "Why six afraid of seven?", "Because 7 8 9!   xD",},
     ['38 5'] = {"", "Use right click for fast draw.", "",},
     ['36 7'] = {"", "There are a multiple sets", "with same animal",},
     ['38 7'] = {"", "67676767676767676767", "",},
@@ -61,7 +61,7 @@ LEVEL_POOL = {
     ['38 13'] = {396, 256, 298, 360, 268, 322},
 }
 LEVEL_DIVERSITY = {
-    ['34 5'] = 3,
+    ['34 5'] = 1,
     ['36 5'] = 4,
     ['38 5'] = 5,
     ['36 7'] = 4,
@@ -76,7 +76,7 @@ LEVEL_DIVERSITY = {
     ['38 13'] = 5,
 }
 LEVEL_TRIPLETS = {
-    ['34 5'] = 3,
+    ['34 5'] = 4,
     ['36 5'] = 4,
     ['38 5'] = 5,
     ['36 7'] = 8,

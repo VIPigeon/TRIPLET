@@ -4,7 +4,11 @@ hand = {
     zone = {},
     TIME_PER_ANIMATION_FRAME = 0.07,
     animation_timer = 0,
-    slots = {}
+    slots = {},
+
+    tile_from_hand_status = 'none', -- управляется в game
+    -- hold
+    -- drop
 }
 
 function hand.size()
@@ -16,6 +20,10 @@ function hand.size()
         end
     end
     return counter
+end
+
+function hand.tile_was_drop()
+    return hand.tile_from_hand_status == 'drop'
 end
 
 function hand.clear()

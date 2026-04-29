@@ -359,7 +359,8 @@ function game.update()
             end
         end
 
-        local is_any_tile_held = false  -- для анимации
+        local is_any_tile_held = false
+        local is_any_tile_going_to_hand = false
         for i = #game.tiles, 1, -1 do
             tile = game.tiles[i]
             if tile:in_move_animation() then
@@ -369,6 +370,10 @@ function game.update()
 
             local res = tile:what_are_you_doing_with_me()
             if res == 'hold' then
+                if tile.hand_status == 'from' then
+                    hand.tile_from_hand_status = 'hold'
+                end
+
                 is_any_tile_held = true
                 tile:set_status('held')
                 -- всегда удерживается верхняя карта в таблице
@@ -383,6 +388,7 @@ function game.update()
                 game.tiles[game.scared_tile]:set_status('scared')
                 break
             elseif res == 'going to hand' then
+                is_any_tile_going_to_hand = true
                 tile:set_status('chill')
                 tile:set_hand_status('to')  -- nice
                 break
@@ -425,11 +431,25 @@ function game.update()
                 end
             end
         end
+
+        if not is_any_tile_held then
+            if hand.tile_from_hand_status == 'hold' then
+                if is_any_tile_going_to_hand then
+                    hand.tile_from_hand_status = 'chill'
+                else
+                    hand.tile_from_hand_status = 'drop'
+                end
+            else
+                hand.tile_from_hand_status = 'chill'
+            end
+        end
     end
 
     if game.spectator and game.status ~= "done" then
         game.spectator:update()
     end
+
+    -- trace(tostring(is_any_tile_held)..' '..hand.tile_from_hand_status)
 
     game.draw()
 end
