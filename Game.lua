@@ -39,6 +39,7 @@ game = {
         toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
         toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
         toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
+        toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
         ok = Button:new(25*8, 14*8, 'OK'),
     },
 
@@ -180,6 +181,7 @@ function game.set_status(status)
         game.buttons.toggle_sfx:set_visibility(true)
         game.buttons.toggle_music:set_visibility(true)
         game.buttons.toggle_quick:set_visibility(true)
+        game.buttons.toggle_time:set_visibility(true)
     elseif status == "game" then
         palette.make_normal()  -- делаем палитру нормальной
         game.buttons.burger:set_visibility(true)
@@ -287,6 +289,8 @@ function game.update()
                         Settings.MUSIC = not Settings.MUSIC
                     elseif name == 'toggle_quick' then
                         Settings.QUICK = not Settings.QUICK
+                    elseif name == 'toggle_time' then
+                        Settings.SHOW_TIME_DURING_GAME = not Settings.SHOW_TIME_DURING_GAME
                     end
                 elseif name == 'burger' then
                     game.set_status('burger')
@@ -308,13 +312,9 @@ function game.update()
                     local y = game.current_level.y
                     local time = game.spectator.time
                     local score = game.spectator.turns  -- TODO: заменить на очки за комбо
-                    if not game.current_level:is_completed() then
-                        local complete = LevelEvent:new('complete', x, y)
-                        game.level_map:add_event(complete)
-                        game.current_level:improve_result(time, score)
-                    else
-                        -- TODO: ивент улучшения результата
-                    end
+                    local complete = LevelEvent:new('complete', x, y)
+                    game.level_map:add_event(complete)
+                    game.current_level.is_completed = true
 
                     game.set_status('map')
                 end
@@ -497,6 +497,20 @@ function game.draw()
         --     print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     elseif mini_status == "well done" then
+        local score = game.score_counter.score
+        local time = game.scoring_animator.time
+
+        -- пока что медаль и пончик выдаем прямо здесь
+        game.current_level:improve_result(time, score)
+        local medal = game.current_level:get_medal()
+        local donut = game.current_level:get_donut()
+
+        print('score:', 14*8, 8*8)
+        spr(donut, 14*8, 9*8)
+        print(score, 16*8, 9*8+2)
+        print('time:', 14*8, 11*8)
+        spr(medal, 14*8, 12*8)
+        print(string.format("%.1f", time), 16*8, 12*8+2)
         --[[
         local score = game.scoring_animator:get_score_for_tiles()
         -- game.buttons.done:set_visibility(true)

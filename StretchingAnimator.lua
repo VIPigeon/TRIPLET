@@ -6,7 +6,7 @@ function StretchingAnimator:new(init_box, target_box)
         init_box = init_box,  -- для ревёрса
         current_box = table.copy(init_box),
         target_box = target_box,
-        v = 20,
+        v = 19,
         is_reverse = false,
     }
 
@@ -36,17 +36,22 @@ function StretchingAnimator:update()
 end
 
 function StretchingAnimator:reverse_update()
+    -- local debug_string = ""
     if self.current_box.x1 < self.init_box.x1 then
+        -- debug_string = debug_string..'x1 '
         self.current_box.x1 = math.min(self.current_box.x1 + self.v, self.init_box.x1)
     end
     if self.current_box.x2 > self.init_box.x2 then
+        -- debug_string = debug_string..'x2 '
         self.current_box.x2 = math.max(self.current_box.x2 - self.v, self.init_box.x2)
     end
 
     if self.current_box.y1 < self.init_box.y1 then
+        -- debug_string = debug_string..'y1 '
         self.current_box.y1 = math.min(self.current_box.y1 + self.v/2, self.init_box.y1)
     end
     if self.current_box.y2 > self.init_box.y2 then
+        -- debug_string = debug_string..'y2 '
         self.current_box.y2 = math.max(self.current_box.y2 - self.v/2, self.init_box.y2)
     end
 end

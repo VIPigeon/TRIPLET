@@ -1,3 +1,5 @@
+ALL_LEVELS_AVAILABLE = true
+BAN_SCORING_LEVELS = true
 
 -- в этом модуле все связанное с уровнями
 -- начнем и интерактивной карты уровней. просто чтобы она кликалась и все такое. без функционала
@@ -25,15 +27,19 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
         [106] = 'secret', -- секретный уровень
         [108] = 'secret-scoring', -- секретный скоринг уровень
     }
+    local level_id = 0
     for x = map_x, map_x + size_x do
         for y = map_y, map_y + size_y do
             local tile_type = TILE[mget(x, y)]
             if tile_type then
-                table.insert(object.levels, Level:new(x, y, tile_type))
-                mset(x, y, 0)
-                mset(x+1, y, 0)
-                mset(x+1, y+1, 0)
-                mset(x, y+1, 0)
+                if not (tile_type == 'scoring' and BAN_SCORING_LEVELS) then
+                    level_id = level_id + 1
+                    table.insert(object.levels, Level:new(x, y, tile_type, level_id))
+                    mset(x, y, 0)
+                    mset(x+1, y, 0)
+                    mset(x+1, y+1, 0)
+                    mset(x, y+1, 0)
+                end
             end
         end
     end
@@ -79,7 +85,7 @@ function LevelMap:update()
 
     local flag = false
     for _, level in ipairs(self.levels) do
-        if level.state ~= button then
+        if level.state ~= 'button' then
             level:update()
             flag = true
         end
@@ -96,6 +102,10 @@ end
 function LevelMap:draw()
     map(30, 0)
     for _, level in ipairs(self.levels) do
+        if level.state == 'window_to_game' then
+            map(0, 0)
+            break
+        end
         level:draw()
     end
     for _, level in ipairs(self.levels) do
@@ -132,7 +142,7 @@ function LevelMap:get_available_level()
     for _, level in ipairs(self.levels) do
         if level.is_available then
             just_available = level
-            if not level:is_completed() then
+            if not level.is_completed then
                 not_completed = level
             end
         end
@@ -172,12 +182,16 @@ end
 LevelEvent.__index = LevelEvent
 
 Level = {}
-Level.window_box = {x1=4*8-4, y1=2*8-3, x2=26*8+10, y2=14*8+10}
-function Level:new(x, y, level_type)
+-- Level.window_box = {x1=4*8-4, y1=2*8-3, x2=26*8+10, y2=14*8+10}
+Level.window_box = {x1=3, y1=2*8+3, x2=29*8, y2=16*8+5}
+-- box для анимации сжатия при переходе на уровень
+Level.info_box = {x1=26*8, y1=3*8, x2=26*8+16, y2=3*8+16}
+
+function Level:new(x, y, level_type, level_id)
     local object = {
         x = x,
         y = y,
-        is_available = (level_type == 'start'),
+        is_available = (level_type == 'start' or ALL_LEVELS_AVAILABLE),
         is_scoring = (level_type == 'scoring' or level_type == 'secret-scoring'),
         is_secret = (level_type == 'secret' or level_type == 'secret-scoring'),
         state = 'button',
@@ -185,10 +199,11 @@ function Level:new(x, y, level_type)
         -- window — игрок открыл окно с описанием уровня
         -- window_to_map
         -- game
-        -- TODO: window_to_game — анимация перехода на уровень
+        -- window_to_game — анимация перехода на уровень
 
         best_time = nil,
         best_score = nil,
+        is_completed = false,
 
         animator = nil,
 
@@ -222,26 +237,51 @@ function Level:new(x, y, level_type)
     end
     -- все параметры задаются if-ами по x и y уровня.
     local level_code = tostring(x).." "..tostring(y)
-    object.id = LEVEL_ID[level_code]  -- номер уровня
+    object.id = level_id  -- номер уровня
     object.name = LEVEL_NAME[level_code]
     object.description = LEVEL_DESCRIPTION[level_code]
     object.pool = LEVEL_POOL[level_code]  -- набор видов, которые могут попасться в этом уровне
     object.diversity = LEVEL_DIVERSITY[level_code]  -- разнообразие видов на уровне
     object.triplets = LEVEL_TRIPLETS[level_code]  -- количество триплетов
-    object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
+    -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
+    object.layout = 'random'  -- пока еще других нет
     setmetatable(object, self)
     return object
 end
 
-function Level:is_completed()
-    return self.best_time
+function Level:get_medal()
+    local time_per_triplet = self.best_time.time / self.triplets
+    if time_per_triplet > 30 then
+        return 4
+    elseif time_per_triplet > 15 then
+        return 3
+    elseif time_per_triplet > 5 then
+        return 2
+    end
+    return 1
 end
 
-function Level:improve_result(time, score)
-    if not self:is_completed() then
-        self.best_time = {time=time, score=score}
-        self.best_score = {time=time, score=score}
+function Level:get_donut()
+    local theory_best_score = (self.triplets + 1)*self.triplets*5
+    if self.best_score.score >= 0.9*theory_best_score then
+        return 17
+    elseif self.best_score.score >= 0.5*theory_best_score then
+        return 18
+    elseif self.best_score.score >= 0.2*theory_best_score then
+        return 19
     end
+    return 20
+end
+
+-- function Level:is_completed()
+--     return self.is_completed
+-- end
+
+function Level:improve_result(time, score)
+    -- if not self:is_completed() then
+    self.best_time = {time=time, score=score}
+    self.best_score = {time=time, score=score}
+    -- end
 end
 
 function Level:get_tiles()
@@ -286,12 +326,16 @@ function Level:set_state(state)
             {
                 x1=(x%30)*8,
                 y1=(y%17)*8,
-                x2=(x%30)*8+7,
-                y2=(y%17)*8+7
+                x2=(x%30)*8+16,
+                y2=(y%17)*8+16
             },
             Level.window_box)
     elseif state == 'window_to_button' then
         self.animator.is_reverse = true
+    elseif state == 'window_to_game' then
+        -- какой дикий костыль 🐗
+        self.animator.is_reverse = true
+        self.animator.init_box = Level.info_box
     end
 
     self.state = state
@@ -309,7 +353,7 @@ function Level:update()
             if self.window.back_button:is_pressed() then
                 self:set_state('window_to_button')
             elseif self.window.play_button:is_pressed() then
-                self:set_state('game')
+                self:set_state('window_to_game')
             end
         end
         return
@@ -319,6 +363,14 @@ function Level:update()
         self.animator:update()
         if self.animator:is_end() then
             self:set_state('button')
+        end
+        return
+    end
+
+    if self.state == 'window_to_game' then
+        self.animator:update()
+        if self.animator:is_end() then
+            self:set_state('game')
         end
         return
     end
@@ -357,7 +409,8 @@ function Level:draw()
         if self.animator:is_end() then
             local y = box.y1 + 8
             local dy = 9
-            print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
+            -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
+            print(self.name, box.x1 + 6, y, 9)
             y = y + dy
             for _, line in ipairs(self.description) do
                 print(line, box.x1 + 6, y)
@@ -369,7 +422,7 @@ function Level:draw()
         return
     end
 
-    if self.state == 'window_to_button' then
+    if self.state == 'window_to_button' or self.state == 'window_to_game' then
         local box = self.animator.current_box
         rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 0)        
         local shadow_box = table.copy(box)
@@ -383,7 +436,8 @@ function Level:draw()
     if self.is_available then
         self.button:draw()
         if self.button.status ~= 'chill' then
-            print(tostring(self.id)..'. '..self.name, 0, 16*8)
+            -- print(tostring(self.id)..'. '..self.name, 0, 16*8)
+            print(self.name, 0, 16*8)
         end
     else
         if self.is_secret then

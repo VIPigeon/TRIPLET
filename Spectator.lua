@@ -1,9 +1,10 @@
 Spectator = {}
+-- теперь спектатор только считает время
 
 function Spectator:new()
     local object = {
         time = 0,
-        turns = 0,
+        turns = 0,  -- не нужны
         prev_hand_size = 0,
         visible = true,
         stop = false
@@ -28,8 +29,8 @@ function Spectator:draw(x, y)
     if not self.visible then
         return
     end
-    x = x or 0
-    y = y or 16*8
+    x = x or 22*8
+    y = y or 0*8
     if Settings.SHOW_TIME_DURING_GAME then
         print("TIME: "..string.format("%.1f", self.time), x, y)
         x = x + 60
