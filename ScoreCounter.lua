@@ -5,6 +5,8 @@
 ScoreCounter = {}
 
 function ScoreCounter:new(x, y)
+    x = x or 21*8 + 2
+    y = y or 16*8 + 3
     local object = {
         x=x,
         y=y,
@@ -16,7 +18,12 @@ function ScoreCounter:new(x, y)
             x = 0,
             y = 0,
             time = 0,
-        }
+        },
+
+        income_animation = {
+            value = 0,
+            time = 0,
+        },
     }
     setmetatable(object, self)
     return object
@@ -35,16 +42,38 @@ function ScoreCounter:draw()
         y = y - math.random(0, self.shake.y)
     end
     if self.combo > 1 then
-        print("combo", x+30, y-22)
-        print("x"..tostring(self.combo), x+40, y-11)
+        -- print("combo", x+30, y-22)
+        print("combo", x+36, y-22-5)
+        print("x"..tostring(self.combo), x+40, y-11-5)
     end
-    print("score: "..tostring(self.score), x, y)
+
+    if self.income_animation.time > 0 then
+        self.income_animation.time = Basic.tick_timer(self.income_animation.time)
+        if self.income_animation.time == 0 then
+            self.combo = self.combo + 1
+            self.score = self.score + self.income_animation.value
+            self.income_animation.value = 0
+        end
+    end
+    local score_color = 14
+    if self.income_animation.time > 0 then
+        score_color = 15
+
+        local income_x = x + 36
+        local income_y = y - 7
+        local income_text = '+'..tostring(self.income_animation.value)
+        print(income_text, income_x, income_y, score_color)
+    end
+    
+    print("score: "..tostring(self.score), x, y, score_color)
+
     -- print(tostring(self.combo), x+12, y-8)
 end
 
 function ScoreCounter:triplet()
-    self.combo = self.combo + 1
-    self.score = self.score + self.combo*10
+    self.income_animation.value = (self.combo+1)*10
+    self.income_animation.time = 0.8
+    self.income_animation.status = 1
     -- if self.combo < 3 then
     --     self:_shake(0, 1)
     -- elseif self.combo < 5 then
@@ -81,6 +110,11 @@ function ScoreCounter:_shake(force_x, force_y)
     self.shake.x = force_x
     self.shake.y = force_y
     self.shake.time = 0.17
+end
+
+function ScoreCounter:get_score()
+    -- защита от проблем с анимацией
+    return self.score + self.income_animation.value
 end
 
 

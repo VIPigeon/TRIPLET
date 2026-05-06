@@ -203,7 +203,7 @@ function game.set_status(status)
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_level_to_map:set_visibility(true)
-        game.score_counter = ScoreCounter:new(22*8+4, 16*8 + 3)
+        game.score_counter = ScoreCounter:new()
         -- если вернулись в игру, не надо ее инициализировать еще раз
         if not is_undo then
             game.init_level()
@@ -508,7 +508,7 @@ function game.draw()
         --     print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     elseif mini_status == "well done" then
-        local score = game.score_counter.score
+        local score = game.score_counter:get_score()
         local time = game.scoring_animator.time
 
         -- пока что медаль и пончик выдаем прямо здесь
