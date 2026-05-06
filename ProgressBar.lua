@@ -5,7 +5,7 @@ ProgressBar = {}
 function ProgressBar:new(x, y, count_tiles, colors)
     colors = colors or {body=0, around=5}
     local n = count_tiles
-    local TRIPLET_SHIFT = 6
+    local TRIPLET_SHIFT = 5
     local TILE_SIZE = 14
     local length = TRIPLET_SHIFT*(n-1) + TILE_SIZE
 

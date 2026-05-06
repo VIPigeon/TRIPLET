@@ -1,17 +1,37 @@
 
+ALL_ANIMALS = {416, 418}
+for i = 256, 384, 32 do
+    for j = 0, 14, 2 do
+        table.insert(ALL_ANIMALS, i+j)
+    end
+end
+
 LEVEL_NAME = {
-    -- start
-    ['34 5'] = 'GETTING STARTED', ['36 5'] = 'CLASSIC #1', ['38 5'] = 'DUPLICATES #2',
-    ['34 7'] = 'DUPLICATES #1', ['36 7'] = 'COAST', ['38 7'] = 'CLASSIC #2',
+    ['34 5'] = 'GETTING STARTED',
+    ['36 5'] = 'LAMA LEVEL',
 
-    -- water
-    ['36 9'] = 'COASTAL WATERS',
-    ['36 11'] = 'OPEN SEA', ['38 11'] = 'CONTINENTAL SHELF',
-    ['36 13'] = 'DEEP SEA', ['38 13'] = 'A LOT OF FISH',
+    ['40 7'] = 'BRIDGE',
+    ['48 5'] = 'UPSIDE DOWN',
+    ['50 5'] = 'TAKE FIVE',
+    ['36 7'] = 'REVERSE',
 
-    -- challenge
-    ['42 5'] = 'LAMA LEVEL', ['44 5'] = 'HARD CHALLENGE',
-    ['40 7'] = 'BRIDGE', ['42 7'] = 'EASY CHALLENGE', ['44 7'] = 'MEDIUM CHALLENGE',
+    ['38 7'] = 'AFTERPARTY',
+    ['38 5'] = 'CROCODILE LEVEL',
+    ['34 7'] = 'DEJA VU',
+
+    ['36 9'] = 'CONVEYOR',
+    ['36 11'] = 'GRAVITATION',
+    ['38 11'] = 'SLIP BOARD',
+    ['36 13'] = 'SHY CARDS',
+    ['38 13'] = 'SLOTS',
+
+    ['42 5'] = 'DRAFT',
+    ['44 5'] = 'ROSE-TINTED',
+    ['42 7'] = 'RORSCHACH',
+    ['44 7'] = 'NIGHT',
+
+    ['40 13'] = 'TIME IS SCORE',
+    ['44 3'] = 'BOSS',
 }
 LEVEL_DESCRIPTION = {
     -- start
@@ -28,71 +48,62 @@ LEVEL_DESCRIPTION = {
     ['40 7'] = {"", "There is only new animals"}, ['42 7'] = {'-_-'}, ['44 7'] = {'o_O'},
 }
 
+LEVEL_SIZE = {  -- количество ВИДОВ
+    ['GETTING STARTED'] = 3,
+    ['LAMA LEVEL'] = 6,
+    ['BRIDGE'] = 6,
+    ['UPSIDE DOWN'] = 33,
+    ['TAKE FIVE'] = 5,
+    ['REVERSE'] = 6,
+    
+    ['AFTERPARTY'] = 6,
+    ['CROCODILE LEVEL'] = 6,
+    ['DEJA VU'] = 6,
+    
+    ['CONVEYOR'] = 6,
+    ['GRAVITATION'] = 3,
+    ['SLIP BOARD'] = 3,
+    ['SHY CARDS'] = 6,
+    ['SLOTS'] = 3,
+    
+    ['DRAFT'] = 3,
+    ['ROSE-TINTED'] = 3,
+    ['RORSCHACH'] = 3,
+    ['NIGHT'] = 3,
+    
+    ['TIME IS SCORE'] = 6,
+    ['BOSS'] = 3,
+}
+LEVEL_COPIES_OF_EACH_ANIMAL = {
+    ['GETTING STARTED'] = 3,
+    ['LAMA LEVEL'] = 6,
+    ['BRIDGE'] = 6,
+    ['UPSIDE DOWN'] = 3,
+    ['TAKE FIVE'] = 5,
+    ['REVERSE'] = 6,
+    
+    ['AFTERPARTY'] = 6,
+    ['CROCODILE LEVEL'] = 6,
+    ['DEJA VU'] = 6,
+    
+    ['CONVEYOR'] = 6,
+    ['GRAVITATION'] = 3,
+    ['SLIP BOARD'] = 3,
+    ['SHY CARDS'] = 6,
+    ['SLOTS'] = 3,
+    
+    ['DRAFT'] = 3,
+    ['ROSE-TINTED'] = 3,
+    ['RORSCHACH'] = 3,
+    ['NIGHT'] = 3,
+    
+    ['TIME IS SCORE'] = 6,
+    ['BOSS'] = 3,
+}
+
+
+
 local base_pool = {396, 256, 298, 360, 268, 300}
 local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}
-local challenge_pool = {
-    360, 362, 364, 366, -- lamas
-    396, 398, -- from sea_pool
-    256, 298, 268, 300, -- from base_pool
-    262, 264, -- river-horse
-    266, -- self-insert
-    260, 270,
-}
 
-LEVEL_POOL = {
-    -- start
-    ['34 5'] = base_pool, ['36 5'] = base_pool, ['38 5'] = base_pool,
-    ['34 7'] = base_pool, ['36 7'] = {262, 264, 396, 398}, ['38 7'] = base_pool,
-
-    -- water
-    ['36 9'] = sea_pool,
-    ['36 11'] = sea_pool, ['38 11'] = sea_pool,
-    ['36 13'] = sea_pool, ['38 13'] = sea_pool,
-
-    -- challenge
-    ['42 5'] = {360, 362, 364, 366}, ['44 5'] = challenge_pool,
-    ['40 7'] = {260, 270, 266, 362, 364}, ['42 7'] = challenge_pool, ['44 7'] = challenge_pool,
-}
-LEVEL_DIVERSITY = {
-    -- start
-    ['34 5'] = 3, ['36 5'] = 4, ['38 5'] = 4,
-    ['34 7'] = 3, ['36 7'] = 4, ['38 7'] = 5,
-
-    -- water
-    ['36 9'] = 3,
-    ['36 11'] = 4, ['38 11'] = 6,
-    ['36 13'] = 5, ['38 13'] = 6,
-
-    -- challenge
-    ['42 5'] = 4, ['44 5'] = 12,
-    ['40 7'] = 3, ['42 7'] = 8, ['44 7'] = 10,
-}
-LEVEL_TRIPLETS = {
-    -- start
-    ['34 5'] = 3, ['36 5'] = 4, ['38 5'] = 8,
-    ['34 7'] = 6, ['36 7'] = 4, ['38 7'] = 5,
-
-    -- water
-    ['36 9'] = 6,
-    ['36 11'] = 8, ['38 11'] = 6,
-    ['36 13'] = 10, ['38 13'] = 13,
-
-    -- challenge
-    ['42 5'] = 10, ['44 5'] = 12,
-    ['40 7'] = 4, ['42 7'] = 8, ['44 7'] = 10,
-}
--- LEVEL_LAYOUT = {
---     ['34 5'] = 'random',
---     ['36 5'] = 'random',
---     ['38 5'] = 'random',
---     ['36 7'] = 'random',
---     ['38 7']  = 'random',
---     ['40 7']  = 'random',
---     ['42 7']  = 'random',
---     ['36 9']  = 'random',
---     ['36 11'] = 'random',
---     ['36 11'] = 'random',
---     ['38 11'] = 'random',
---     ['36 13'] = 'random',
---     ['38 13'] = 'random',
--- }
+LEVEL_POOL = {}

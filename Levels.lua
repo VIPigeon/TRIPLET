@@ -1,5 +1,5 @@
 ALL_LEVELS_AVAILABLE = true
-BAN_SCORING_LEVELS = true
+BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
 -- начнем и интерактивной карты уровней. просто чтобы она кликалась и все такое. без функционала
@@ -239,18 +239,18 @@ function Level:new(x, y, level_type, level_id)
     local level_code = tostring(x).." "..tostring(y)
     object.id = level_id  -- номер уровня
     object.name = LEVEL_NAME[level_code]
-    object.description = LEVEL_DESCRIPTION[level_code]
-    object.pool = LEVEL_POOL[level_code]  -- набор видов, которые могут попасться в этом уровне
-    object.diversity = LEVEL_DIVERSITY[level_code]  -- разнообразие видов на уровне
-    object.triplets = LEVEL_TRIPLETS[level_code]  -- количество триплетов
+    object.description = LEVEL_DESCRIPTION[level_code] or '67'
+    object.pool = LEVEL_POOL[level_code] or ALL_ANIMALS  -- набор видов, которые могут попасться в этом уровне
+    object.copies_of_each_animal = LEVEL_COPIES_OF_EACH_ANIMAL[object.name] or 3
+    object.size = LEVEL_SIZE[object.name]
     -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     object.layout = 'random'  -- пока еще других нет
     setmetatable(object, self)
     return object
 end
 
-function Level:get_medal()
-    local time_per_triplet = self.best_time.time / self.triplets
+function Level:get_medal(time)
+    local time_per_triplet = time / self:get_triplets()
     if time_per_triplet > 30 then
         return 4
     elseif time_per_triplet > 15 then
@@ -261,13 +261,13 @@ function Level:get_medal()
     return 1
 end
 
-function Level:get_donut()
-    local theory_best_score = (self.triplets + 1)*self.triplets*5
-    if self.best_score.score >= 0.9*theory_best_score then
+function Level:get_donut(score)
+    local theory_best_score = (self:get_triplets() + 1)*self:get_triplets()*5
+    if score >= 0.9*theory_best_score then
         return 17
-    elseif self.best_score.score >= 0.5*theory_best_score then
+    elseif score >= 0.5*theory_best_score then
         return 18
-    elseif self.best_score.score >= 0.2*theory_best_score then
+    elseif score >= 0.2*theory_best_score then
         return 19
     end
     return 20
@@ -287,14 +287,14 @@ end
 function Level:get_tiles()
     shuffle(self.pool)
     local tiles = {}
-    local counter = self.triplets
+    local counter = self.size
     local i = 1
     while counter > 0 do
-        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
-        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
-        table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+        for _ = 1, self.copies_of_each_animal do
+            table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+        end
         counter = counter - 1
-        i = i % self.diversity + 1
+        i = i + 1
     end
     return tiles
 end
@@ -309,13 +309,21 @@ function Level:get_layout()
     -- возвращает конкретную последовательность точек для раскладки тайлов в начале игры
     local layout = {}
     if self.layout == 'random' then
-        for i = 1, self.triplets*3 do
+        for i = 1, self.size*self.copies_of_each_animal do
             local x = math.random(CENTER_AREA.x1, CENTER_AREA.x2)
             local y = math.random(CENTER_AREA.y1, CENTER_AREA.y2)
             table.insert(layout, {x=x, y=y})
         end
     end
     return layout
+end
+
+function Level:get_triplets()
+    -- возвращается количество триплетов
+    if self.copies_of_each_animal == 6 then
+        return self.size * 2
+    end
+    return self.size
 end
 
 function Level:set_state(state)
