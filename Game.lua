@@ -498,6 +498,13 @@ function game.draw()
     -- hand.draw_hitbox()
     -- hand.draw()
 
+    if mini_status == 'game' then
+        -- print("SCORE: 1234", 22*8+4, 16*8 + 3, 12)
+        game.score_counter:draw()
+        if game.spectator then
+            game.spectator:draw()
+        end
+    end
     game.progress_bar:draw()
     for _, tile in ipairs(game.tiles) do
         tile:draw()
@@ -561,11 +568,4 @@ function game.draw()
         end
     end
 
-    if mini_status == 'game' then
-        -- print("SCORE: 1234", 22*8+4, 16*8 + 3, 12)
-        game.score_counter:draw()
-        if game.spectator then
-            game.spectator:draw()
-        end
-    end
 end

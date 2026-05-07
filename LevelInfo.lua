@@ -32,6 +32,9 @@ LEVEL_NAME = {
 
     ['40 13'] = 'TIME IS SCORE',
     ['44 3'] = 'BOSS',
+
+    ['48 7'] = 'XS',
+    ['50 7'] = 'WINDOW',
 }
 LEVEL_DESCRIPTION = {
     -- start
@@ -73,6 +76,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     
     ['TIME IS SCORE'] = 6,
     ['BOSS'] = 3,
+    ['XS'] = 6,
+    ['WINDOW'] = 7,
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['GETTING STARTED'] = 3,
@@ -99,6 +104,8 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     
     ['TIME IS SCORE'] = 6,
     ['BOSS'] = 3,
+    ['XS'] = 6,
+    ['WINDOW'] = 6,
 }
 
 LEVEL_BOARD = {
@@ -106,6 +113,19 @@ LEVEL_BOARD = {
     ['UPSIDE DOWN'] = {x=60, y=17},
     ['TAKE FIVE'] = {x=60, y=0},
     ['CONVEYOR'] = {x=30, y=34},
+    ['XS'] = {x=0, y=34},
+    ['WINDOW'] = {x=0, y=51},
+}
+
+LEVEL_LAYOUT = {
+    ['BRIDGE'] = {
+        x1 = 8*1, y1 = 8*3,
+        x2 = 8*7, y2 = 8*(31-17)
+    },
+    ['WINDOW'] = {
+        x1 = 8*1, y1 = 8*3 - 3,
+        x2 = 8*23+5, y2 = 8*3 + 2,
+    },
 }
 
 

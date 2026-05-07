@@ -57,8 +57,6 @@ function ScoreCounter:draw()
     end
     local score_color = 14
     if self.income_animation.time > 0 then
-        score_color = 15
-
         local income_x = x + 36
         local income_y = y - 7
         local income_text = '+'..tostring(self.income_animation.value)

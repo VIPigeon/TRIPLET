@@ -244,7 +244,7 @@ function Level:new(x, y, level_type, level_id)
     object.copies_of_each_animal = LEVEL_COPIES_OF_EACH_ANIMAL[object.name] or 3
     object.size = LEVEL_SIZE[object.name]
     -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
-    object.layout = 'random'  -- пока еще других нет
+    object.layout = LEVEL_LAYOUT[object.name] or CENTER_AREA
     object.board = LEVEL_BOARD[object.name] or {x=30, y=17}
     setmetatable(object, self)
     return object
@@ -318,13 +318,14 @@ CENTER_AREA = {
 function Level:get_layout()
     -- возвращает конкретную последовательность точек для раскладки тайлов в начале игры
     local layout = {}
-    if self.layout == 'random' then
-        for i = 1, self.size*self.copies_of_each_animal do
-            local x = math.random(CENTER_AREA.x1, CENTER_AREA.x2)
-            local y = math.random(CENTER_AREA.y1, CENTER_AREA.y2)
-            table.insert(layout, {x=x, y=y})
-        end
+    
+    local area = self.layout
+    for i = 1, self.size*self.copies_of_each_animal do
+        local x = math.random(area.x1, area.x2)
+        local y = math.random(area.y1, area.y2)
+        table.insert(layout, {x=x, y=y})
     end
+
     return layout
 end
 
