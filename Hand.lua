@@ -28,6 +28,8 @@ end
 
 function hand.clear()
     hand.values = {-1, -1, -1}
+    hand.zone = {}
+    hand.slots = {}
 end
 
 

@@ -101,6 +101,12 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['BOSS'] = 3,
 }
 
+LEVEL_BOARD = {
+    ['BRIDGE'] = {x=0, y=17},
+    ['UPSIDE DOWN'] = {x=60, y=17},
+    ['TAKE FIVE'] = {x=60, y=0},
+    ['CONVEYOR'] = {x=30, y=34},
+}
 
 
 local base_pool = {396, 256, 298, 360, 268, 300}

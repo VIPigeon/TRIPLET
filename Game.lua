@@ -92,8 +92,11 @@ end
 
 function game.init_level()
     game.prev_statuses = {}  -- чистим историю статусов в начале игры
+    game.current_level:set_board()
     hand.clear()
+    hand.init()
     game.scared_tile = -1
+
     
     math.randomseed(time()*1e7)
     game.tiles = game.current_level:get_tiles()

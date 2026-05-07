@@ -245,6 +245,7 @@ function Level:new(x, y, level_type, level_id)
     object.size = LEVEL_SIZE[object.name]
     -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     object.layout = 'random'  -- пока еще других нет
+    object.board = LEVEL_BOARD[object.name] or {x=30, y=17}
     setmetatable(object, self)
     return object
 end
@@ -271,6 +272,15 @@ function Level:get_donut(score)
         return 19
     end
     return 20
+end
+
+function Level:set_board()
+    -- меняет map
+    for x = 0, 29 do
+        for y = 0, 16 do
+            mset(x, y, mget(self.board.x + x, self.board.y + y))
+        end
+    end
 end
 
 -- function Level:is_completed()
