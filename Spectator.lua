@@ -33,22 +33,21 @@ function Spectator:draw(x, y)
     y = y or 16*8+3
     if Settings.SHOW_TIME_DURING_GAME then
         -- print("TIME: "..string.format("%.1f", self.time), x, y)
-        print("time: "..math.floor(self.time), x, y, 11)
-        x = x + 39
-        if self.time > 9 then
-            x = x + 4
-        end
-        if self.time > 99 then
-            x = x + 4
-        end
-        if self.time > 999 then
-            x = x + 4
-        end
-        spr(450 + (self.time - math.floor(self.time))/0.125, x, y)
+        spr(450 + (self.time - math.floor(self.time))/0.125, x+4, y)
+        -- print("   time: "..math.floor(self.time), x, y, 11)
+        print("   "..math.floor(self.time), x+2, y, 11)
+        -- x = x + 39
+        -- if self.time > 9 then
+        --     x = x + 4
+        -- end
+        -- if self.time > 99 then
+        --     x = x + 4
+        -- end
+        -- if self.time > 999 then
+        --     x = x + 4
+        -- end
+        -- spr(450 + (self.time - math.floor(self.time))/0.125, x, y)
     end
-    -- if Settings.SHOW_TURNS_DURING_GAME then
-    --     print("TURNS: "..self.turns, x, y)
-    -- end
 end
 
 function Spectator:hide()

@@ -103,6 +103,7 @@ function game.init_level()
     -- for _, t in ipairs(game.tiles) do
     --     trace(t.value)
     -- end
+    -- trace(#game.tiles)
     shuffle(game.tiles)
     -- TODO: сделать анимацию
     for i, point in ipairs(game.current_level:get_layout()) do
@@ -159,7 +160,7 @@ function game.set_game_visibility(flag)
     end
 end
 
-function game.set_status(status)
+function game.set_status(status)    
     -- перед сменой статуса скрываем все кнопки
     -- а потом включаем только те что нужны
     for _, b in pairs(game.buttons) do
@@ -202,6 +203,12 @@ function game.set_status(status)
             game.buttons.ok:set_visibility(true)
         end
     elseif status == "game" then
+        if game.current_level.name == 'ROSE-TINTED' then
+            palette.set_color('pink')
+        else
+            palette.set_color('green')
+        end
+
         palette.make_normal()  -- делаем палитру нормальной
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
@@ -212,6 +219,8 @@ function game.set_status(status)
             game.init_level()
         end
     elseif status == "map" then
+        palette.set_color('green')
+
         game.set_game_visibility(false)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_map_to_level:set_visibility(true)
@@ -272,6 +281,10 @@ function game.init()
 end
 
 function game.update()
+    for _, tile in ipairs(game.tiles) do
+        tile:update()
+    end
+
     for name, button in pairs(game.buttons) do
         if button.visibility then
             local prev_status = button.status
@@ -353,9 +366,9 @@ function game.update()
         game.scoring_animator:update(game.tiles)
     end
 
-    for _, tile in ipairs(game.tiles) do
-        tile:update()
-    end
+    -- for _, tile in ipairs(game.tiles) do
+    --     tile:update()
+    -- end
 
     if game.status == "game" then
         game.score_counter:update()
@@ -364,7 +377,9 @@ function game.update()
         if game.progress_bar:full() then
             -- проверяем, что анимация закончилась
             local flag = true
-            for i = #game.tiles, #game.tiles-3, -1 do
+            -- for i = #game.tiles, #game.tiles-3, -1 do
+            for i = #game.tiles, #game.tiles-2, -1 do
+                trace(i)
                 if game.tiles[i].triplet_status ~= "done" then
                     flag = false
                     break

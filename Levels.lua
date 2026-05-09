@@ -240,7 +240,7 @@ function Level:new(x, y, level_type, level_id)
     object.id = level_id  -- номер уровня
     object.name = LEVEL_NAME[level_code]
     object.description = LEVEL_DESCRIPTION[level_code] or '67'
-    object.pool = LEVEL_POOL[level_code] or ALL_ANIMALS  -- набор видов, которые могут попасться в этом уровне
+    object.pool = LEVEL_POOL[object.name] or ALL_ANIMALS  -- набор видов, которые могут попасться в этом уровне
     object.copies_of_each_animal = LEVEL_COPIES_OF_EACH_ANIMAL[object.name] or 3
     object.size = LEVEL_SIZE[object.name]
     -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
@@ -300,8 +300,43 @@ function Level:get_tiles()
     local counter = self.size
     local i = 1
     while counter > 0 do
-        for _ = 1, self.copies_of_each_animal do
-            table.insert(tiles, Tile:new(0, 0, self.pool[i]))
+
+        if self.name == 'AFTERPARTY' then
+            local r1 = math.random(0, 3)
+            local r2 = math.random(0, 3)
+            while r1 == r2 do
+                r2 = math.random(0, 3)
+            end
+
+            for _ = 1, 3 do
+                table.insert(tiles, Tile:new(0, 0, self.pool[i], 0, r1, true))
+                table.insert(tiles, Tile:new(0, 0, self.pool[i], 0, r2, true))
+            end
+        elseif self.name == 'CROCODILE LEVEL' then
+            for r = 0, 3 do
+                for f = 0, 1 do
+                    for _ = 1, 3 do
+                        table.insert(tiles, Tile:new(0, 0, self.pool[i], f, r, true))
+                    end
+                end
+            end
+        else
+            local f = 0  -- flip
+            local r = 0 -- rotate
+            local is_back_static = true
+            local is_reverse = false
+
+            if self.name == 'UPSIDE DOWN' then
+                f = 3
+                is_back_static = false
+            elseif self.name == 'REVERSE' then
+                f = 1
+                is_reverse = true
+            end
+
+            for _ = 1, self.copies_of_each_animal do
+                table.insert(tiles, Tile:new(0, 0, self.pool[i], f, r, is_back_static, is_reverse))
+            end
         end
         counter = counter - 1
         i = i + 1
@@ -331,6 +366,10 @@ end
 
 function Level:get_triplets()
     -- возвращается количество триплетов
+    if self.name == 'CROCODILE LEVEL' then
+        return 16
+    end
+
     if self.copies_of_each_animal == 6 then
         return self.size * 2
     end

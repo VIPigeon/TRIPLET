@@ -42,6 +42,9 @@ BOARD = {
     [238] = true,
     [239] = true,
     [207] = true,
+
+    [205] = true,
+    [206] = true,
 }
 HAND_BORDER = {}  -- чтобы игра не крашилась, лень ходить по файлам и удалять его
 
@@ -64,6 +67,15 @@ HAND = {
     [232] = true,
     [233] = true,   
 }
+
+
+original_mouse = mouse
+function mouse()
+    local x, y, left, middle, right, scrollx, scrolly = original_mouse()
+    x = math.min(240, math.max(x, 0))
+    y = math.min(136, math.max(y, 0))
+    return x, y, left, middle, right, scrollx, scrolly
+end
 
 
 require 'Vector2D'

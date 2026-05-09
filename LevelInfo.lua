@@ -35,6 +35,7 @@ LEVEL_NAME = {
 
     ['48 7'] = 'XS',
     ['50 7'] = 'WINDOW',
+    ['48 9'] = 'SHAKE',  -- растряхиваем карты по столу в начале
 }
 LEVEL_DESCRIPTION = {
     -- start
@@ -51,33 +52,35 @@ LEVEL_DESCRIPTION = {
     ['40 7'] = {"", "There is only new animals"}, ['42 7'] = {'-_-'}, ['44 7'] = {'o_O'},
 }
 
+-- ⚙️ помечаем уровни, которые ТЕХНИЧЕСКИ готовы
+-- ⭐ помечаем уровни, которые готовы ПОЛНОСТЬЮ, то есть с набором животных
 LEVEL_SIZE = {  -- количество ВИДОВ
     ['GETTING STARTED'] = 3,
-    ['LAMA LEVEL'] = 6,
-    ['BRIDGE'] = 6,
-    ['UPSIDE DOWN'] = 33,
+    ['LAMA LEVEL'] = 4,
+    ['BRIDGE'] = 6, -- ⚙️
+    ['UPSIDE DOWN'] = 7, -- ⚙️
     ['TAKE FIVE'] = 5,
-    ['REVERSE'] = 6,
+    ['REVERSE'] = 6, -- ⚙️
     
-    ['AFTERPARTY'] = 6,
-    ['CROCODILE LEVEL'] = 6,
+    ['AFTERPARTY'] = 6, -- ⚙️
+    ['CROCODILE LEVEL'] = 2, -- ⚙️
     ['DEJA VU'] = 6,
     
     ['CONVEYOR'] = 6,
-    ['GRAVITATION'] = 3,
+    ['GRAVITATION'] = 6,
     ['SLIP BOARD'] = 3,
     ['SHY CARDS'] = 6,
     ['SLOTS'] = 3,
     
     ['DRAFT'] = 3,
-    ['ROSE-TINTED'] = 3,
+    ['ROSE-TINTED'] = 3, -- ⚙️
     ['RORSCHACH'] = 3,
     ['NIGHT'] = 3,
     
     ['TIME IS SCORE'] = 6,
     ['BOSS'] = 3,
-    ['XS'] = 6,
-    ['WINDOW'] = 7,
+    ['XS'] = 6, -- ⚙️
+    ['WINDOW'] = 7, -- ⚙️
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['GETTING STARTED'] = 3,
@@ -87,12 +90,15 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['TAKE FIVE'] = 5,
     ['REVERSE'] = 6,
     
+    -- в afterparty уникальные тройки:
+    -- один и тот же вид представлен в двух отедльных наборах, но с разным поворотом
     ['AFTERPARTY'] = 6,
-    ['CROCODILE LEVEL'] = 6,
+
+    ['CROCODILE LEVEL'] = 8*3,
     ['DEJA VU'] = 6,
     
     ['CONVEYOR'] = 6,
-    ['GRAVITATION'] = 3,
+    ['GRAVITATION'] = 6,
     ['SLIP BOARD'] = 3,
     ['SHY CARDS'] = 6,
     ['SLOTS'] = 3,
@@ -115,6 +121,7 @@ LEVEL_BOARD = {
     ['CONVEYOR'] = {x=30, y=34},
     ['XS'] = {x=0, y=34},
     ['WINDOW'] = {x=0, y=51},
+    ['GRAVITATION'] = {x=30, y=51},
 }
 
 LEVEL_LAYOUT = {
@@ -126,10 +133,19 @@ LEVEL_LAYOUT = {
         x1 = 8*1, y1 = 8*3 - 3,
         x2 = 8*23+5, y2 = 8*3 + 2,
     },
+    ['UPSIDE DOWN'] = {
+        x1 = 8*9 - 1, y1 = 8*8 - 1,
+        x2 = 8*16 - 4, y2 = 8*12 - 4,
+    },
+    ['GRAVITATION'] = {
+        x1 = 8*1, y1 = 8*3 - 3,
+        x2 = 8*23+5, y2 = 8*3 + 2,
+    },
 }
-
 
 local base_pool = {396, 256, 298, 360, 268, 300}
 local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}
 
-LEVEL_POOL = {}
+LEVEL_POOL = {
+    ['CROCODILE LEVEL'] = {266, 448},
+}

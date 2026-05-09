@@ -15,11 +15,20 @@ Tile.back = 96 -- BICYCLE_BACK
 Tile.face = 98 -- EMPTY FACE
 Tile.SHADOW = 128
 
-function Tile:new(x, y, value)
+function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
+    flip = flip or 0
+    rotate = rotate or 0
     local object = {
         x = x,
         y = y,
+
         value = value,
+        flip = flip,
+        rotate = rotate,
+        is_back_static = is_back_static,
+
+        is_reverse = is_reverse,  -- рубашку и лицо меняем местами
+
         status = 'chill',
         -- chill — карту никто не трогает
         -- scared — на карту навели курсор
@@ -51,10 +60,49 @@ function Tile:new(x, y, value)
         scoring_status = 'no',
 
         visibility = true,
+
+        -- параметры для кастомных уровней с движением
+        gravity_speed = 0,
+        slip = {
+            history = {},  -- история позиций перемещаемой карты
+
+        },
     }
 
     setmetatable(object, self)
     return object
+end
+
+function Tile:update_gravity()
+    if self.triplet_status ~= 'no' then
+        return
+    end
+
+    if self.status == 'held' or self.hand_status ~= 'outside' then
+        self.gravity_speed = 0
+        return
+    end
+    self.gravity_speed = self.gravity_speed + 0.033
+    self.y = self.y + self.gravity_speed
+
+    -- local border = 14*8 - 13
+    -- if self.y >= border then
+    local x1 = (self.x+1)/8
+    local y1 = (self.y+1)/8
+    local x2 = (self.x+14)/8
+    local y2 = (self.y+14)/8
+    if not self:is_legal_position(x1, y1, x2, y2) then
+        self.y = self.y - self.gravity_speed
+        self.gravity_speed = 0
+    end
+    -- self.y = self.y - self.gravity_speed
+    -- if self.gravity_speed > 0 then
+    --     trace(self.gravity_speed)
+    -- end
+end
+
+function Tile:compare(tile)
+    return tile.value == self.value and tile.flip == self.flip and tile.rotate == self.rotate
 end
 
 function Tile:in_move_animation()
@@ -84,6 +132,11 @@ function Tile:update()
     if not self.visibility then
         return
     end
+
+    if game.current_level.name == 'GRAVITATION' then
+        self:update_gravity()
+    end
+
     -- trace(tostring(self)..' hand status = '..self.hand_status)
     -- trace('current x = '..self.x..'\tcurrent y = '..self.y)
     if self.scoring_status == 'scoring' then
@@ -178,6 +231,17 @@ function Tile:what_are_you_doing_with_me()
     if not self.visibility then
         return 'nothing'
     end
+
+    if self.hand_status == 'outside' and self.status ~= 'held' and hand.is_tile_should_go_to_hand(self) then
+        if not hand.full() then
+            return 'going to hand'
+        end
+    end
+
+    -- if self.gravity_should_go_to_hand_flag then
+    --     return 'going to hand'
+    -- end
+
     local x, y, left, middle, right = mouse()
 
     if self.hand_status ~= 'in' and (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
@@ -190,6 +254,10 @@ function Tile:what_are_you_doing_with_me()
             Sound.cant_get_a_card()
         end
     end
+
+    -- if self.status ~= 'held' and hand.is_tile_should_go_to_hand(self) and not hand then
+    --     return 'going to hand'
+    -- end
 
     if not left or not (self.x + Tile.HITBOX.x1 <= x and x <= self.x + Tile.HITBOX.x2 and 
         self.y + Tile.HITBOX.y1 <= y and y <= self.y + Tile.HITBOX.y2) then
@@ -230,6 +298,13 @@ function Tile:what_are_you_doing_with_me()
     return 'hold'
 end
 
+function Tile:is_legal_position(x1, y1, x2, y2)
+    return (BOARD[mget(x1, y1)] or HAND[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
+       (BOARD[mget(x1, y2)] or HAND[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
+       (BOARD[mget(x2, y1)] or HAND[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
+       (BOARD[mget(x2, y2)] or HAND[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)])
+end
+
 function Tile:move_by_cursor()
     -- если тайл удерживается, он двигается вместе с ним. пока наивно
     local x, y, left, middle, right = mouse()
@@ -250,46 +325,60 @@ function Tile:move_by_cursor()
         end
         return
     end
-    if (BOARD[mget(x1, y1)] or HAND[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
-       (BOARD[mget(x1, y2)] or HAND[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
-       (BOARD[mget(x2, y1)] or HAND[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
-       (BOARD[mget(x2, y2)] or HAND[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)]) then
+
+    if self:is_legal_position(x1, y1, x2, y2) then
         self.x = new_x
         self.y = new_y
     end
 end
 
 function Tile:draw()
+    local is_face = self.is_face
+    if self.is_reverse then
+        is_face = not is_face
+    end
+
+
     if not self.visibility then
         return
     end
-    if self.status == 'scared' then
-        spr(self.is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,0,0,2,2)
-        spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,0,0,2,2)
 
-        if self.is_face then
-            spr(self.value, self.x, self.y, 15, 1,0,0,2,2)
+    local ff = self.flip
+    local fr = self.rotate
+    local bf = ff
+    local br = fr
+    if self.is_back_static then
+        bf = 0
+        br = 0
+    end
+
+    if self.status == 'scared' then
+        spr(is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,bf,br,2,2)
+        spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,bf,br,2,2)
+
+        if is_face then
+            spr(self.value, self.x, self.y, 15, 1,ff,fr,2,2)
         end
     elseif self.status == 'held' then
         -- поднимаем вверх
         local SHIFT = 2
         spr(Tile.SHADOW, self.x, self.y, 11, 1,0,0,2,2)
-        spr(self.is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, 0, 1,0,0,2,2)
-        if self.is_face then
-            spr(Tile.STATUS_SPRITE.held_face, self.x, self.y-SHIFT, 0, 1,0,0,2,2)
+        spr(is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
+        if is_face then
+            spr(Tile.STATUS_SPRITE.held_face, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
         else
-            spr(Tile.STATUS_SPRITE.held, self.x, self.y-SHIFT, 0, 1,0,0,2,2)
+            spr(Tile.STATUS_SPRITE.held, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
         end
 
-        if self.is_face then
-            spr(self.value, self.x, self.y-SHIFT, 15, 1,0,0,2,2)
+        if is_face then
+            spr(self.value, self.x, self.y-SHIFT, 15, 1,ff,fr,2,2)
         end
 
     elseif self.status == 'chill' then
-        spr(self.is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,0,0,2,2)
+        spr(is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,bf,br,2,2)
 
-        if self.is_face then
-            spr(self.value, self.x, self.y, 15, 1,0,0,2,2)
+        if is_face then
+            spr(self.value, self.x, self.y, 15, 1,ff,fr,2,2)
         end
     end    
 end

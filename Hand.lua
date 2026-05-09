@@ -1,6 +1,6 @@
 
 hand = {
-    values = {-1, -1, -1},  -- рука пустая
+    tiles = {-1, -1, -1},  -- рука пустая
     zone = {},
     TIME_PER_ANIMATION_FRAME = 0.07,
     animation_timer = 0,
@@ -14,7 +14,7 @@ hand = {
 function hand.size()
     -- возвращает количество карт в руке
     local counter = 0
-    for _, v in ipairs(hand.values) do
+    for _, v in ipairs(hand.tiles) do
         if v ~= -1 then
             counter = counter + 1
         end
@@ -27,7 +27,7 @@ function hand.tile_was_drop()
 end
 
 function hand.clear()
-    hand.values = {-1, -1, -1}
+    hand.tiles = {-1, -1, -1}
     hand.zone = {}
     hand.slots = {}
 end
@@ -107,7 +107,7 @@ function hand.add(tile)
     local nearest_slot_i = 0
     for i, slot in ipairs(hand.slots) do
         local nearest_slot = hand.slots[nearest_slot_i]
-        if hand.values[i] == -1 and  -- слот не занят
+        if hand.tiles[i] == -1 and  -- слот не занят
             (nearest_slot_i == 0 or
             (slot.x - tile.x)^2 + (slot.y - tile.y)^2 < 
             (nearest_slot.x - tile.x)^2 + (nearest_slot.y - tile.y)^2) then
@@ -121,7 +121,7 @@ function hand.add(tile)
 end
 
 function hand.full()
-    for _, value in ipairs(hand.values) do
+    for _, value in ipairs(hand.tiles) do
         if value == -1 then
             return false
         end
@@ -130,12 +130,12 @@ function hand.full()
 end
 
 function hand.remove(slot_i)
-    hand.values[slot_i] = -1
+    hand.tiles[slot_i] = -1
 end
 
 function hand.insert_into_slot(tile)
     local slot = hand.slots[tile.hand_slot_i]
-    hand.values[tile.hand_slot_i] = tile.value
+    hand.tiles[tile.hand_slot_i] = tile
     -- tile.x = slot.x
     -- tile.y = slot.y
 end
@@ -144,7 +144,8 @@ function hand.is_there_a_triplet()
     if not hand.full() then
         return false
     end
-    return hand.values[1] == hand.values[2] and hand.values[2] == hand.values[3]
+    -- return hand.tiles[1] == hand.tiles[2] and hand.tiles[2] == hand.tiles[3]
+    return hand.tiles[1]:compare(hand.tiles[2]) and hand.tiles[2]:compare(hand.tiles[3])
 end
 
 function hand.cancel_alarm()
