@@ -79,6 +79,7 @@ end
 
 
 require 'Vector2D'
+require 'SaveAndLoad'
 require 'pslib'
 require 'Levels'
 require 'StretchingAnimator'

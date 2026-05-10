@@ -11,11 +11,12 @@
 
 Button = {}
 
-function Button:new(x, y, text, size_x, size_y, colors)
+function Button:new(x, y, text, size_x, size_y, colors, scale)
     colors = colors or {text=4, chill=10, scared=15, pressed=14, shadow=4}
     -- определяем хитбокс по тексту
-    size_x = size_x or #text * 6
-    size_y = size_y or 7
+    scale = scale or 1
+    size_x = size_x or #text * 6 * scale
+    size_y = size_y or 7 * scale
     local object = {
         x1=x,
         y1=y,
@@ -27,6 +28,7 @@ function Button:new(x, y, text, size_x, size_y, colors)
         -- chill — никто не трогает
         -- scared — на кнопку навели мышку
         -- pressed — на кнопку нажали
+        scale=scale,
     }
     setmetatable(object, self)
     return object
@@ -35,6 +37,7 @@ end
 function Button:update()
     self.prev_status = self.status
     local x, y, left, middle, right = mouse()
+
     if self.x1 <= x and x <= self.x2 and self.y1 <= y and y <= self.y2 then
         if left then
             self.status = 'pressed'
@@ -47,17 +50,18 @@ function Button:update()
 end
 
 function Button:draw()
+    local s = self.scale
     -- shadow
-    rect(self.x1-1, self.y1 +1, self.x2-self.x1+3, self.y2-self.y1, self.color.shadow)
-    rect(self.x1, self.y1-1 +1, self.x2-self.x1+1, self.y2-self.y1+2, self.color.shadow)
+    rect(self.x1-s, self.y1 +s, self.x2-self.x1+s*3, self.y2-self.y1, self.color.shadow)
+    rect(self.x1, self.y1-s +s, self.x2-self.x1+s, self.y2-self.y1+s*2, self.color.shadow)
     if self.status == 'chill' or self.status == 'scared' then
-        rect(self.x1-1, self.y1, self.x2-self.x1+3, self.y2-self.y1, self.color[self.status])
-        rect(self.x1, self.y1-1, self.x2-self.x1+1, self.y2-self.y1+2, self.color[self.status])
-        print(self.text, self.x1+1, self.y1+1, self.color.text)
+        rect(self.x1-s, self.y1, self.x2-self.x1+s*3, self.y2-self.y1, self.color[self.status])
+        rect(self.x1, self.y1-s, self.x2-self.x1+s, self.y2-self.y1+2*s, self.color[self.status])
+        print(self.text, self.x1 + s, self.y1 + s, self.color.text, false, s)
     else  -- pressed
-        rect(self.x1-1, self.y1 +1, self.x2-self.x1+3, self.y2-self.y1, self.color.pressed)
-        rect(self.x1, self.y1-1 +1, self.x2-self.x1+1, self.y2-self.y1+2, self.color.pressed)
-        print(self.text, self.x1+1, self.y1+1 +1, self.color.text)
+        rect(self.x1-s, self.y1 +s, self.x2-self.x1+3*s, self.y2-self.y1, self.color.pressed)
+        rect(self.x1, self.y1-s +s, self.x2-self.x1+s, self.y2-self.y1+2*s, self.color.pressed)
+        print(self.text, self.x1+s, self.y1+s+s, self.color.text, false, s)
     end
 end
 
@@ -128,7 +132,8 @@ ToggleButton.__index = ToggleButton
 
 
 SpriteButton = table.copy(Button)
-function SpriteButton:new(x, y, sprites, size_x, size_y)
+function SpriteButton:new(x, y, sprites, size_x, size_y, scale)
+    scale = scale or 1
     -- определяем хитбокс по тексту
     local object = {
         -- вбиваем координаты хитбокса. граница кнопки не включена
@@ -143,6 +148,8 @@ function SpriteButton:new(x, y, sprites, size_x, size_y)
         -- chill — никто не трогает
         -- scared — на кнопку навели мышку
         -- pressed — на кнопку нажали
+
+        scale = scale,
     }
     setmetatable(object, self)
     return object
@@ -150,9 +157,9 @@ end
 
 function SpriteButton:draw()
     -- я не уверен что эти формулы корректны, нужно тестить
-    local width = (self.x2-self.x1+2+7)/8
-    local height = (self.y2-self.y1+2+7)/8
-    spr(self.sprite[self.status], self.x1-1, self.y1-1, 0, 1,0,0, width,height)
+    local width = (self.x2-self.x1+2+7)/8 / self.scale
+    local height = (self.y2-self.y1+2+7)/8 / self.scale
+    spr(self.sprite[self.status], self.x1-1, self.y1-1, 0, self.scale,0,0, width,height)
 end
 
 SpriteButton.__index = SpriteButton

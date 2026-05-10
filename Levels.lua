@@ -65,6 +65,7 @@ end
 function LevelMap:update_events()
     self.timer = Basic.tick_timer(self.timer)
     if self.timer == 0 then
+        mem.save()
         for _, event in ipairs(self.events) do
             if event.type == 'complete' then
                 Sound.level_complete()
@@ -208,13 +209,16 @@ function Level:new(x, y, level_type, level_id)
         animator = nil,
 
         window = {
-            back_button = Button:new(Level.window_box.x2 - 32, Level.window_box.y2 - 15, 'Back'),
-            play_button = SpriteButton:new(Level.window_box.x1 + 6, Level.window_box.y2 - 22,
+            -- back_button = Button:new(Level.window_box.x2 - 32, Level.window_box.y2 - 15, 'Back'),
+            -- play_button = SpriteButton:new(Level.window_box.x1 + 6, Level.window_box.y2 - 22,
+            play_button = SpriteButton:new(Level.window_box.x1 + 8*11, Level.window_box.y2 - 8*7,
             {
                 chill=420, scared=422, pressed=424,
             },
-            16, 16
+            -- 16, 16
+            16*3, 16*3, 3
             ),
+            back_flag = false, -- особая переменная для выхода из окна
         }
     }
     object.disabled_button_sprite = 10
@@ -345,9 +349,9 @@ function Level:get_tiles()
 end
 
 CENTER_AREA = {
-    x1 = 9*8 - 1,
+    x1 = 10*8 - 1,
     y1 = 6*8 - 1,
-    x2 = 15*8 + 4,
+    x2 = 16*8 + 4,
     y2 = 9*8 + 4,
 }
 function Level:get_layout()
@@ -405,13 +409,19 @@ function Level:update()
         if not self.animator:is_end() then
             self.animator:update()
         else
-            self.window.back_button:update()
+            -- self.window.back_button:update()
             self.window.play_button:update()
 
-            if self.window.back_button:is_pressed() then
-                self:set_state('window_to_button')
-            elseif self.window.play_button:is_pressed() then
+            -- if self.window.back_button:is_pressed() then
+            --     self:set_state('window_to_button')
+            if Click.left() then
+                self.back_flag = self.window.play_button.status ~= 'pressed'
+            end
+
+            if self.window.play_button:is_pressed() then
                 self:set_state('window_to_game')
+            elseif self.back_flag and Click.release_left() then
+                self:set_state('window_to_button')
             end
         end
         return
@@ -468,13 +478,13 @@ function Level:draw()
             local y = box.y1 + 8
             local dy = 9
             -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
-            print(self.name, box.x1 + 6, y, 9)
+            print(self.name, box.x1 + 6, y, 9, false, 2)
             y = y + dy
             for _, line in ipairs(self.description) do
                 print(line, box.x1 + 6, y)
                 y = y + dy
             end
-            self.window.back_button:draw()
+            -- self.window.back_button:draw()
             self.window.play_button:draw()
         end
         return

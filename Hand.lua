@@ -27,7 +27,11 @@ function hand.tile_was_drop()
 end
 
 function hand.clear()
-    hand.tiles = {-1, -1, -1}
+    if string.find(game.current_level.name, 'TAKE FIVE') then
+        hand.tiles = {-1, -1, -1, -1, -1}
+    else
+        hand.tiles = {-1, -1, -1}
+    end
     hand.zone = {}
     hand.slots = {}
 end
@@ -144,8 +148,15 @@ function hand.is_there_a_triplet()
     if not hand.full() then
         return false
     end
-    -- return hand.tiles[1] == hand.tiles[2] and hand.tiles[2] == hand.tiles[3]
-    return hand.tiles[1]:compare(hand.tiles[2]) and hand.tiles[2]:compare(hand.tiles[3])
+
+    for i = 2, #hand.tiles do
+        if not hand.tiles[i]:compare(hand.tiles[i-1]) then
+            return false
+        end
+    end
+    return true
+
+    -- return hand.tiles[1]:compare(hand.tiles[2]) and hand.tiles[2]:compare(hand.tiles[3])
 end
 
 function hand.cancel_alarm()

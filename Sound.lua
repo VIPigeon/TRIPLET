@@ -47,7 +47,7 @@ function Sound.tile_drop()
 end
 
 
-Sound.tile_draw_arpegio = {{id=0, note='G-4'}, {id=2, note='A#4'}, {id=1, note='D-5'}}
+Sound.tile_draw_arpegio = {{id=0, note='G-4'}, {id=2, note='A#4'}, {id=1, note='D-5'}, {id=0, note='G-5'}, {id=2, note='A#5'},}
 function Sound.tile_draw()
     -- звук, когда тайл добавляется у руку
     if not Settings.SFX then

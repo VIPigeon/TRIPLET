@@ -6,6 +6,8 @@ for i = 256, 384, 32 do
     end
 end
 
+FIRST_LEVEL_NAME = 'GETTING STARTED'
+
 LEVEL_NAME = {
     ['34 5'] = 'GETTING STARTED',
     ['36 5'] = 'LAMA LEVEL',
@@ -23,7 +25,7 @@ LEVEL_NAME = {
     ['36 11'] = 'GRAVITATION',
     ['38 11'] = 'SLIP BOARD',
     ['36 13'] = 'SHY CARDS',
-    ['38 13'] = 'SLOTS',
+    ['38 13'] = 'SUPERPOSITION',
 
     ['42 5'] = 'DRAFT',
     ['44 5'] = 'ROSE-TINTED',
@@ -35,7 +37,8 @@ LEVEL_NAME = {
 
     ['48 7'] = 'XS',
     ['50 7'] = 'WINDOW',
-    ['48 9'] = 'SHAKE',  -- растряхиваем карты по столу в начале
+    ['48 9'] = 'NOIR',  -- таже игра с палитрой, только здесь она чб
+    ['50 9'] = 'TAKE FIVE 2',
 }
 LEVEL_DESCRIPTION = {
     -- start
@@ -54,40 +57,45 @@ LEVEL_DESCRIPTION = {
 
 -- ⚙️ помечаем уровни, которые ТЕХНИЧЕСКИ готовы
 -- ⭐ помечаем уровни, которые готовы ПОЛНОСТЬЮ, то есть с набором животных
+-- 😪 помечаем уровни, которые я не хочу делать
 LEVEL_SIZE = {  -- количество ВИДОВ
-    ['GETTING STARTED'] = 3,
-    ['LAMA LEVEL'] = 4,
+    ['GETTING STARTED'] = 2,
+    ['LAMA LEVEL'] = 1,
     ['BRIDGE'] = 6, -- ⚙️
     ['UPSIDE DOWN'] = 7, -- ⚙️
-    ['TAKE FIVE'] = 5,
+    ['TAKE FIVE'] = 10, -- ⚙️
     ['REVERSE'] = 6, -- ⚙️
     
     ['AFTERPARTY'] = 6, -- ⚙️
     ['CROCODILE LEVEL'] = 2, -- ⚙️
     ['DEJA VU'] = 6,
     
-    ['CONVEYOR'] = 6,
-    ['GRAVITATION'] = 6,
-    ['SLIP BOARD'] = 3,
-    ['SHY CARDS'] = 6,
-    ['SLOTS'] = 3,
+    ['CONVEYOR'] = 6, -- 😪
+    ['GRAVITATION'] = 6, -- ⚙️
+    ['SLIP BOARD'] = 4, -- ⚙️
+    ['SHY CARDS'] = 6, -- 😪
+    ['SUPERPOSITION'] = 3,
     
-    ['DRAFT'] = 3,
+    ['DRAFT'] = 3, -- 😪
     ['ROSE-TINTED'] = 3, -- ⚙️
-    ['RORSCHACH'] = 3,
+    ['RORSCHACH'] = 3, -- 😪
     ['NIGHT'] = 3,
     
-    ['TIME IS SCORE'] = 6,
-    ['BOSS'] = 3,
+    ['TIME IS SCORE'] = 6, -- 😪
+    ['BOSS'] = 3, -- 😪 переименовать в ENDLESS
     ['XS'] = 6, -- ⚙️
     ['WINDOW'] = 7, -- ⚙️
+
+    -- ['SHAKE'] = 3,
+    ['TAKE FIVE 2'] = 20, -- мне очень понравился этот уровень, поэтому я хочу сделать его увеличенную версию
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
-    ['GETTING STARTED'] = 3,
+    ['GETTING STARTED'] = 2, -- для дебага
     ['LAMA LEVEL'] = 6,
     ['BRIDGE'] = 6,
     ['UPSIDE DOWN'] = 3,
     ['TAKE FIVE'] = 5,
+    ['TAKE FIVE 2'] = 5,
     ['REVERSE'] = 6,
     
     -- в afterparty уникальные тройки:
@@ -98,10 +106,10 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['DEJA VU'] = 6,
     
     ['CONVEYOR'] = 6,
-    ['GRAVITATION'] = 6,
+    ['GRAVITATION'] = 3,
     ['SLIP BOARD'] = 3,
     ['SHY CARDS'] = 6,
-    ['SLOTS'] = 3,
+    ['SUPERPOSITION'] = 3,
     
     ['DRAFT'] = 3,
     ['ROSE-TINTED'] = 3,
@@ -118,28 +126,30 @@ LEVEL_BOARD = {
     ['BRIDGE'] = {x=0, y=17},
     ['UPSIDE DOWN'] = {x=60, y=17},
     ['TAKE FIVE'] = {x=60, y=0},
+    ['TAKE FIVE 2'] = {x=60, y=0},
     ['CONVEYOR'] = {x=30, y=34},
     ['XS'] = {x=0, y=34},
     ['WINDOW'] = {x=0, y=51},
-    ['GRAVITATION'] = {x=30, y=51},
+    -- ['GRAVITATION'] = {x=30, y=51},
+    -- ['SLIP BOARD'] = {x=30, y=51},
 }
 
 LEVEL_LAYOUT = {
     ['BRIDGE'] = {
-        x1 = 8*1, y1 = 8*3,
-        x2 = 8*7, y2 = 8*(31-17)
+        x1 = 8*2, y1 = 8*3,
+        x2 = 8*8, y2 = 8*(31-17)
     },
     ['WINDOW'] = {
-        x1 = 8*1, y1 = 8*3 - 3,
-        x2 = 8*23+5, y2 = 8*3 + 2,
+        x1 = 8*2, y1 = 8*3 - 3,
+        x2 = 8*24+5, y2 = 8*3 + 2,
     },
     ['UPSIDE DOWN'] = {
-        x1 = 8*9 - 1, y1 = 8*8 - 1,
-        x2 = 8*16 - 4, y2 = 8*12 - 4,
+        x1 = 8*10 - 1, y1 = 8*8 - 1,
+        x2 = 8*17 - 4, y2 = 8*12 - 4,
     },
     ['GRAVITATION'] = {
-        x1 = 8*1, y1 = 8*3 - 3,
-        x2 = 8*23+5, y2 = 8*3 + 2,
+        x1 = 8*2, y1 = 8*3 - 3,
+        x2 = 8*24+5, y2 = 8*3 + 2,
     },
 }
 

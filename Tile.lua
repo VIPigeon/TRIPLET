@@ -64,8 +64,15 @@ function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
         -- параметры для кастомных уровней с движением
         gravity_speed = 0,
         slip = {
-            history = {},  -- история позиций перемещаемой карты
+            -- разделяем для предварительной оптимизации. Извините
+            history_x = {}, -- история позиций перемещаемой карты
+            history_y = {}, -- история позиций перемещаемой карты
 
+            target_vx = 0,
+            target_vy = 0,
+            vx = 0,
+            vy = 0,
+            grip = 2.1, -- скольжение
         },
     }
 
@@ -74,6 +81,7 @@ function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
 end
 
 function Tile:update_gravity()
+    -- для уровня GRAVITATION
     if self.triplet_status ~= 'no' then
         return
     end
@@ -85,8 +93,6 @@ function Tile:update_gravity()
     self.gravity_speed = self.gravity_speed + 0.033
     self.y = self.y + self.gravity_speed
 
-    -- local border = 14*8 - 13
-    -- if self.y >= border then
     local x1 = (self.x+1)/8
     local y1 = (self.y+1)/8
     local x2 = (self.x+14)/8
@@ -95,10 +101,85 @@ function Tile:update_gravity()
         self.y = self.y - self.gravity_speed
         self.gravity_speed = 0
     end
-    -- self.y = self.y - self.gravity_speed
-    -- if self.gravity_speed > 0 then
-    --     trace(self.gravity_speed)
-    -- end
+end
+
+function Tile:update_slip()
+    -- для уровня SLIP BOARD
+    if self.triplet_status ~= 'no' or self.hand_status == 'in' or self.hand_status == 'to' then
+        return
+    end
+
+    if self.status == 'held' then
+        local _HISTORY_SIZE = 10
+        while #self.slip.history_x < _HISTORY_SIZE do
+            table.insert(self.slip.history_x, self.x)
+            table.insert(self.slip.history_y, self.y)
+        end
+        table.insert(self.slip.history_x, self.x)
+        table.insert(self.slip.history_y, self.y)
+        table.remove(self.slip.history_x, 1)
+        table.remove(self.slip.history_y, 1)
+        if Click.release_left() then
+            -- игрок отпустил мышку и запустил тайл
+            -- trace(self.slip.history_x[_HISTORY_SIZE]..' - '..self.slip.history_x[1])
+            self.slip.target_vx = (self.slip.history_x[_HISTORY_SIZE] - self.slip.history_x[1]) / (_HISTORY_SIZE-1)
+            -- trace(self.slip.vx)
+            self.slip.target_vy = (self.slip.history_y[_HISTORY_SIZE] - self.slip.history_y[1]) / (_HISTORY_SIZE-1)
+
+            self.slip.history_x = {}
+            self.slip.history_y = {}
+        end
+    else
+        -- НЕЙРОКОД
+        -- коэффициенты "льда"
+        local GRIP = 0.33       -- насколько быстро скорость стремится к target_v
+                                 -- меньше значение = более скользкая поверхность
+        local FRICTION = 0.97   -- очень слабое постоянное затухание
+        local STOP_EPS = 0.066    -- порог полной остановки
+
+        -- плавно изменяем текущую скорость в сторону target_v
+        self.slip.vx = self.slip.vx + (self.slip.target_vx - self.slip.vx) * GRIP
+        self.slip.vy = self.slip.vy + (self.slip.target_vy - self.slip.vy) * GRIP
+
+        -- на льду внешнее воздействие постепенно исчезает,
+        -- поэтому и target_v медленно затухает к нулю
+        self.slip.target_vx = self.slip.target_vx * FRICTION
+        self.slip.target_vy = self.slip.target_vy * FRICTION
+
+        -- обновляем позицию
+        local MAX_SPEED = 5
+        local d_x = self.slip.vx
+        local d_y = self.slip.vy
+        if MAX_SPEED^2 < self.slip.vx^2 + self.slip.vy^2 then
+            local vec = vector2d.normalize({x=self.slip.vx, y=self.slip.vy})
+            d_x = vec.x*MAX_SPEED
+            d_y = vec.y*MAX_SPEED
+        end
+
+        self.x = self.x + d_x
+        self.y = self.y + d_y
+
+        local x1 = (self.x+1)/8
+        local y1 = (self.y+1)/8
+        local x2 = (self.x+14)/8
+        local y2 = (self.y+14)/8
+        if not self:is_legal_position(x1, y1, x2, y2) then
+            self.x = self.x - d_x
+            self.y = self.y - d_y
+        end
+
+        -- остановка при очень маленькой скорости
+        if math.abs(self.slip.vx) < STOP_EPS and
+           math.abs(self.slip.vy) < STOP_EPS and
+           math.abs(self.slip.target_vx) < STOP_EPS and
+           math.abs(self.slip.target_vy) < STOP_EPS then
+
+            self.slip.vx = 0
+            self.slip.vy = 0
+            self.slip.target_vx = 0
+            self.slip.target_vy = 0
+        end
+    end
 end
 
 function Tile:compare(tile)
@@ -135,6 +216,8 @@ function Tile:update()
 
     if game.current_level.name == 'GRAVITATION' then
         self:update_gravity()
+    elseif game.current_level.name == 'SLIP BOARD' then
+        self:update_slip()
     end
 
     -- trace(tostring(self)..' hand status = '..self.hand_status)
@@ -293,12 +376,23 @@ function Tile:what_are_you_doing_with_me()
     --     return 'going to hand'
     -- end
 
+    if self.status ~= 'held' and not Click.left() then
+        return 'nothing'
+    end
+
     self.held_point.x = x - self.x
     self.held_point.y = y - self.y
     return 'hold'
 end
 
 function Tile:is_legal_position(x1, y1, x2, y2)
+    if hand.full() then
+        return (BOARD[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
+       (BOARD[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
+       (BOARD[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
+       (BOARD[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)])
+    end
+
     return (BOARD[mget(x1, y1)] or HAND[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
        (BOARD[mget(x1, y2)] or HAND[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
        (BOARD[mget(x2, y1)] or HAND[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 

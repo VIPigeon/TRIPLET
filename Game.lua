@@ -15,14 +15,14 @@ game = {
     current_triplet_tiles_indexes = {},
     triplets_count = 0,
     buttons = {
-        start = Button:new(13*8, 12*8, 'Start'),
+        start = Button:new(12*8, 11*8, 'Start', nil, nil, nil, 2),
         -- burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         settings = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 12, 13),
         -- levels = Button:new(1, 3*8-3, 'Levels'),
         done = Button:new(20*8, 9*8, 'Done'),
         -- settings = Button:new(1, 5*8-3, 'Settings'),
-        map = Button:new(13*8 + 6, 14*8, 'Map'),
+        map = Button:new(13*8 + 6, 14*8, 'Map', nil,nil,nil, 2),
         from_level_to_map = SpriteButton:new(2*8, 0, {chill=130, scared=132, pressed=134}, 12, 13),
         from_map_to_level = SpriteButton:new(2*8, 0, {chill=64, scared=66, pressed=68}, 12, 13),
         -- [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
@@ -43,7 +43,7 @@ game = {
         toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
         toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
         toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
-        ok = Button:new(25*8, 14*8, 'OK'),
+        ok = Button:new(25*8, 14*8, 'OK', nil,nil,nil, 2),
     },
 
     -- невидимый ProgressBar в начале игры
@@ -160,11 +160,15 @@ function game.set_game_visibility(flag)
     end
 end
 
-function game.set_status(status)    
+function game.set_status(status)
     -- перед сменой статуса скрываем все кнопки
     -- а потом включаем только те что нужны
     for _, b in pairs(game.buttons) do
         b:set_visibility(false)
+    end
+
+    if game.status == 'settings' then
+        palette.make_normal()  -- делаем палитру нормальной при ВЫХОДЕ из settings
     end
 
 
@@ -209,7 +213,6 @@ function game.set_status(status)
             palette.set_color('green')
         end
 
-        palette.make_normal()  -- делаем палитру нормальной
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_level_to_map:set_visibility(true)
@@ -231,6 +234,8 @@ function game.set_status(status)
         game.buttons.ok:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
     elseif status == "done" then
+        mem.save()
+
         game.scoring_animator = ScoringAnimator:new(game.spectator.time, game.spectator.turns)
         game.progress_bar = INVISIBLE_BAR  -- скрываем бар
         game.spectator:hide()  -- скрываем spectator
@@ -245,10 +250,14 @@ function game.set_status(status)
         local slot = table.copy(SCORE_SLOT)
         local COUNTER = 5
         local counter = COUNTER
+        local _TRIPLET_SIZE = 3
+        if string.find(game.current_level.name, 'TAKE FIVE') then
+            _TRIPLET_SIZE = 5
+        end
         for i = 1, #game.tiles do
             game.tiles[i]:start_score_animation(clock, slot)
             clock = clock + increment_clock
-            if i % 3 == 0 then
+            if i % _TRIPLET_SIZE == 0 then
                 slot.x = slot.x + TILE_SIZE
                 counter = counter - 1
                 if counter == 0 then
@@ -274,6 +283,18 @@ end
 
 function game.init()
     math.randomseed(time()*1e7)
+
+    -- mem.clear()
+
+    if not ALL_LEVELS_AVAILABLE then
+        mem.load() -- SaveAndLoad
+    end
+    for _, level in ipairs(game.level_map.levels) do
+        if level.name == FIRST_LEVEL_NAME then
+            level.is_available = true
+        end
+    end
+
 
     game.set_status("main")
 
@@ -378,8 +399,11 @@ function game.update()
             -- проверяем, что анимация закончилась
             local flag = true
             -- for i = #game.tiles, #game.tiles-3, -1 do
-            for i = #game.tiles, #game.tiles-2, -1 do
-                trace(i)
+            local _TRIPLET_SIZE = 3
+            if string.find(game.current_level.name, 'TAKE FIVE') then
+                _TRIPLET_SIZE = 5
+            end
+            for i = #game.tiles, #game.tiles-_TRIPLET_SIZE+1, -1 do
                 if game.tiles[i].triplet_status ~= "done" then
                     flag = false
                     break
@@ -444,7 +468,11 @@ function game.update()
                 end
             end
             -- весь этот card_counter нужен только для того, чтобы триплет засчитывался только после того как закончится анимация
-            if card_counter == 3 then
+            local _TRIPLET_SIZE = 3
+            if string.find(game.current_level.name, 'TAKE FIVE') then
+                _TRIPLET_SIZE = 5
+            end
+            if card_counter == _TRIPLET_SIZE then
                 game.score_counter:triplet()
                 Sound.triplet()
                 game.triplets_count = game.triplets_count + 1
@@ -509,7 +537,44 @@ function game.draw()
         map(0, 0)
     elseif mini_status == 'map' then
         game.level_map:draw()
+    elseif mini_status == 'main' then
+        map(30, 0)
+
+        local MAIN_COLOR = 11
+        local OUTLINE_COLOR = 5
+        local TEXT = "TRIPLET!"
+        local OUTLINE_WIDTH = 1
+        local X = 5*8
+        local Y = 4*8
+        local SIZE = 4
+        local function pprint(X, Y, MAIN_COLOR)
+            print(TEXT, X-OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
+            print(TEXT, X+OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
+            print(TEXT, X, Y-OUTLINE_WIDTH, MAIN_COLOR, false, SIZE)
+            print(TEXT, X, Y+OUTLINE_WIDTH, MAIN_COLOR, false, SIZE)
+        end
+
+        pprint(X, Y+4, OUTLINE_COLOR)
+        pprint(X, Y-4, OUTLINE_COLOR)
+        pprint(X+4, Y, OUTLINE_COLOR)
+        pprint(X-4, Y, OUTLINE_COLOR)
+
+        pprint(X+3, Y+2, OUTLINE_COLOR)
+        pprint(X+2, Y+3, OUTLINE_COLOR)
+
+        pprint(X+3, Y-2, OUTLINE_COLOR)
+        pprint(X+2, Y-3, OUTLINE_COLOR)
+
+        pprint(X-3, Y-2, OUTLINE_COLOR)
+        pprint(X-2, Y-3, OUTLINE_COLOR)
+
+        pprint(X-3, Y+2, OUTLINE_COLOR)
+        pprint(X-2, Y+3, OUTLINE_COLOR)
+
+        pprint(X, Y, MAIN_COLOR)
+        
     end
+
     -- hand.draw_hitbox()
     -- hand.draw()
 
