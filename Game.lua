@@ -245,10 +245,10 @@ function game.set_status(status)
 
         local clock = 0.6
         local increment_clock = 0.15
-        local TILE_SIZE = 15 -- с отступом 1 пиксель
-        local SCORE_SLOT = {x=3*8, y=14*8}
+        local TILE_SIZE = 14 + (5) -- с отступом
+        local SCORE_SLOT = {x=10, y=14*8 - 2}
         local slot = table.copy(SCORE_SLOT)
-        local COUNTER = 5
+        local COUNTER = 6 -- количество тайлов в ряду
         local counter = COUNTER
         local _TRIPLET_SIZE = 3
         if string.find(game.current_level.name, 'TAKE FIVE') then
@@ -606,12 +606,14 @@ function game.draw()
         local medal = game.current_level:get_medal(time)
         local donut = game.current_level:get_donut(score)
 
-        print('score:', 14*8, 8*8)
-        spr(donut, 14*8, 9*8)
-        print(score, 16*8, 9*8+2)
-        print('time:', 14*8, 11*8)
-        spr(medal, 14*8, 12*8)
-        print(string.format("%.1f", time), 16*8, 12*8+2)
+        local X = 17*8 + 2
+        local Y = 5*8
+        print('score:', X, Y)
+        spr(donut, X, Y + 8)
+        print(score, X + 16, Y + 10)
+        print('time:', X, Y + 3*8)
+        spr(medal, X, Y + 4*8)
+        print(string.format("%.1f", time), X + 16, Y + 4*8 + 2)
         --[[
         local score = game.scoring_animator:get_score_for_tiles()
         -- game.buttons.done:set_visibility(true)

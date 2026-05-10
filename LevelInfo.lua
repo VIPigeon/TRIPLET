@@ -59,8 +59,8 @@ LEVEL_DESCRIPTION = {
 -- ⭐ помечаем уровни, которые готовы ПОЛНОСТЬЮ, то есть с набором животных
 -- 😪 помечаем уровни, которые я не хочу делать
 LEVEL_SIZE = {  -- количество ВИДОВ
-    ['GETTING STARTED'] = 2,
-    ['LAMA LEVEL'] = 1,
+    ['GETTING STARTED'] = 1,
+    ['LAMA LEVEL'] = 4,
     ['BRIDGE'] = 6, -- ⚙️
     ['UPSIDE DOWN'] = 7, -- ⚙️
     ['TAKE FIVE'] = 10, -- ⚙️
@@ -90,7 +90,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['TAKE FIVE 2'] = 20, -- мне очень понравился этот уровень, поэтому я хочу сделать его увеличенную версию
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
-    ['GETTING STARTED'] = 2, -- для дебага
+    ['GETTING STARTED'] = 24, -- для дебага
     ['LAMA LEVEL'] = 6,
     ['BRIDGE'] = 6,
     ['UPSIDE DOWN'] = 3,
@@ -155,7 +155,9 @@ LEVEL_LAYOUT = {
 
 local base_pool = {396, 256, 298, 360, 268, 300}
 local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}
+local lama_pool = {360, 362, 364, 366}
 
 LEVEL_POOL = {
     ['CROCODILE LEVEL'] = {266, 448},
+    ['LAMA LEVEL'] = lama_pool,
 }

@@ -376,6 +376,7 @@ function Tile:what_are_you_doing_with_me()
     --     return 'going to hand'
     -- end
 
+    -- TODO: БАГ отображения с морганием
     if self.status ~= 'held' and not Click.left() then
         return 'nothing'
     end

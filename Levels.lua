@@ -374,10 +374,15 @@ function Level:get_triplets()
         return 16
     end
 
-    if self.copies_of_each_animal == 6 then
-        return self.size * 2
+    -- if self.copies_of_each_animal == 6 then
+    --     return self.size * 2
+    -- end
+
+    if self.copies_of_each_animal == 5 then
+        return self.size
     end
-    return self.size
+
+    return self.size * (self.copies_of_each_animal / 3)
 end
 
 function Level:set_state(state)
