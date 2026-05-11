@@ -15,6 +15,11 @@ Tile.back = 96 -- BICYCLE_BACK
 Tile.face = 98 -- EMPTY FACE
 Tile.SHADOW = 128
 
+Tile.night = {
+    face = 100, -- EMPTY FACE
+    held_face = 102,
+}
+
 function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
     flip = flip or 0
     rotate = rotate or 0
@@ -74,10 +79,33 @@ function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
             vy = 0,
             grip = 2.1, -- скольжение
         },
+        superposition = {
+            value_to_switch = 0,
+            t=0,
+        },
     }
 
     setmetatable(object, self)
     return object
+end
+
+function Tile:set_value_to_switch(value) -- SUPERPOSITION
+    self.superposition.value_to_switch = value
+end
+
+function Tile:update_superposition()
+    if self.superposition.value_to_switch == 0 then
+        return
+    end
+    local _T = 1.1
+    self.superposition.t = Basic.tick_timer(self.superposition.t)
+    if self.superposition.t == 0 then
+        self.superposition.t = _T
+        -- меняем значение
+        local v = self.value
+        self.value = self.superposition.value_to_switch
+        self.superposition.value_to_switch = v
+    end
 end
 
 function Tile:update_gravity()
@@ -218,6 +246,8 @@ function Tile:update()
         self:update_gravity()
     elseif game.current_level.name == 'SLIP BOARD' then
         self:update_slip()
+    elseif game.current_level.name == 'SUPERPOSITION' then
+        self:update_superposition()
     end
 
     -- trace(tostring(self)..' hand status = '..self.hand_status)
@@ -428,6 +458,13 @@ function Tile:move_by_cursor()
 end
 
 function Tile:draw()
+    local night_backup_face = Tile.face
+    local night_backup_held_face = Tile.STATUS_SPRITE.held_face
+    if game.current_level.name == 'NIGHT' then
+        Tile.face = Tile.night.face
+        Tile.STATUS_SPRITE.held_face = Tile.night.held_face
+    end
+
     local is_face = self.is_face
     if self.is_reverse then
         is_face = not is_face
@@ -447,35 +484,44 @@ function Tile:draw()
         br = 0
     end
 
+    local COLORKEY = 7
     if self.status == 'scared' then
-        spr(is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,bf,br,2,2)
+        spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
         spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,bf,br,2,2)
 
         if is_face then
-            spr(self.value, self.x, self.y, 15, 1,ff,fr,2,2)
+            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+            -- spr(self.value, self.x, self.y, -1, 1,ff,fr,2,2)
         end
     elseif self.status == 'held' then
         -- поднимаем вверх
         local SHIFT = 2
         spr(Tile.SHADOW, self.x, self.y, 11, 1,0,0,2,2)
-        spr(is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
+        spr(is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
         if is_face then
-            spr(Tile.STATUS_SPRITE.held_face, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
+            spr(Tile.STATUS_SPRITE.held_face, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
         else
-            spr(Tile.STATUS_SPRITE.held, self.x, self.y-SHIFT, 0, 1,bf,br,2,2)
+            spr(Tile.STATUS_SPRITE.held, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
         end
 
         if is_face then
-            spr(self.value, self.x, self.y-SHIFT, 15, 1,ff,fr,2,2)
+            -- if game.current_level.name == 'NIGHT' then
+                -- spr(self.value, self.x, self.y-SHIFT, 0, 1,ff,fr,2,2)
+            -- else
+            spr(self.value, self.x, self.y-SHIFT, 12, 1,ff,fr,2,2)
+            -- end
         end
 
     elseif self.status == 'chill' then
-        spr(is_face and Tile.face or Tile.back, self.x, self.y, 0, 1,bf,br,2,2)
+        spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
 
         if is_face then
-            spr(self.value, self.x, self.y, 15, 1,ff,fr,2,2)
+            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
         end
-    end    
+    end
+
+    Tile.face = night_backup_face
+    Tile.STATUS_SPRITE.held_face = night_backup_held_face
 end
 
 function Tile:is_scored()

@@ -299,7 +299,11 @@ function Level:improve_result(time, score)
 end
 
 function Level:get_tiles()
-    shuffle(self.pool)
+    if game.current_level.name == 'DEJA VU' then
+        table.sort(self.pool)
+    else
+        shuffle(self.pool)
+    end
     local tiles = {}
     local counter = self.size
     local i = 1
@@ -315,6 +319,18 @@ function Level:get_tiles()
             for _ = 1, 3 do
                 table.insert(tiles, Tile:new(0, 0, self.pool[i], 0, r1, true))
                 table.insert(tiles, Tile:new(0, 0, self.pool[i], 0, r2, true))
+            end
+        elseif self.name == 'SUPERPOSITION' then
+            table.insert(tiles, Tile:new(0, 0, self.pool[i*2]))
+            table.insert(tiles, Tile:new(0, 0, self.pool[i*2 + 1]))
+            -- self.copies_of_each_animal == 6
+            for _ = 1, 2 do
+                local t1 = Tile:new(0, 0, self.pool[i*2])
+                t1:set_value_to_switch(self.pool[i*2 + 1])
+                local t2 = Tile:new(0, 0, self.pool[i*2 + 1])
+                t2:set_value_to_switch(self.pool[i*2])
+                table.insert(tiles, t1)
+                table.insert(tiles, t2)
             end
         elseif self.name == 'CROCODILE LEVEL' then
             for r = 0, 3 do

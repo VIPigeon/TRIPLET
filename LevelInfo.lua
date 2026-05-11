@@ -74,12 +74,12 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['GRAVITATION'] = 6, -- ⚙️
     ['SLIP BOARD'] = 4, -- ⚙️
     ['SHY CARDS'] = 6, -- 😪
-    ['SUPERPOSITION'] = 3,
+    ['SUPERPOSITION'] = 5,
     
     ['DRAFT'] = 3, -- 😪
     ['ROSE-TINTED'] = 3, -- ⚙️
     ['RORSCHACH'] = 3, -- 😪
-    ['NIGHT'] = 3,
+    ['NIGHT'] = 18,
     
     ['TIME IS SCORE'] = 6, -- 😪
     ['BOSS'] = 3, -- 😪 переименовать в ENDLESS
@@ -102,14 +102,14 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     -- один и тот же вид представлен в двух отедльных наборах, но с разным поворотом
     ['AFTERPARTY'] = 6,
 
-    ['CROCODILE LEVEL'] = 8*3,
-    ['DEJA VU'] = 6,
+    ['CROCODILE LEVEL'] = 8*3, -- костыль
+    ['DEJA VU'] = 3,
     
     ['CONVEYOR'] = 6,
     ['GRAVITATION'] = 3,
     ['SLIP BOARD'] = 3,
     ['SHY CARDS'] = 6,
-    ['SUPERPOSITION'] = 3,
+    ['SUPERPOSITION'] = 6, -- костыль
     
     ['DRAFT'] = 3,
     ['ROSE-TINTED'] = 3,

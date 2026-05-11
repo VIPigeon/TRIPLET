@@ -97,8 +97,13 @@ function game.init_level()
     hand.init()
     game.scared_tile = -1
 
-    
-    math.randomseed(time()*1e7)
+    if game.current_level.name == 'DEJA VU' then
+        -- trace('DEJA VU')
+        math.randomseed(67)
+    else
+        math.randomseed(time()*1e7)
+    end
+
     game.tiles = game.current_level:get_tiles()
     -- for _, t in ipairs(game.tiles) do
     --     trace(t.value)
