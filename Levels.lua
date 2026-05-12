@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = true
+ALL_LEVELS_AVAILABLE = false
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -17,7 +17,18 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
         show_mode = "donut",
         -- donut — показывает награды за очки
         -- medal — показывает награды за время
-        status = 'normal'
+        change_mode_button = ToggleButton:new(4*8, 4, 'best score', ' best time', true, nil,nil,nil,
+            {
+            text = {[true]=4, [false]=4},
+            chill = {[true]=10, [false]=10},
+            scared= {[true]=15, [false]=15},
+            -- pressed={[true]=3, [false]=11},
+            pressed={[true]=14, [false]=14},
+            shadow = {[true]=4, [false]=4},
+            }
+        ),
+
+        status = 'normal',
         -- events — в процессе обработки ивентов. ждем конца анимации
     }
     local TILE = {
@@ -84,6 +95,16 @@ function LevelMap:update()
         return
     end
 
+    self.change_mode_button:update()
+    if self.change_mode_button:is_pressed() then
+        self.change_mode_button.is_on = not self.change_mode_button.is_on
+        if self.show_mode == 'donut' then
+            self.show_mode = 'medal'
+        else
+            self.show_mode = 'donut'
+        end
+    end
+
     local flag = false
     for _, level in ipairs(self.levels) do
         if level.state ~= 'button' then
@@ -114,6 +135,9 @@ function LevelMap:draw()
             level:draw()
         end
     end
+
+    self:_draw_achievements()
+    self.change_mode_button:draw()
 end
 
 function LevelMap:get_starting_level()
@@ -149,6 +173,23 @@ function LevelMap:get_available_level()
         end
     end
     return not_completed or just_available  -- мегакрутой if. Как же он хорош
+end
+
+function LevelMap:_draw_achievements()
+    for i, level in ipairs(self.levels) do
+        local x = (level.x % 30)*8 + 4
+        local y = (level.y % 17)*8 + 4
+        if level.button.status == 'pressed' then
+            y = y + 1
+        end
+        if level.is_completed then
+            if self.show_mode == 'medal' then
+                spr(level:get_medal(level.best_time.time), x, y, 0)
+            elseif self.show_mode == 'donut' then
+                spr(level:get_donut(level.best_score.score), x, y, 0)
+            end
+        end
+    end
 end
 
 LevelMap.__index = LevelMap
@@ -508,6 +549,7 @@ function Level:draw()
             -- self.window.back_button:draw()
             self.window.play_button:draw()
         end
+
         return
     end
 

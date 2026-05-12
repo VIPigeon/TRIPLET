@@ -81,8 +81,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['RORSCHACH'] = 3, -- 😪
     ['NIGHT'] = 18,
     
-    ['TIME IS SCORE'] = 6, -- 😪
-    ['BOSS'] = 3, -- 😪 переименовать в ENDLESS
+    -- ['TIME IS SCORE'] = 6, -- 😪
+    ['ENDLESS MODE'] = 3, -- 😪 переименовать в ENDLESS
     ['XS'] = 6, -- ⚙️
     ['WINDOW'] = 7, -- ⚙️
 
@@ -90,7 +90,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['TAKE FIVE 2'] = 20, -- мне очень понравился этот уровень, поэтому я хочу сделать его увеличенную версию
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
-    ['GETTING STARTED'] = 24, -- для дебага
+    ['GETTING STARTED'] = 3, -- для дебага
     ['LAMA LEVEL'] = 6,
     ['BRIDGE'] = 6,
     ['UPSIDE DOWN'] = 3,
@@ -116,8 +116,8 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['RORSCHACH'] = 3,
     ['NIGHT'] = 3,
     
-    ['TIME IS SCORE'] = 6,
-    ['BOSS'] = 3,
+    -- ['TIME IS SCORE'] = 6,
+    ['ENDLESS MODE'] = 3,
     ['XS'] = 6,
     ['WINDOW'] = 6,
 }
@@ -130,7 +130,7 @@ LEVEL_BOARD = {
     ['CONVEYOR'] = {x=30, y=34},
     ['XS'] = {x=0, y=34},
     ['WINDOW'] = {x=0, y=51},
-    -- ['GRAVITATION'] = {x=30, y=51},
+    ['GRAVITATION'] = {x=60, y=17},
     -- ['SLIP BOARD'] = {x=30, y=51},
 }
 
@@ -144,14 +144,11 @@ LEVEL_LAYOUT = {
         x2 = 8*24+5, y2 = 8*3 + 2,
     },
     ['UPSIDE DOWN'] = {
-        x1 = 8*10 - 1, y1 = 8*8 - 1,
-        x2 = 8*17 - 4, y2 = 8*12 - 4,
-    },
-    ['GRAVITATION'] = {
-        x1 = 8*2, y1 = 8*3 - 3,
-        x2 = 8*24+5, y2 = 8*3 + 2,
+        x1 = 8*10 - 1, y1 = 8*7 - 1,
+        x2 = 8*17 - 4, y2 = 8*11 - 4,
     },
 }
+LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 
 local base_pool = {396, 256, 298, 360, 268, 300}
 local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}

@@ -102,6 +102,7 @@ require 'Settings'
 require 'Time'
 require 'Sound'
 require 'Game'
+require 'Tutorial'
 
 -- TIC-80 🤖 обязывает нас объявлять функцию TIC, которую он будет
 -- вызывать каждый кадр.

@@ -15,14 +15,14 @@ game = {
     current_triplet_tiles_indexes = {},
     triplets_count = 0,
     buttons = {
-        start = Button:new(12*8, 11*8, 'Start', nil, nil, nil, 2),
+        start = Button:new(19*8, 11*8, 'Start', nil, nil, nil, 1),
         -- burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         settings = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 12, 13),
         -- levels = Button:new(1, 3*8-3, 'Levels'),
         done = Button:new(20*8, 9*8, 'Done'),
         -- settings = Button:new(1, 5*8-3, 'Settings'),
-        map = Button:new(13*8 + 6, 14*8, 'Map', nil,nil,nil, 2),
+        map = Button:new(19*8 + 6, 14*8, 'Map', nil,nil,nil, 1),
         from_level_to_map = SpriteButton:new(2*8, 0, {chill=130, scared=132, pressed=134}, 12, 13),
         from_map_to_level = SpriteButton:new(2*8, 0, {chill=64, scared=66, pressed=68}, 12, 13),
         -- [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
@@ -200,6 +200,8 @@ function game.set_status(status)
         -- game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.map:set_visibility(true)
+
+        game.tutorial:init()
     elseif status == 'settings' then
         palette.make_dark()  -- делаем палитру темной
         game.buttons.undo:set_visibility(true)
@@ -289,6 +291,8 @@ end
 function game.init()
     math.randomseed(time()*1e7)
 
+    game.tutorial = Tutorial:new()
+
     -- mem.clear()
 
     if not ALL_LEVELS_AVAILABLE then
@@ -307,6 +311,8 @@ function game.init()
 end
 
 function game.update()
+    mem.save() -- я уже сгорел, почему игра никак не сохраняется
+
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
@@ -543,7 +549,7 @@ function game.draw()
     elseif mini_status == 'map' then
         game.level_map:draw()
     elseif mini_status == 'main' then
-        map(30, 0)
+        map(60, 51)
 
         local MAIN_COLOR = 11
         local OUTLINE_COLOR = 5

@@ -33,7 +33,7 @@ function Spectator:draw(x, y)
     y = y or 16*8+3
     if Settings.SHOW_TIME_DURING_GAME then
         -- print("TIME: "..string.format("%.1f", self.time), x, y)
-        spr(450 + (self.time - math.floor(self.time))/0.125, x+4, y)
+        spr(240 + (self.time - math.floor(self.time))/0.125, x+4, y)
         -- print("   time: "..math.floor(self.time), x, y, 11)
         print("   "..math.floor(self.time), x+2, y, 11)
         -- x = x + 39
