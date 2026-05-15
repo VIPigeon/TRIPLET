@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = false
+ALL_LEVELS_AVAILABLE = true
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -388,7 +388,7 @@ function Level:get_tiles()
             if self.name == 'UPSIDE DOWN' then
                 f = 3
                 is_back_static = false
-            elseif self.name == 'REVERSE' then
+            elseif string.find(game.current_level.name, 'REVERSE') then
                 f = 1
                 is_reverse = true
             end
@@ -567,7 +567,8 @@ function Level:draw()
         self.button:draw()
         if self.button.status ~= 'chill' then
             -- print(tostring(self.id)..'. '..self.name, 0, 16*8)
-            print(self.name, 0, 16*8)
+            -- print(self.name, 0, 16*8)
+            self:print_name()
         end
     else
         if self.is_secret then
@@ -579,6 +580,16 @@ function Level:draw()
         local height = 2
         spr(self.disabled_button_sprite, x*8, y*8, 0, 1,0,0, width,height)
     end
+end
+
+function Level:print_name()
+    -- костыли по переименовке
+    local name = self.name
+    if name == 'GRAVITATION' then
+        name = 'FALL'
+    end
+
+    print(name, 0, 16*8 + 3)
 end
 
 Level.__index = Level

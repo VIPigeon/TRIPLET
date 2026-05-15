@@ -39,12 +39,15 @@ game = {
         -- [12]= Button:new(60, 5 + 5*12, '11. [75]', LEVEL_BUTTON_X_SIZE),
         -- [13]= Button:new(60, 5 + 6*12, '12. [87]', LEVEL_BUTTON_X_SIZE),
         -- [14]= Button:new(60, 5 + 7*12, '13. [99]', LEVEL_BUTTON_X_SIZE),
-        toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
-        toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
-        toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
-        toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
-        ok = Button:new(25*8, 14*8, 'OK', nil,nil,nil, 1),
+        -- ok = Button:new(25*8, 14*8, 'OK', nil,nil,nil, 1),
+        ok = SpriteButton:new(17*8 + 3, 12*8 - 3, {chill=420, scared=422, pressed=424}, 16, 16),
         ok_tutorial = Button:new(21*8, 12*8, 'OK', nil,nil,nil, 1),
+
+        -- определяется в init
+        -- toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds'),
+        -- toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
+        -- toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
+        -- toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
 
         change_mode_button = ToggleButton:new(0, 18, 'best score', ' best time', true, nil,nil,nil,
             { -- 4*8, 4
@@ -195,8 +198,6 @@ function game.is_change_screen(status)
 end
 
 function game.set_status(status)
-    mem.save()
-
     if game.change_screen_animation and game.change_screen_animation:is_middle() then
         -- pass
     else
@@ -264,17 +265,17 @@ function game.set_status(status)
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_level_to_map:set_visibility(true)
-        game.score_counter = ScoreCounter:new()
         -- если вернулись в игру, не надо ее инициализировать еще раз
         if not is_undo then
             game.init_level()
+            game.score_counter = ScoreCounter:new()
         end
     elseif status == "map" then
         palette.set_color('green')
 
         game.set_game_visibility(false)
         game.buttons.settings:set_visibility(true)
-        trace(game.status)
+        -- trace(game.status)
         if game.status == 'game' then
             game.buttons.from_map_to_level:set_visibility(true)
         end
@@ -298,8 +299,52 @@ function game.set_status(status)
         local clock = 0.6
         local increment_clock = 0.15
         local TILE_SIZE = 14 + (5) -- с отступом
-        local SCORE_SLOT = {x=10, y=14*8 - 2}
-        local slot = table.copy(SCORE_SLOT)
+
+        local slot_i = 1
+        local _X = 104
+        local _Y = 27
+        local TILE_Y = 16
+        local TILE_X = 16
+        local slots = {
+            {x=_X, y = _Y},
+            {x=_X, y = _Y + TILE_Y},
+            {x=_X, y = _Y + TILE_Y*2},
+            {x=_X, y = _Y + TILE_Y*3},
+            {x=_X, y = _Y + TILE_Y*4},
+            {x=_X, y = _Y + TILE_Y*5},
+            {x=_X - TILE_X, y = _Y + TILE_Y/2},
+            {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y},
+            {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*2},
+            {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*3},
+            {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*4},
+
+            {x=_X - TILE_X*2, y = _Y},
+            {x=_X - TILE_X*2, y = _Y + TILE_Y},
+            {x=_X - TILE_X*2, y = _Y + TILE_Y*2},
+            {x=_X - TILE_X*2, y = _Y + TILE_Y*3},
+            {x=_X - TILE_X*2, y = _Y + TILE_Y*4},
+            {x=_X - TILE_X*2, y = _Y + TILE_Y*5},
+            {x=_X - TILE_X*3, y = _Y + TILE_Y/2},
+            {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y},
+            {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*2},
+            {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*3},
+            {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*4},
+
+            {x=_X - TILE_X*4, y = _Y},
+            {x=_X - TILE_X*4, y = _Y + TILE_Y},
+            {x=_X - TILE_X*4, y = _Y + TILE_Y*2},
+            {x=_X - TILE_X*4, y = _Y + TILE_Y*3},
+            {x=_X - TILE_X*4, y = _Y + TILE_Y*4},
+            {x=_X - TILE_X*4, y = _Y + TILE_Y*5},
+            {x=_X - TILE_X*5, y = _Y + TILE_Y/2},
+            {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y},
+            {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*2},
+            {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*3},
+            {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*4},
+        }
+
+        -- local SCORE_SLOT = {x=10, y=14*8 - 2}
+        -- local slot = table.copy(SCORE_SLOT)
         local COUNTER = 6 -- количество тайлов в ряду
         local counter = COUNTER
         local _TRIPLET_SIZE = 3
@@ -307,16 +352,17 @@ function game.set_status(status)
             _TRIPLET_SIZE = 5
         end
         for i = 1, #game.tiles do
-            game.tiles[i]:start_score_animation(clock, slot)
+            game.tiles[i]:start_score_animation(clock, slots[slot_i])
             clock = clock + increment_clock
             if i % _TRIPLET_SIZE == 0 then
-                slot.x = slot.x + TILE_SIZE
-                counter = counter - 1
-                if counter == 0 then
-                    counter = COUNTER
-                    slot.x = SCORE_SLOT.x
-                    slot.y = slot.y - TILE_SIZE
-                end
+                slot_i = slot_i + 1
+                -- slot.x = slot.x + TILE_SIZE
+                -- counter = counter - 1
+                -- if counter == 0 then
+                --     counter = COUNTER
+                --     slot.x = SCORE_SLOT.x
+                --     slot.y = slot.y - TILE_SIZE
+                -- end
             end
         end
     end
@@ -349,6 +395,10 @@ function game.init()
         end
     end
 
+    game.buttons.toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds')
+    game.buttons.toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music')
+    game.buttons.toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations')
+    game.buttons.toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time')
 
     game.set_status("main")
 
@@ -356,6 +406,8 @@ function game.init()
 end
 
 function game.update()
+    mem.save()
+
     if game.change_screen_animation then
         game.change_screen_animation:update()
         if game.change_screen_animation:is_middle() and not game.change_screen_flag then
@@ -722,8 +774,13 @@ function game.draw()
         end
     end
 
+    if game.status == 'game' or game.status == 'done' or game.status == 'well done' then
+        game.current_level:print_name()
+    end
+
     if game.change_screen_animation then
         -- trace(game.change_screen_animation.x)
         game.change_screen_animation:draw()
     end
+
 end

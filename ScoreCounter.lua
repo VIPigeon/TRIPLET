@@ -44,7 +44,10 @@ function ScoreCounter:draw()
     if self.combo > 1 then
         -- print("combo", x+30, y-22)
         -- print("combo", x+34+8, y-22-5)
-        print("x"..tostring(self.combo), x+40+8, y-11-5)
+        local _X = 109
+        local _Y = self.y
+        -- print("x"..tostring(self.combo), x+40+8, y-11-5)
+        print("combo! x"..tostring(self.combo), _X, _Y, 13)
     end
 
     if self.income_animation.time > 0 then
