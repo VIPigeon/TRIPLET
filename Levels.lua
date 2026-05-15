@@ -17,16 +17,11 @@ function LevelMap:new(map_x, map_y, size_x, size_y)
         show_mode = "donut",
         -- donut — показывает награды за очки
         -- medal — показывает награды за время
-        change_mode_button = ToggleButton:new(4*8, 4, 'best score', ' best time', true, nil,nil,nil,
-            {
-            text = {[true]=4, [false]=4},
-            chill = {[true]=10, [false]=10},
-            scared= {[true]=15, [false]=15},
-            -- pressed={[true]=3, [false]=11},
-            pressed={[true]=14, [false]=14},
-            shadow = {[true]=4, [false]=4},
-            }
-        ),
+        achievements_animation = {
+            T = 1,
+            t = 0,
+            state = false,
+        },
 
         status = 'normal',
         -- events — в процессе обработки ивентов. ждем конца анимации
@@ -89,21 +84,22 @@ function LevelMap:update_events()
     end
 end
 
+function LevelMap:update_achievements_animation()
+    self.achievements_animation.t = Basic.tick_timer(self.achievements_animation.t)
+    if self.achievements_animation.t == 0 then
+        self.achievements_animation.t = self.achievements_animation.T
+        self.achievements_animation.state = not self.achievements_animation.state
+    end
+end
+
 function LevelMap:update()
     if self.status == 'events' then
         self:update_events()
         return
     end
 
-    self.change_mode_button:update()
-    if self.change_mode_button:is_pressed() then
-        self.change_mode_button.is_on = not self.change_mode_button.is_on
-        if self.show_mode == 'donut' then
-            self.show_mode = 'medal'
-        else
-            self.show_mode = 'donut'
-        end
-    end
+    -- что-то с анимацией как будто хуже
+    -- self:update_achievements_animation()
 
     local flag = false
     for _, level in ipairs(self.levels) do
@@ -137,7 +133,7 @@ function LevelMap:draw()
     end
 
     self:_draw_achievements()
-    self.change_mode_button:draw()
+    -- self.change_mode_button:draw()
 end
 
 function LevelMap:get_starting_level()
@@ -180,6 +176,8 @@ function LevelMap:_draw_achievements()
         local x = (level.x % 30)*8 + 4
         local y = (level.y % 17)*8 + 4
         if level.button.status == 'pressed' then
+            y = y + 1
+        elseif self.achievements_animation.state then
             y = y + 1
         end
         if level.is_completed then
@@ -510,7 +508,8 @@ function Level:update()
     end
     self.button:update()
     if self.button:is_pressed() then
-        self:set_state('window')
+        -- self:set_state('window')
+        self:set_state('game')
     end
 end
 

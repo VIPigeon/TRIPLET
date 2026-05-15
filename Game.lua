@@ -43,7 +43,19 @@ game = {
         toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music'),
         toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
         toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
-        ok = Button:new(25*8, 14*8, 'OK', nil,nil,nil, 2),
+        ok = Button:new(25*8, 14*8, 'OK', nil,nil,nil, 1),
+        ok_tutorial = Button:new(21*8, 12*8, 'OK', nil,nil,nil, 1),
+
+        change_mode_button = ToggleButton:new(0, 18, 'best score', ' best time', true, nil,nil,nil,
+            { -- 4*8, 4
+            text = {[true]=4, [false]=4},
+            chill = {[true]=10, [false]=10},
+            scared= {[true]=15, [false]=15},
+            -- pressed={[true]=3, [false]=11},
+            pressed={[true]=14, [false]=14},
+            shadow = {[true]=4, [false]=4},
+            }
+        ),
     },
 
     -- невидимый ProgressBar в начале игры
@@ -72,14 +84,15 @@ game = {
     spectator = nil,
     scoring_animator = nil,
 
-    status = "map",
+    status = "main",
     -- settings — игрок в настройках (туду)
     -- game — основная игра
     -- done — уровень пройден
     -- map — игрок в НОВОМ меню выбора уровня
     prev_statuses = {},  -- таблица, в которой будут храниться предыдущие состояния.
 
-    level_map = LevelMap:new(30, 0)
+    level_map = LevelMap:new(30, 0),
+    change_screen_animation = nil,  -- обрабатывается параллельно
 }
 
 -- TODO: переместить в нормальное место
@@ -165,7 +178,35 @@ function game.set_game_visibility(flag)
     end
 end
 
+function game.is_change_screen(status)
+    if game.status == 'settings' or status == 'settings' then
+        return false
+    elseif game.status == status then
+        return false
+    elseif status == 'done' or status == 'well done' then
+        return false
+    end
+    return true
+    -- if status == 'game' and game.status == 'map' then
+    --     return true
+    -- elseif status == 'map' and game.status == 'game' then
+    --     return true
+    -- end
+end
+
 function game.set_status(status)
+    mem.save()
+
+    if game.change_screen_animation and game.change_screen_animation:is_middle() then
+        -- pass
+    else
+        if game.is_change_screen(status) then
+            game.change_screen_animation = ChangeScreenAnimator:new()
+            game.backlog_status = status
+            return
+        end
+    end
+
     -- перед сменой статуса скрываем все кнопки
     -- а потом включаем только те что нужны
     for _, b in pairs(game.buttons) do
@@ -201,7 +242,7 @@ function game.set_status(status)
         game.buttons.settings:set_visibility(true)
         game.buttons.map:set_visibility(true)
 
-        game.tutorial:init()
+        -- game.tutorial:init()
     elseif status == 'settings' then
         palette.make_dark()  -- делаем палитру темной
         game.buttons.undo:set_visibility(true)
@@ -233,7 +274,11 @@ function game.set_status(status)
 
         game.set_game_visibility(false)
         game.buttons.settings:set_visibility(true)
-        game.buttons.from_map_to_level:set_visibility(true)
+        trace(game.status)
+        if game.status == 'game' then
+            game.buttons.from_map_to_level:set_visibility(true)
+        end
+        game.buttons.change_mode_button:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
         game.level_map:process_events()
     elseif status == "well done" then  -- анимация done закончилась
@@ -291,7 +336,7 @@ end
 function game.init()
     math.randomseed(time()*1e7)
 
-    game.tutorial = Tutorial:new()
+    -- game.tutorial = Tutorial:new()
 
     -- mem.clear()
 
@@ -311,8 +356,18 @@ function game.init()
 end
 
 function game.update()
-    mem.save() -- я уже сгорел, почему игра никак не сохраняется
-
+    if game.change_screen_animation then
+        game.change_screen_animation:update()
+        if game.change_screen_animation:is_middle() and not game.change_screen_flag then
+            game.set_status(game.backlog_status)
+            game.change_screen_flag = true
+        elseif game.change_screen_animation:is_end() then
+            game.change_screen_flag = false
+            game.change_screen_animation = false
+        end
+        game.draw()
+        return
+    end
     for _, tile in ipairs(game.tiles) do
         tile:update()
     end
@@ -352,6 +407,12 @@ function game.update()
                         Settings.QUICK = not Settings.QUICK
                     elseif name == 'toggle_time' then
                         Settings.SHOW_TIME_DURING_GAME = not Settings.SHOW_TIME_DURING_GAME
+                    elseif name == 'change_mode_button' then
+                        if game.level_map.show_mode == 'donut' then
+                            game.level_map.show_mode = 'medal'
+                        else
+                            game.level_map.show_mode = 'donut'
+                        end
                     end
                 -- elseif name == 'burger' then
                 --     game.set_status('burger')
@@ -549,7 +610,7 @@ function game.draw()
     elseif mini_status == 'map' then
         game.level_map:draw()
     elseif mini_status == 'main' then
-        map(60, 51)
+        map(30, 0)
 
         local MAIN_COLOR = 11
         local OUTLINE_COLOR = 5
@@ -661,4 +722,8 @@ function game.draw()
         end
     end
 
+    if game.change_screen_animation then
+        -- trace(game.change_screen_animation.x)
+        game.change_screen_animation:draw()
+    end
 end

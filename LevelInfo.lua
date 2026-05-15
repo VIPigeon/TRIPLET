@@ -151,8 +151,17 @@ LEVEL_LAYOUT = {
 LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 
 local base_pool = {396, 256, 298, 360, 268, 300}
-local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}
 local lama_pool = {360, 362, 364, 366}
+local green_pool = {266, 268, 292, 324, 398}
+local river_pool = {262, 264, 266, 268, 270, 322}
+local flying_pool = {292, 298, 356, 328, 330, 416}
+local insects_pool = {322, 324, 326, 328, 330, 332, 334}
+local sea_pool = {384, 386, 388, 390, 392, 394, 396, 398}
+local black_and_grey_pool = {
+    290, 298, 320, 362, -- black
+    352, 354, 356, 358, 392, 294, -- grey
+}
+local autumn_pool = {256, 258, 270, 260, 288, 296, 302, 322, 328, 330, 334, 386, 388, 390, 396}
 
 LEVEL_POOL = {
     ['CROCODILE LEVEL'] = {266, 448},
