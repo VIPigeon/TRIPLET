@@ -365,6 +365,11 @@ function Tile:what_are_you_doing_with_me()
                 return 'going to hand'
             end
             Sound.cant_get_a_card()
+        elseif Settings.QUICK_DRAW_BY_DOUBLE_CLICK and Click.double_left() then
+            if not hand.full() then
+                return 'going to hand'
+            end
+            Sound.cant_get_a_card()
         end
     end
 
@@ -457,12 +462,16 @@ function Tile:move_by_cursor()
     end
 end
 
+local night_backup_face = Tile.face
+local night_backup_held_face = Tile.STATUS_SPRITE.held_face
+
 function Tile:draw()
-    local night_backup_face = Tile.face
-    local night_backup_held_face = Tile.STATUS_SPRITE.held_face
     if game.current_level.name == 'NIGHT' then
         Tile.face = Tile.night.face
         Tile.STATUS_SPRITE.held_face = Tile.night.held_face
+    else
+        Tile.face = night_backup_face
+        Tile.STATUS_SPRITE.held_face = night_backup_held_face
     end
 
     local is_face = self.is_face
@@ -519,9 +528,8 @@ function Tile:draw()
             spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
         end
     end
-
-    Tile.face = night_backup_face
-    Tile.STATUS_SPRITE.held_face = night_backup_held_face
+    -- Tile.face = night_backup_face
+    -- Tile.STATUS_SPRITE.held_face = night_backup_held_face
 end
 
 function Tile:is_scored()

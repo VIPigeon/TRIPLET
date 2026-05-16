@@ -294,12 +294,20 @@ function Level:new(x, y, level_type, level_id)
 end
 
 function Level:get_medal(time)
-    local time_per_triplet = time / self:get_triplets()
-    if time_per_triplet > 30 then
+    local _K = 1.5
+    if self.name == 'DEJA VU' then
+        _K = 3
+    elseif string.find(self.name, 'REVERSE') then
+        _K = 2.25
+    end
+    local time_per_triplet = _K*time / (self:get_triplets()^2)
+
+    -- какие красивые параметры 🤩
+    if time_per_triplet > 3 then
         return 4
-    elseif time_per_triplet > 15 then
+    elseif time_per_triplet > 2 then
         return 3
-    elseif time_per_triplet > 5 then
+    elseif time_per_triplet > 1.1 then
         return 2
     end
     return 1
@@ -307,14 +315,25 @@ end
 
 function Level:get_donut(score)
     local theory_best_score = (self:get_triplets() + 1)*self:get_triplets()*5
-    if score >= 0.9*theory_best_score then
+    local theory_worst_score = self:get_triplets()*10
+
+    if score == theory_worst_score then
+        return 20
+    elseif score == theory_best_score then
         return 17
-    elseif score >= 0.5*theory_best_score then
-        return 18
-    elseif score >= 0.2*theory_best_score then
+    elseif score >= (theory_best_score + theory_worst_score) / 2 then
         return 19
     end
-    return 20
+    return 18
+
+    -- if score >= 0.9*theory_best_score then
+    --     return 17
+    -- elseif score >= 0.5*theory_best_score then
+    --     return 18
+    -- elseif score >= 0.2*theory_best_score then
+    --     return 19
+    -- end
+    -- return 20
 end
 
 function Level:set_board()
@@ -348,7 +367,7 @@ function Level:get_tiles()
     local i = 1
     while counter > 0 do
 
-        if self.name == 'AFTERPARTY' then
+        if string.find(game.current_level.name, 'AFTERPARTY') then
             local r1 = math.random(0, 3)
             local r2 = math.random(0, 3)
             while r1 == r2 do

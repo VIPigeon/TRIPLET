@@ -1,3 +1,5 @@
+pink_seed = 0
+
 CENTER = {x=14*8, y=8*8}
 -- CENTER_AREA = {  -- теперь в Levels.lua
 --     x1 = 9*8 - 1,
@@ -10,6 +12,10 @@ INVISIBLE_BAR:set_visibility(false)
 LEVEL_BUTTON_X_SIZE = 39
 
 game = {
+    well_done_t = 0, -- для анимации well_done
+    well_done_T = 0.85, -- для анимации well_done
+    well_done_state = false, -- для анимации well_done
+
     tiles = {},
     scared_tile = -1,  -- никакая карта не напугана (не выделена)
     current_triplet_tiles_indexes = {},
@@ -258,6 +264,7 @@ function game.set_status(status)
     elseif status == "game" then
         if game.current_level.name == 'ROSE-TINTED' then
             palette.set_color('pink')
+            pink_seed = pink_seed + 1
         else
             palette.set_color('green')
         end
@@ -310,37 +317,28 @@ function game.set_status(status)
             {x=_X, y = _Y + TILE_Y},
             {x=_X, y = _Y + TILE_Y*2},
             {x=_X, y = _Y + TILE_Y*3},
-            {x=_X, y = _Y + TILE_Y*4},
-            {x=_X, y = _Y + TILE_Y*5},
             {x=_X - TILE_X, y = _Y + TILE_Y/2},
             {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y},
             {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*2},
             {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*3},
-            {x=_X - TILE_X, y = _Y + TILE_Y/2 + TILE_Y*4},
 
             {x=_X - TILE_X*2, y = _Y},
             {x=_X - TILE_X*2, y = _Y + TILE_Y},
             {x=_X - TILE_X*2, y = _Y + TILE_Y*2},
             {x=_X - TILE_X*2, y = _Y + TILE_Y*3},
-            {x=_X - TILE_X*2, y = _Y + TILE_Y*4},
-            {x=_X - TILE_X*2, y = _Y + TILE_Y*5},
             {x=_X - TILE_X*3, y = _Y + TILE_Y/2},
             {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y},
             {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*2},
             {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*3},
-            {x=_X - TILE_X*3, y = _Y + TILE_Y/2 + TILE_Y*4},
 
             {x=_X - TILE_X*4, y = _Y},
             {x=_X - TILE_X*4, y = _Y + TILE_Y},
             {x=_X - TILE_X*4, y = _Y + TILE_Y*2},
             {x=_X - TILE_X*4, y = _Y + TILE_Y*3},
-            {x=_X - TILE_X*4, y = _Y + TILE_Y*4},
-            {x=_X - TILE_X*4, y = _Y + TILE_Y*5},
             {x=_X - TILE_X*5, y = _Y + TILE_Y/2},
             {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y},
             {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*2},
             {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*3},
-            {x=_X - TILE_X*5, y = _Y + TILE_Y/2 + TILE_Y*4},
         }
 
         -- local SCORE_SLOT = {x=10, y=14*8 - 2}
@@ -653,12 +651,35 @@ function game.calc_ministatus()
     return mini_status
 end
 
+function game.print_funny_phrase()
+    local PHRASES = {
+        'BELIEVE',
+        -- 'I LOVE U',
+        -- 'CARPA DIEM!',
+        -- ...
+    }
+    math.randomseed(pink_seed)
+    local text = PHRASES[math.random(1, #PHRASES)]
+    local c = 5
+    local x1 = game.current_level.layout.x1 + 8
+    local x2 = math.max(x1, game.current_level.layout.x2 - math.floor(4.3 * #text))
+    local y1 = game.current_level.layout.y1 + 8
+    local y2 = game.current_level.layout.y2 + 1
+    local x = math.random(x1, x2)
+    local y = math.random(y1, y2)
+    print(text, x, y, c)
+    math.randomseed(time()*1e7)
+end
+
 function game.draw()
     -- cls(15)
     local mini_status = game.calc_ministatus()
     cls(0)
     if mini_status == 'game' then
         map(0, 0)
+        if game.current_level.name == 'ROSE-TINTED' then
+            game.print_funny_phrase()
+        end
     elseif mini_status == 'map' then
         game.level_map:draw()
     elseif mini_status == 'main' then
@@ -730,14 +751,30 @@ function game.draw()
         local medal = game.current_level:get_medal(time)
         local donut = game.current_level:get_donut(score)
 
-        local X = 17*8 + 2
-        local Y = 5*8
-        print('score:', X, Y)
-        spr(donut, X, Y + 8)
-        print(score, X + 16, Y + 10)
-        print('time:', X, Y + 3*8)
-        spr(medal, X, Y + 4*8)
-        print(string.format("%.1f", time), X + 16, Y + 4*8 + 2)
+        game.well_done_t = Basic.tick_timer(game.well_done_t)
+        if game.well_done_t == 0 then
+            game.well_done_t = game.well_done_T
+            game.well_done_state = not game.well_done_state
+        end
+
+        local X = 17*8 + 2 + 9
+        local Y = 5*8 + 1
+        local dY = 0
+        if game.well_done_state then
+            dY = -1
+        end
+        -- local DX = 39
+        local mDX = 12
+        print('score: '..tostring(score), X, Y)
+        -- spr(donut, X, Y + 8)
+        spr(donut, X - mDX, Y - 1 + dY)
+        -- print(score, X + 16, Y + 10)
+        -- print(score, X + DX, Y)
+        print('time: '..string.format("%.1f", time), X, Y + 3*8)
+        -- spr(medal, X, Y + 4*8)
+        spr(medal, X - mDX, Y + 3*8 - 1 + dY)
+        -- print(string.format("%.1f", time), X + 16, Y + 4*8 + 2)
+        -- print(string.format("%.1f", time), X + DX, Y + 3*8)
         --[[
         local score = game.scoring_animator:get_score_for_tiles()
         -- game.buttons.done:set_visibility(true)

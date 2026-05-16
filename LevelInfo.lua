@@ -9,16 +9,16 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['35 4'] = 'GETTING STARTED', ['37 4'] = 'LAMA LEVEL',
-    ['35 6'] = 'UNLUCK', ['37 6'] = 'GREEN ANIMALS',
+    ['37 4'] = 'GETTING STARTED', ['39 4'] = 'LAMA LEVEL',
+    ['37 6'] = 'NOIR',
 
-    ['39 6'] = 'BRIDGE',
-    ['41 6'] = 'REVERSE', ['43 6'] = 'UPSIDE DOWN', ['45 6'] = 'SLIP BOARD',
-    ['41 8'] = 'WINDOW', ['43 8'] = 'ROSE-TINTED', ['45 8'] = 'DEJA VU',
-    ['41 10'] = 'GRAVITATION', ['43 10'] = 'AFTERPARTY', ['45 10'] = 'REVERSE 2',
+    -- ['39 6'] = 'BRIDGE',
+    ['39 6'] = 'REVERSE', ['41 6'] = 'UPSIDE DOWN', ['43 6'] = 'SLIP BOARD',
+    ['39 8'] = 'WINDOW', ['41 8'] = 'ROSE-TINTED', ['43 8'] = 'AFTERPARTY', ['45 8'] = 'AFTERPARTY 2',
+    ['39 10'] = 'GRAVITATION', ['41 10'] = 'DEJA VU', ['43 10'] = 'REVERSE 2',
 
-        ['47 10'] = 'TAKE FIVE', ['49 10'] = 'TAKE FIVE 2',
-    ['45 12'] = 'XS', ['47 12'] = 'NIGHT', ['49 12'] = 'SUPERPOSITION',
+        ['45 10'] = 'TAKE FIVE', ['47 10'] = 'TAKE FIVE 2',
+    ['43 12'] = 'XS', ['45 12'] = 'NIGHT', ['47 12'] = 'SUPERPOSITION',
 
     -- ['48 5'] = 'UPSIDE DOWN',
     -- ['50 5'] = 'TAKE FIVE',
@@ -67,11 +67,10 @@ LEVEL_DESCRIPTION = {
 -- 😪 помечаем уровни, которые я не хочу делать
 LEVEL_SIZE = {  -- количество ВИДОВ
     ['GETTING STARTED'] = 3,
-    ['GREEN ANIMALS'] = 4,
-    ['UNLUCK'] = 4,
+    ['NOIR'] = 4,
     ['LAMA LEVEL'] = 4,
 
-    ['BRIDGE'] = 5,
+    -- ['BRIDGE'] = 5,
     ['REVERSE'] = 6,
 
     ['SLIP BOARD'] = 5,
@@ -81,7 +80,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['GRAVITATION'] = 6,
     ['ROSE-TINTED'] = 5,
 
-    ['AFTERPARTY'] = 6,
+    ['AFTERPARTY'] = 2,
+    ['AFTERPARTY 2'] = 6,
     ['REVERSE 2'] = 12,
 
     ['TAKE FIVE'] = 5,
@@ -122,8 +122,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['GETTING STARTED'] = 6,
-    ['GREEN ANIMALS'] = 6,
-    ['UNLUCK'] = 6,
+    ['NOIR'] = 6,
     ['LAMA LEVEL'] = 6,
 
     ['BRIDGE'] = 6,
@@ -134,9 +133,10 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 6,
     ['GRAVITATION'] = 3,
-    ['ROSE-TINTED'] = 6,
+    ['ROSE-TINTED'] = 9,
 
     ['AFTERPARTY'] = 6,
+    ['AFTERPARTY 2'] = 6,
     ['REVERSE 2'] = 6,
 
     ['TAKE FIVE'] = 5,
@@ -207,8 +207,9 @@ LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 
 local base_pool = {396, 256, 298, 360, 268, 300}
 local lama_pool = {360, 362, 364, 366}
-local green_pool = {266, 268, 292, 324, 398}
-local river_pool = {262, 264, 266, 268, 270, 322}
+local green_pool = {268, 292, 398} -- без крокодила (богомол в пожизненном бане)
+-- local river_pool = {262, 264, 266, 268, 270, 322}
+-- local grey_pool = {352, 354, 356, 358, 392}
 local flying_pool = {292, 298, 356, 328, 330, 416}
 local insects_pool = {322, 324, 326, 328, 330, 332, 334}
 local sea_pool = {384, 386, 388, 390, 392, 394}  -- без краба и черепахи
@@ -222,12 +223,11 @@ local black_pool = {290, 298, 320, 362, 384}
 local autumn_pool = {256, 258, 270, 260, 288, 296, 302, 322, 328, 330, 334, 386, 388, 390, 396}
 
 LEVEL_POOL = {
-    ['GETTING STARTED'] = base_pool,
-    ['GREEN ANIMALS'] = green_pool,
-    ['UNLUCK'] = black_pool,
+    ['GETTING STARTED'] = green_pool,
+    ['NOIR'] = black_pool,
     ['LAMA LEVEL'] = lama_pool,
 
-    ['BRIDGE'] = river_pool,
+    -- ['BRIDGE'] = river_pool,
     ['REVERSE'] = nil,
 
     ['SLIP BOARD'] = sea_pool,
