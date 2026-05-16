@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = true
+ALL_LEVELS_AVAILABLE = false
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями

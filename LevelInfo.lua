@@ -9,8 +9,8 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['35 4'] = 'GETTING STARTED', ['37 4'] = 'GREEN ANIMALS',
-    ['35 6'] = 'UNLUCK', ['37 6'] = 'LAMA LEVEL',
+    ['35 4'] = 'GETTING STARTED', ['37 4'] = 'LAMA LEVEL',
+    ['35 6'] = 'UNLUCK', ['37 6'] = 'GREEN ANIMALS',
 
     ['39 6'] = 'BRIDGE',
     ['41 6'] = 'REVERSE', ['43 6'] = 'UPSIDE DOWN', ['45 6'] = 'SLIP BOARD',
@@ -68,7 +68,7 @@ LEVEL_DESCRIPTION = {
 LEVEL_SIZE = {  -- количество ВИДОВ
     ['GETTING STARTED'] = 3,
     ['GREEN ANIMALS'] = 4,
-    ['UNLUCK'] = 3,
+    ['UNLUCK'] = 4,
     ['LAMA LEVEL'] = 4,
 
     ['BRIDGE'] = 5,
@@ -121,8 +121,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     -- ['TAKE FIVE 2'] = 20, -- мне очень понравился этот уровень, поэтому я хочу сделать его увеличенную версию
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
-    ['GETTING STARTED'] = 3,
-    ['GREEN ANIMALS'] = 3,
+    ['GETTING STARTED'] = 6,
+    ['GREEN ANIMALS'] = 6,
     ['UNLUCK'] = 6,
     ['LAMA LEVEL'] = 6,
 
@@ -213,7 +213,7 @@ local flying_pool = {292, 298, 356, 328, 330, 416}
 local insects_pool = {322, 324, 326, 328, 330, 332, 334}
 local sea_pool = {384, 386, 388, 390, 392, 394}  -- без краба и черепахи
 
-local black_pool = {290, 298, 320, 362}
+local black_pool = {290, 298, 320, 362, 384}
 -- local night_pool = {
 --     290, 298, 320, 362, -- black
 --     -- 352, 354, 356, 358, 392, 294, -- grey
