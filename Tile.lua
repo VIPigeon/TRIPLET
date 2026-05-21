@@ -258,7 +258,9 @@ function Tile:update()
         elseif self.move_animator:is_end() then
             self:set_scoring_status('scored')
         else
-            self.move_animator:update(self)
+            for i = 1, math.floor(game.animation_modificator) do
+                self.move_animator:update(self)
+            end
         end
         return
     end

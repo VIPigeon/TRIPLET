@@ -104,6 +104,7 @@ require 'Sound'
 require 'Game'
 require 'Tutorial'
 require 'ChangeScreenAnimator'
+require 'CircleOnTheWater'
 
 -- TIC-80 🤖 обязывает нас объявлять функцию TIC, которую он будет
 -- вызывать каждый кадр.

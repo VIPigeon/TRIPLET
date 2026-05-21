@@ -125,7 +125,18 @@ function ToggleButton:draw()
         print(self.text[self.is_on], self.x1+1, self.y1+1 +1, self.color.text[self.is_on])
     end
 
-    print(self.text_right, self.x2 + 4, self.y1 + 1, self.color.scared[self.is_on])
+    local x = self.x2 + 4
+    local y = self.y1 + 1
+    -- эта обводка просто имба. по-хорошему в отдельную фукнцию вынести
+    print(self.text_right, x+1, y+1, self.color.shadow[self.is_on])
+    print(self.text_right, x-1, y-1, self.color.shadow[self.is_on])
+    print(self.text_right, x+1, y-1, self.color.shadow[self.is_on])
+    print(self.text_right, x-1, y+1, self.color.shadow[self.is_on])
+    print(self.text_right, x, y+1, self.color.shadow[self.is_on])
+    print(self.text_right, x, y-1, self.color.shadow[self.is_on])
+    print(self.text_right, x-1, y, self.color.shadow[self.is_on])
+    print(self.text_right, x+1, y, self.color.shadow[self.is_on])
+    print(self.text_right, x, y, self.color.scared[self.is_on])
 end
 
 ToggleButton.__index = ToggleButton

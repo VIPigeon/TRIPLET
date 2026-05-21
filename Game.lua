@@ -12,6 +12,10 @@ INVISIBLE_BAR:set_visibility(false)
 LEVEL_BUTTON_X_SIZE = 39
 
 game = {
+    animation_modificator = 1,  -- чтобы игрок мог "скипнуть" анимацию получения очков
+
+    circles = {},
+
     well_done_t = 0, -- для анимации well_done
     well_done_T = 0.85, -- для анимации well_done
     well_done_state = false, -- для анимации well_done
@@ -403,8 +407,44 @@ function game.init()
     hand.init()
 end
 
+function game.is_black(x, y)
+    for dx = -7, 7 do
+        for dy = -7, 7 do
+            if pix(x+dx, y+dy) ~= 0 then
+                return false
+            end
+        end
+    end
+    return true
+end
+
+function game.circles_update()
+    local x, y, left, middle, right = mouse()
+    local flag = game.is_black(x, y)
+    if flag and Click.left() then
+        table.insert(game.circles, CircleOnTheWater:new(x, y, 1))
+    elseif flag and Click.right() then
+        table.insert(game.circles, CircleOnTheWater:new(x, y, 5))
+    end
+
+    local should_remove = {}
+    for i, c in ipairs(game.circles) do
+        c:update()
+        if c.r > 250 then
+            table.insert(should_remove, i)
+        end
+    end
+
+    for j = #should_remove, 1, -1 do
+        local i = should_remove[j]
+        table.remove(game.circles, i)
+    end
+end
+
 function game.update()
     mem.save()
+
+    game.circles_update()
 
     if game.change_screen_animation then
         game.change_screen_animation:update()
@@ -505,6 +545,15 @@ function game.update()
 
     if game.status == "done" then
         -- анимация окончания
+        local x, y, left, middle, right = mouse()
+        -- Фейковое ускорение. На самом деле я просто делаю столько апдейтов, какой модификатор с округлением вниз
+        -- local ACCELERATION = 0.1
+        -- if left or right then
+        --     game.animation_modificator = math.min(game.animation_modificator + ACCELERATION, 7)
+        -- else
+        --     game.animation_modificator = math.max(game.animation_modificator - ACCELERATION*3, 1)
+        -- end
+
         -- все тайлы из прогресс бара идут в зачет
         game.scoring_animator:update(game.tiles)
     end
@@ -675,15 +724,20 @@ function game.draw()
     -- cls(15)
     local mini_status = game.calc_ministatus()
     cls(0)
+
+    for _, c in ipairs(game.circles) do
+        c:draw()
+    end
+
     if mini_status == 'game' then
-        map(0, 0)
+        map(0, 0, 30,17,0,0, 0)
         if game.current_level.name == 'ROSE-TINTED' then
             game.print_funny_phrase()
         end
     elseif mini_status == 'map' then
         game.level_map:draw()
     elseif mini_status == 'main' then
-        map(30, 0)
+        map(30, 0, 30,17,0,0, 0)
 
         local MAIN_COLOR = 11
         local OUTLINE_COLOR = 5

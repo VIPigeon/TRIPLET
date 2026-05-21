@@ -118,10 +118,10 @@ function LevelMap:update()
 end
 
 function LevelMap:draw()
-    map(30, 0)
+    map(30, 0, 30,17,0,0, 0)
     for _, level in ipairs(self.levels) do
         if level.state == 'window_to_game' then
-            map(0, 0)
+            map(0, 0, 30,17,0,0, 0)
             break
         end
         level:draw()
