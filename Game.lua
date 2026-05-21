@@ -7,8 +7,8 @@ CENTER = {x=14*8, y=8*8}
 --     x2 = 15*8 + 4,
 --     y2 = 9*8 + 4,
 -- }
-INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0})
-INVISIBLE_BAR:set_visibility(false)
+INVISIBLE_BAR = ProgressBar:new(4*8-1, 1, 4, {body=0, around=0}, false)
+-- INVISIBLE_BAR:set_visibility(false)
 LEVEL_BUTTON_X_SIZE = 39
 
 game = {

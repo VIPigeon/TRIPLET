@@ -2,7 +2,10 @@
 -- прогресс бар, куда выкладываются тайлы во время сессии
 ProgressBar = {}
 
-function ProgressBar:new(x, y, count_tiles, colors)
+function ProgressBar:new(x, y, count_tiles, colors, visibility)
+    if visibility == nil then
+        visibility = true
+    end
     colors = colors or {body=0, around=5}
     local n = count_tiles
     local TRIPLET_SHIFT = 5
@@ -17,7 +20,7 @@ function ProgressBar:new(x, y, count_tiles, colors)
         n = n,
         shift = TRIPLET_SHIFT,
         tile_slot = {x=x-1 - TRIPLET_SHIFT, y=y-1},
-        visibility = true,
+        visibility = visibility,
     }
     setmetatable(object, self)
     return object

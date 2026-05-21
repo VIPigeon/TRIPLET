@@ -78,14 +78,14 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 5,
     ['GRAVITATION'] = 6,
-    ['ROSE-TINTED'] = 5,
+    ['ROSE-TINTED'] = 8,
 
     ['AFTERPARTY'] = 2,
     ['AFTERPARTY 2'] = 6,
     ['REVERSE 2'] = 12,
 
     ['TAKE FIVE'] = 5,
-    ['TAKE FIVE 2'] = 10,
+    ['TAKE FIVE 2'] = 15,
     ['XS'] = 7,
     ['NIGHT'] = 6,
     ['SUPERPOSITION'] = 5,
@@ -122,7 +122,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
 }
 LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['GETTING STARTED'] = 6,
-    ['NOIR'] = 6,
+    ['NOIR'] = 3,
     ['LAMA LEVEL'] = 6,
 
     ['BRIDGE'] = 6,
@@ -133,7 +133,7 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 6,
     ['GRAVITATION'] = 3,
-    ['ROSE-TINTED'] = 9,
+    ['ROSE-TINTED'] = 6,
 
     ['AFTERPARTY'] = 6,
     ['AFTERPARTY 2'] = 6,
@@ -186,6 +186,7 @@ LEVEL_BOARD = {
     ['XS'] = {x=0, y=34},
     ['WINDOW'] = {x=0, y=51},
     ['GRAVITATION'] = {x=60, y=17},
+    ['ROSE-TINTED'] = {x=90, y=51},
     -- ['SLIP BOARD'] = {x=30, y=51},
 }
 

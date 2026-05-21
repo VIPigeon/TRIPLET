@@ -70,7 +70,7 @@ function Sound.triplet()
         return
     end
     -- звук, когда собирается триплет
-    sfx(4, 'F#6', -1, 2)
+    sfx(4, 'F#5', -1, 2)
 end
 
 function Sound.hand_is_full()
