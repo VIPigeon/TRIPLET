@@ -78,7 +78,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 5,
     ['GRAVITATION'] = 6,
-    ['ROSE-TINTED'] = 8,
+    ['ROSE-TINTED'] = 7,
 
     ['AFTERPARTY'] = 2,
     ['AFTERPARTY 2'] = 6,
