@@ -154,6 +154,12 @@ function hand.is_there_a_triplet()
             return false
         end
     end
+
+    local value = hand.tiles[1].value
+    if not table.contains(LEVEL_POOL['ROSE-TINTED'], value) then
+        table.insert(LEVEL_POOL['ROSE-TINTED'], value)
+    end
+
     return true
 
     -- return hand.tiles[1]:compare(hand.tiles[2]) and hand.tiles[2]:compare(hand.tiles[3])

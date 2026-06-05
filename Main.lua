@@ -1,4 +1,6 @@
 
+PREVIEW_MODE = true
+
 BOARD = {
     [12] = true,
     [13] = true,

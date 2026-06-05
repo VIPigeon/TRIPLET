@@ -1,4 +1,4 @@
-pink_seed = 0
+pink_seed = 0  -- уже не нужно
 
 CENTER = {x=14*8, y=8*8}
 -- CENTER_AREA = {  -- теперь в Levels.lua
@@ -442,6 +442,7 @@ function game.circles_update()
 end
 
 function game.update()
+
     mem.save()
 
     game.circles_update()
@@ -701,6 +702,7 @@ function game.calc_ministatus()
 end
 
 function game.print_funny_phrase()
+    -- я убил эту функцию
     local PHRASES = {
         'BELIEVE',
         -- 'I LOVE U',
@@ -716,7 +718,7 @@ function game.print_funny_phrase()
     local y2 = game.current_level.layout.y2 + 1
     local x = math.random(x1, x2)
     local y = math.random(y1, y2)
-    print(text, x, y, c)
+    -- print(text, x, y, c)
     math.randomseed(time()*1e7)
 end
 

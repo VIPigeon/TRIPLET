@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = false
+ALL_LEVELS_AVAILABLE = true
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -418,6 +418,9 @@ function Level:get_tiles()
         end
         counter = counter - 1
         i = i + 1
+        -- if i > #self.pool then
+        --     i = i - #self.pool
+        -- end
     end
     return tiles
 end

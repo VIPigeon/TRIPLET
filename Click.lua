@@ -4,7 +4,7 @@ Click = {
     prev_right = false,
     left_buffer = 0,
     right_buffer = 0,
-    BUFFER = 0.15,
+    BUFFER = 0.2,
 }
 
 function Click.update()
