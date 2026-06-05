@@ -47,7 +47,36 @@ function ScoreCounter:draw()
         local _X = 109
         local _Y = self.y
         -- print("x"..tostring(self.combo), x+40+8, y-11-5)
-        print("combo! x"..tostring(self.combo), _X, _Y, 13)
+        -- print("combo! x"..tostring(self.combo), _X, _Y, 13)
+
+        local is_triplet_animation = false
+        for _, t in ipairs(game.tiles) do
+            if t.triplet_status == 'animation' then
+                is_triplet_animation = true
+            end
+        end
+
+        local effect_color = 15
+        local normal_color = 3
+        if self.combo < 20 then
+            effect_color = 7
+            normal_color = 13
+        end
+        if self.combo < 10 then
+            effect_color = 14
+            normal_color = 9
+        end
+        if self.combo < 5 then
+            effect_color = 11
+            normal_color = 5
+        end
+
+        if not is_triplet_animation then
+            TextWithOutline.print("x"..tostring(self.combo)..' combo!', game.progress_bar.tile_slot.x + 18, game.progress_bar.tile_slot.y + 5, 2, normal_color, 0, 1, true)
+            -- print("x"..tostring(self.combo)..' streak!', game.progress_bar.tile_slot.x + 18, game.progress_bar.tile_slot.y + 5, 11)
+        else
+            TextWithOutline.print("x"..tostring(self.combo)..' combo!', game.progress_bar.tile_slot.x + 18, game.progress_bar.tile_slot.y + 5, 2, effect_color, 0, 1, true)
+        end
     end
 
     if self.income_animation.time > 0 then

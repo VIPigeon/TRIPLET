@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = true
+ALL_LEVELS_AVAILABLE = false
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -353,6 +353,12 @@ function Level:improve_result(time, score)
     -- if not self:is_completed() then
     self.best_time = {time=time, score=score}
     self.best_score = {time=time, score=score}
+
+    local bad = 'bad '  -- bad
+    if self:get_donut(score) == 17 then
+        bad = ''
+    end
+    trace(bad..game.current_level.name..' '..math.ceil(time))
     -- end
 end
 

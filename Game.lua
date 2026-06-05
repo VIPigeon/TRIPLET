@@ -297,6 +297,13 @@ function game.set_status(status)
         game.buttons.settings:set_visibility(true)
         game.buttons.ok:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
+
+        game.medal_animation = {state = 5, T = 0.5, t = 0}
+        game.donut_animation = {state = 21, T = 0.5, t = 0}
+
+        local score = game.score_counter:get_score()
+        local time = game.scoring_animator.time
+        game.current_level:improve_result(time, score)
     elseif status == "done" then
         mem.save()
 
@@ -773,22 +780,21 @@ function game.draw()
         pprint(X-2, Y+3, OUTLINE_COLOR)
 
         pprint(X, Y, MAIN_COLOR)
-        
     end
 
     -- hand.draw_hitbox()
     -- hand.draw()
 
+    game.progress_bar:draw()
+    for _, tile in ipairs(game.tiles) do
+        tile:draw()
+    end
     if mini_status == 'game' then
         -- print("SCORE: 1234", 22*8+4, 16*8 + 3, 12)
         game.score_counter:draw()
         if game.spectator then
             game.spectator:draw()
         end
-    end
-    game.progress_bar:draw()
-    for _, tile in ipairs(game.tiles) do
-        tile:draw()
     end
 
     if game.status == "done" then
@@ -799,13 +805,25 @@ function game.draw()
         --     print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     elseif mini_status == "well done" then
-        local score = game.score_counter:get_score()
-        local time = game.scoring_animator.time
+        local score = game.current_level.best_score.score
+        local time = game.current_level.best_time.time
 
         -- пока что медаль и пончик выдаем прямо здесь
-        game.current_level:improve_result(time, score)
-        local medal = game.current_level:get_medal(time)
-        local donut = game.current_level:get_donut(score)
+
+        if game.medal_animation.t == 0 then
+            game.medal_animation.t = game.medal_animation.T
+            game.medal_animation.state = game.medal_animation.state - 1
+        else
+            game.medal_animation.t = Basic.tick_timer(game.medal_animation.t)
+        end
+        if game.donut_animation.t == 0 then
+            game.donut_animation.t = game.donut_animation.T
+            game.donut_animation.state = game.donut_animation.state - 1
+        else
+            game.donut_animation.t = Basic.tick_timer(game.donut_animation.t)
+        end
+        local medal = math.max(game.medal_animation.state, game.current_level:get_medal(time))
+        local donut = math.max(game.donut_animation.state, game.current_level:get_donut(score))
 
         game.well_done_t = Basic.tick_timer(game.well_done_t)
         if game.well_done_t == 0 then
@@ -823,12 +841,20 @@ function game.draw()
         local mDX = 12
         print('score: '..tostring(score), X, Y)
         -- spr(donut, X, Y + 8)
-        spr(donut, X - mDX, Y - 1 + dY)
+        if game.donut_animation.state > game.current_level:get_donut(time) then
+            spr(donut, X - mDX, Y - 1)
+        else
+            spr(donut, X - mDX, Y - 1 + dY)
+        end
         -- print(score, X + 16, Y + 10)
         -- print(score, X + DX, Y)
         print('time: '..string.format("%.1f", time), X, Y + 3*8)
         -- spr(medal, X, Y + 4*8)
-        spr(medal, X - mDX, Y + 3*8 - 1 + dY)
+        if game.medal_animation.state > game.current_level:get_medal(time) then
+            spr(medal, X - mDX, Y + 3*8 - 1)
+        else
+            spr(medal, X - mDX, Y + 3*8 - 1 + dY)
+        end
         -- print(string.format("%.1f", time), X + 16, Y + 4*8 + 2)
         -- print(string.format("%.1f", time), X + DX, Y + 3*8)
         --[[
