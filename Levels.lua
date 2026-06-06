@@ -172,6 +172,8 @@ function LevelMap:get_available_level()
 end
 
 function LevelMap:_draw_achievements()
+    local counter = {0,0,0,0}
+
     for i, level in ipairs(self.levels) do
         local x = (level.x % 30)*8 + 4
         local y = (level.y % 17)*8 + 4
@@ -182,11 +184,38 @@ function LevelMap:_draw_achievements()
         end
         if level.is_completed then
             if self.show_mode == 'medal' then
-                spr(level:get_medal(level.best_time.time), x, y, 0)
+                local medal = level:get_medal(level.best_time.time)
+                spr(medal, x, y, 0)
+                counter[medal] = counter[medal] + 1
             elseif self.show_mode == 'donut' then
-                spr(level:get_donut(level.best_score.score), x, y, 0)
+                local donut = level:get_donut(level.best_score.score)
+                spr(donut, x, y, 0)
+                counter[donut-16] = counter[donut-16] + 1
             end
         end
+    end
+
+    local _d = 0
+    if self.show_mode == 'donut' then
+        _d = 16
+    end
+    local x1 = 8
+    local x2 = x1 + 13
+    local dy = 1
+    local y = 5*8
+    local colors = {15, 14, 8, 4}
+    if counter[1] > 0 then
+        spr(_d + 1, x1, y, 0)
+        print(counter[1], x2, y + dy, colors[1])
+    end
+    for i = 2, 4 do
+        y = y + 16
+        spr(_d + i, x1, y, 0)
+        local text = '-'
+        if counter[i] > 0 then
+            text = counter[i]
+        end
+        print(text, x2, y + dy, colors[i])
     end
 end
 
