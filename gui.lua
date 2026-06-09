@@ -166,11 +166,12 @@ function SpriteButton:new(x, y, sprites, size_x, size_y, scale)
     return object
 end
 
-function SpriteButton:draw()
+function SpriteButton:draw(colorkey)
+    colorkey = colorkey or 0
     -- я не уверен что эти формулы корректны, нужно тестить
     local width = (self.x2-self.x1+2+7)/8 / self.scale
     local height = (self.y2-self.y1+2+7)/8 / self.scale
-    spr(self.sprite[self.status], self.x1-1, self.y1-1, 0, self.scale,0,0, width,height)
+    spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
 end
 
 SpriteButton.__index = SpriteButton

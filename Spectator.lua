@@ -29,16 +29,17 @@ function Spectator:draw(x, y)
     if not self.visible then
         return
     end
-    -- x = x or 0
-    -- y = y or 16*8+3
-    x = x or 26*8 + 1
-    y = y or 0
+    -- x = x or 26*8 + 1
+    -- y = y or 0
+
+    x = x or 21*8 + 2 - (30*8 - 1 - (26*8 + 1)) + 1
+    y = y or 16*8 + 3
 
     if Settings.SHOW_TIME_DURING_GAME then
         -- print("TIME: "..string.format("%.1f", self.time), x, y)
         spr(240 + (self.time - math.floor(self.time))/0.125, x+4, y)
         -- print("   time: "..math.floor(self.time), x, y, 11)
-        local t = math.floor(self.time)
+        local t = math.floor(self.time) * 9
         if t > 999 then
             t = t % 1000
             if t < 10 then

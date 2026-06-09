@@ -59,7 +59,8 @@ game = {
         -- toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations'),
         -- toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
 
-        change_mode_button = ToggleButton:new(0, 18, 'best score', ' best time', true, nil,nil,nil,
+        -- change_mode_button = ToggleButton:new(0, 18, 'score', ' time', true, nil,nil,nil,
+        change_mode_button = ToggleButton:new(26*8, 4, 'score', ' time', true, nil,nil,nil,
             { -- 4*8, 4
             text = {[true]=4, [false]=4},
             chill = {[true]=10, [false]=10},
@@ -739,6 +740,7 @@ function game.draw()
     end
 
     if mini_status == 'game' then
+        map(120, 51, 30,17,0,0, 0)
         map(0, 0, 30,17,0,0, 0)
         if game.current_level.name == 'ROSE-TINTED' then
             game.print_funny_phrase()

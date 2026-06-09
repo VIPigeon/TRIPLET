@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = false
+ALL_LEVELS_AVAILABLE = true
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -118,6 +118,7 @@ function LevelMap:update()
 end
 
 function LevelMap:draw()
+    map(120, 51, 30,17,0,0, 0)
     map(30, 0, 30,17,0,0, 0)
     for _, level in ipairs(self.levels) do
         if level.state == 'window_to_game' then
@@ -199,24 +200,42 @@ function LevelMap:_draw_achievements()
     if self.show_mode == 'donut' then
         _d = 16
     end
-    local x1 = 8
-    local x2 = x1 + 13
-    local dy = 1
-    local y = 5*8
+    -- local x1 = 8
+    -- local x2 = x1 + 13
+    -- local dy = 1
+    -- local y = 5*8
+    local START_X = 26*8 - 23
+    local x = START_X
+    local dx = 23
+    local shift = 10
+    local y = 6
     local colors = {15, 14, 8, 4}
-    if counter[1] > 0 then
-        spr(_d + 1, x1, y, 0)
-        print(counter[1], x2, y + dy, colors[1])
-    end
-    for i = 2, 4 do
-        y = y + 16
-        spr(_d + i, x1, y, 0)
+    -- counter = {19, 99, 99, 99}
+    -- counter = {0, 99, 99, 99}
+    -- counter = {9, 9, 19, 9}
+    -- counter = {0, 9, 9, 9}
+    for i = 4, 2, -1 do
+        if counter[i] > 9 then
+            x = x - 6
+        end
+        spr(_d + i, x, y - 1, 0)
         local text = '-'
         if counter[i] > 0 then
             text = counter[i]
         end
-        print(text, x2, y + dy, colors[i])
+        print(text, x + shift, y, colors[i])
+        x = x - dx
     end
+    if counter[1] > 0 then
+        if counter[1] > 9 then
+            x = x - 6
+        end
+        spr(_d + 1, x, y - 1, 0)
+        print(counter[1], x + shift, y, colors[1])
+        x = x - dx
+    end
+    x = x + dx
+    rectb(x - 4, 1, START_X - x + 23, 15, 1)
 end
 
 LevelMap.__index = LevelMap
@@ -621,7 +640,7 @@ function Level:draw()
     end
 
     if self.is_available then
-        self.button:draw()
+        self.button:draw(-1)
         if self.button.status ~= 'chill' then
             -- print(tostring(self.id)..'. '..self.name, 0, 16*8)
             -- print(self.name, 0, 16*8)
@@ -635,7 +654,7 @@ function Level:draw()
         local y = self.y % 17
         local width = 2
         local height = 2
-        spr(self.disabled_button_sprite, x*8, y*8, 0, 1,0,0, width,height)
+        spr(self.disabled_button_sprite, x*8, y*8, -1, 1,0,0, width,height)
     end
 end
 
@@ -647,6 +666,7 @@ function Level:print_name()
     end
 
     print(name, 0, 16*8 + 3)
+    -- TextWithOutline.print(name, 1, 16*8 + 2, 1, 0, 15, 1, true)
 end
 
 Level.__index = Level

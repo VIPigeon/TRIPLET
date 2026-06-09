@@ -9,16 +9,16 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['37 4'] = 'GETTING STARTED', ['39 4'] = 'LAMA LEVEL',
-    ['37 6'] = 'NOIR',
+    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL',
+    ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
-    ['39 6'] = 'REVERSE', ['41 6'] = 'UPSIDE DOWN', ['43 6'] = 'SLIP BOARD',
-    ['39 8'] = 'WINDOW', ['41 8'] = 'ROSE-TINTED', ['43 8'] = 'AFTERPARTY', ['45 8'] = 'AFTERPARTY 2',
-    ['39 10'] = 'GRAVITATION', ['41 10'] = 'DEJA VU', ['43 10'] = 'REVERSE 2',
+    ['39 7'] = 'REVERSE', ['41 7'] = 'UPSIDE DOWN', ['43 7'] = 'SLIP BOARD',
+    ['39 9'] = 'WINDOW', ['41 9'] = 'ROSE-TINTED', ['43 9'] = 'AFTERPARTY', ['45 9'] = 'AFTERPARTY 2',
+    ['39 11'] = 'GRAVITATION', ['41 11'] = 'DEJA VU', ['43 11'] = 'REVERSE 2',
 
-        ['45 10'] = 'TAKE FIVE', ['47 10'] = 'TAKE FIVE 2',
-    ['43 12'] = 'XS', ['45 12'] = 'NIGHT', ['47 12'] = 'SUPERPOSITION',
+        ['45 11'] = 'TAKE FIVE', ['47 11'] = 'TAKE FIVE 2',
+    ['43 13'] = 'XS', ['45 13'] = 'NIGHT', ['47 13'] = 'SUPERPOSITION',
 
     -- ['48 5'] = 'UPSIDE DOWN',
     -- ['50 5'] = 'TAKE FIVE',
