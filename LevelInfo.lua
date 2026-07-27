@@ -13,9 +13,9 @@ LEVEL_NAME = {
     ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
-    ['39 7'] = 'REVERSE', ['41 7'] = 'UPSIDE DOWN', ['43 7'] = 'SLIP BOARD',
-    ['39 9'] = 'WINDOW', ['41 9'] = 'ROSE-TINTED', ['43 9'] = 'AFTERPARTY', ['45 9'] = 'AFTERPARTY 2',
-    ['39 11'] = 'GRAVITATION', ['41 11'] = 'DEJA VU', ['43 11'] = 'REVERSE 2',
+    ['39 7'] = 'REVERSE', ['41 7'] = 'WINDOW', ['43 7'] = 'SLIP BOARD',
+    ['39 9'] = 'UPSIDE DOWN', ['41 9'] = 'ROSE-TINTED', ['43 9'] = 'AFTERPARTY', ['45 9'] = 'AFTERPARTY 2',
+    ['39 11'] = 'DEJA VU', ['41 11'] = 'GRAVITATION', ['43 11'] = 'REVERSE 2',
 
         ['45 11'] = 'TAKE FIVE', ['47 11'] = 'TAKE FIVE 2',
     ['43 13'] = 'XS', ['45 13'] = 'NIGHT', ['47 13'] = 'SUPERPOSITION',

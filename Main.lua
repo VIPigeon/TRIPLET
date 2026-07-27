@@ -84,7 +84,6 @@ function mouse()
     return x, y, left, middle, right, scrollx, scrolly
 end
 
-
 require 'Vector2D'
 require 'SaveAndLoad'
 require 'pslib'
@@ -113,6 +112,8 @@ require 'Tutorial'
 require 'ChangeScreenAnimator'
 require 'CircleOnTheWater'
 require 'TextWithOutline'
+require 'MapDecor'
+require 'DecorTile'
 
 -- TIC-80 🤖 обязывает нас объявлять функцию TIC, которую он будет
 -- вызывать каждый кадр.

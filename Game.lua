@@ -274,6 +274,10 @@ function game.set_status(status)
             palette.set_color('green')
         end
 
+        if game.current_level.name == 'WINDOW' then
+            game.buttons.autodraw_advice:set_visibility(true)
+        end
+
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_level_to_map:set_visibility(true)
@@ -287,6 +291,7 @@ function game.set_status(status)
 
         game.set_game_visibility(false)
         game.buttons.settings:set_visibility(true)
+        game.buttons.base_advice:set_visibility(true)
         -- trace(game.status)
         if game.status == 'game' then
             game.buttons.from_map_to_level:set_visibility(true)
@@ -413,32 +418,35 @@ function game.init()
     game.set_status("main")
 
     hand.init()
+    MapDecor.init()
 end
 
 function game.is_black(x, y)
-    for dx = -7, 7 do
-        for dy = -7, 7 do
+    for dx = -1, 1 do
+        for dy = -1, 1 do
             if pix(x+dx, y+dy) ~= 0 then
                 return false
             end
         end
     end
     return true
+    -- return pix(x, y) == 0
 end
 
 function game.circles_update()
     local x, y, left, middle, right = mouse()
     local flag = game.is_black(x, y)
-    if flag and Click.left() then
-        table.insert(game.circles, CircleOnTheWater:new(x, y, 1))
-    elseif flag and Click.right() then
-        table.insert(game.circles, CircleOnTheWater:new(x, y, 5))
+    if flag and (Click.left() or Click.right()) then
+        table.insert(game.circles, CircleOnTheWater:new(x, y, math.random(1, 15)))
+    -- elseif flag and Click.right() then
+    --     table.insert(game.circles, CircleOnTheWater:new(x, y, 5))
     end
 
     local should_remove = {}
     for i, c in ipairs(game.circles) do
         c:update()
-        if c.r > 250 then
+        -- if c.r > 250 then
+        if c.r == 0 then
             table.insert(should_remove, i)
         end
     end
@@ -450,7 +458,7 @@ function game.circles_update()
 end
 
 function game.update()
-
+    MapDecor.update()
     mem.save()
 
     game.circles_update()
@@ -740,7 +748,8 @@ function game.draw()
     end
 
     if mini_status == 'game' then
-        map(120, 51, 30,17,0,0, 0)
+        -- map(120, 51, 30,17,0,0, 0)
+        MapDecor.draw()
         map(0, 0, 30,17,0,0, 0)
         if game.current_level.name == 'ROSE-TINTED' then
             game.print_funny_phrase()
@@ -748,6 +757,8 @@ function game.draw()
     elseif mini_status == 'map' then
         game.level_map:draw()
     elseif mini_status == 'main' then
+        -- map(120, 51, 30,17,0,0, 0)
+        MapDecor.draw()
         map(30, 0, 30,17,0,0, 0)
 
         local MAIN_COLOR = 11
@@ -755,7 +766,7 @@ function game.draw()
         local TEXT = "TRIPLET!"
         local OUTLINE_WIDTH = 1
         local X = 5*8
-        local Y = 4*8
+        local Y = 4*8 + 16
         local SIZE = 4
         local function pprint(X, Y, MAIN_COLOR)
             print(TEXT, X-OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
