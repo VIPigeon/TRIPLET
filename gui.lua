@@ -177,6 +177,34 @@ end
 SpriteButton.__index = SpriteButton
 
 
+AdviceButton = table.copy(SpriteButton)
+
+function AdviceButton:set_status(status)
+    -- СПИСОК СТАТУСОВ
+    -- button. начальный статус, задается в MapDecot.init()
+    -- button_to_window
+    -- window
+    -- window_to_button
+    self.status = status
+end
+
+function AdviceButton:draw(colorkey)
+    colorkey = colorkey or 0
+
+    if self.status == 'button' then
+        -- я не уверен что эти формулы корректны, нужно тестить
+        local width = (self.x2-self.x1+2+7)/8 / self.scale
+        local height = (self.y2-self.y1+2+7)/8 / self.scale
+        spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
+    elseif self.status == 'button_to_window' then
+        self.status = 'window'
+    elseif self.status == 'window' then
+    end
+end
+
+AdviceButton.__index = AdviceButton
+
+
 
 AnimalButton = {}
 

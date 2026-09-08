@@ -546,6 +546,10 @@ function game.update()
                     game.current_level.is_completed = true
 
                     game.set_status('map')
+                elseif name == 'autodraw_advice' then
+                    trace('autodraw_advice')
+                elseif name == 'base_advice' then
+                    button:set_status('button_to_window')
                 end
             end
         end
