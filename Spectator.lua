@@ -39,7 +39,7 @@ function Spectator:draw(x, y)
         -- print("TIME: "..string.format("%.1f", self.time), x, y)
         spr(240 + (self.time - math.floor(self.time))/0.125, x+4, y)
         -- print("   time: "..math.floor(self.time), x, y, 11)
-        local t = math.floor(self.time) * 9
+        local t = math.floor(self.time)
         if t > 999 then
             t = t % 1000
             if t < 10 then

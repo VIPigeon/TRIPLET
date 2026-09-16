@@ -663,6 +663,8 @@ function Level:print_name()
     local name = self.name
     if name == 'GRAVITATION' then
         name = 'FALL'
+    elseif name == 'LAMA LEVEL' then
+        name = 'LLAMA LLEVEL'
     end
 
     print(name, 0, 16*8 + 3)

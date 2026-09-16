@@ -101,7 +101,7 @@ function MapDecor.init()
             if advice then
                 local button = AdviceButton:new(x*8-8, y*8-8, MapDecor.ADVICE_STATES, 8, 8)
                 button.advice = MapDecor.WISE_ADVICE[advice]  -- буду использовать при отрисовке. Да, опять плохой код
-                button.status = 'button'
+                button:set_window_status('button')
                 game.buttons[advice] = button
                 mset(tile_x, tile_y, 0)
             end

@@ -179,26 +179,84 @@ SpriteButton.__index = SpriteButton
 
 AdviceButton = table.copy(SpriteButton)
 
-function AdviceButton:set_status(status)
+AdviceButton.window_box = {x1=3, y1=2*8+3, x2=29*8, y2=16*8+5}
+
+function AdviceButton:set_window_status(window_status)
     -- СПИСОК СТАТУСОВ
-    -- button. начальный статус, задается в MapDecot.init()
+    -- button. начальный статус, задается в MapDecor.init()
     -- button_to_window
     -- window
     -- window_to_button
-    self.status = status
+    if window_status == 'button_to_window' then
+        -- local x = self.x1
+        -- local y = self.y1
+        self.animator = StretchingAnimator:new(
+            {
+                x1=self.x1,
+                y1=self.y1,
+                x2=self.x2,
+                y2=self.y2,
+            },
+            AdviceButton.window_box)
+    elseif window_status == 'window_to_button' then
+        self.animator.is_reverse = true
+    end
+
+    self.window_status = window_status
+end
+
+function AdviceButton:update()
+    if self.window_status == 'button' then
+    -- Button update
+        self.prev_status = self.status
+        local x, y, left, middle, right = mouse()
+
+        if self.x1 <= x and x <= self.x2 and self.y1 <= y and y <= self.y2 then
+            if left then
+                self.status = 'pressed'
+            else
+                self.status = 'scared'
+            end
+        else
+            self.status = 'chill'
+        end
+    --
+    end
+
+    if self.window_status == 'button_to_window' then
+        self.animator:update()
+        -- trace(self.animator.current_box.x1)
+        if self.animator:is_end() then
+            self:set_window_status('window')
+            -- trace(self.animator.current_box.x1)
+        end
+    elseif self.window_status == 'window' then
+        if Click.release_left() then
+            self:set_window_status('window_to_button')
+            -- trace(self.animator.current_box.x1)
+        end
+    elseif self.window_status == 'window_to_button' then
+        self.animator:update()
+        if self.animator:is_end() then
+            self:set_window_status('button')
+        end
+    end
 end
 
 function AdviceButton:draw(colorkey)
     colorkey = colorkey or 0
 
-    if self.status == 'button' then
+    if self.window_status == 'button' then
         -- я не уверен что эти формулы корректны, нужно тестить
         local width = (self.x2-self.x1+2+7)/8 / self.scale
         local height = (self.y2-self.y1+2+7)/8 / self.scale
         spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
-    elseif self.status == 'button_to_window' then
-        self.status = 'window'
-    elseif self.status == 'window' then
+    elseif self.window_status == 'button_to_window' or self.window_status == 'window_to_button' then
+        local box = self.animator.current_box
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 1)
+    elseif self.window_status == 'window' then
+        local box = self.animator.current_box
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 1)
     end
 end
 

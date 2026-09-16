@@ -236,7 +236,7 @@ LEVEL_POOL = {
     ['UPSIDE DOWN'] = nil,
     ['WINDOW'] = flying_pool,
     ['GRAVITATION'] = autumn_pool,
-    ['ROSE-TINTED'] = {360, 362, 268, 292, 398, 290, 298}, -- будет пополняться в процессе игры
+    ['ROSE-TINTED'] = nil,
 
     ['AFTERPARTY'] = nil,
     ['REVERSE 2'] = nil,

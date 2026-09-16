@@ -547,9 +547,9 @@ function game.update()
 
                     game.set_status('map')
                 elseif name == 'autodraw_advice' then
-                    trace('autodraw_advice')
+                    button:set_window_status('button_to_window')
                 elseif name == 'base_advice' then
-                    button:set_status('button_to_window')
+                    button:set_window_status('button_to_window')
                 end
             end
         end
