@@ -178,8 +178,12 @@ SpriteButton.__index = SpriteButton
 
 
 AdviceButton = table.copy(SpriteButton)
+-- имеет поле .advice
 
-AdviceButton.window_box = {x1=3, y1=2*8+3, x2=29*8, y2=16*8+5}
+AdviceButton.window_box = {x1=3, y1=4*8+3, x2=20*8, y2=9*8+5}
+AdviceButton.box_color = 10
+AdviceButton.shadow_color = 4
+AdviceButton.text_color = 4
 
 function AdviceButton:set_window_status(window_status)
     -- СПИСОК СТАТУСОВ
@@ -253,10 +257,21 @@ function AdviceButton:draw(colorkey)
         spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
     elseif self.window_status == 'button_to_window' or self.window_status == 'window_to_button' then
         local box = self.animator.current_box
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 1)
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
     elseif self.window_status == 'window' then
         local box = self.animator.current_box
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, 1)
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
+        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
+        local y = box.y1 + 8
+        local dy = 9
+        -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
+        -- print(self.name, box.x1 + 6, y, 9, false, 2)
+        -- y = y + dy
+        for _, line in ipairs(self.advice) do
+            print(line, box.x1 + 6, y, AdviceButton.text_color)
+            y = y + dy
+        end
     end
 end
 
