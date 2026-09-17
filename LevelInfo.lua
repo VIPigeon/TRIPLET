@@ -20,6 +20,8 @@ LEVEL_NAME = {
         ['45 11'] = 'TAKE FIVE', ['47 11'] = 'TAKE FIVE 2',
     ['43 13'] = 'XS', ['45 13'] = 'NIGHT', ['47 13'] = 'SUPERPOSITION',
 
+    ['32 13'] = 'PANDA LEVEL',
+
     -- ['48 5'] = 'UPSIDE DOWN',
     -- ['50 5'] = 'TAKE FIVE',
     -- ['36 7'] = 'REVERSE',
@@ -90,6 +92,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['NIGHT'] = 6,
     ['SUPERPOSITION'] = 5,
 
+    ['PANDA LEVEL'] = 1,
+
     -- ['GETTING STARTED'] = 3,
     -- ['LAMA LEVEL'] = 4,
     -- ['BRIDGE'] = 5, -- ⚙️
@@ -144,6 +148,8 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['XS'] = 6,
     ['NIGHT'] = 6,
     ['SUPERPOSITION'] = 6, -- костыль
+
+    ['PANDA LEVEL'] = 3*5,
 
     -- ['GETTING STARTED'] = 6, -- для дебага
     -- ['LAMA LEVEL'] = 3,  -- чтобы не затягивать шутку
@@ -246,4 +252,6 @@ LEVEL_POOL = {
     ['XS'] = insects_pool,
     ['NIGHT'] = nil,
     ['SUPERPOSITION'] = nil,
+
+    ['PANDA LEVEL'] = {300},
 }

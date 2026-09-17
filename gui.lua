@@ -247,6 +247,14 @@ function AdviceButton:update()
     end
 end
 
+function AdviceButton:draw_box(box)
+    rect(box.x1+1, box.y1, box.x2-box.x1-2, box.y2-box.y1+1, AdviceButton.shadow_color)
+    rect(box.x1, box.y1+1, box.x2-box.x1, box.y2-box.y1-2+1, AdviceButton.shadow_color)
+
+    rect(box.x1+1, box.y1, box.x2-box.x1-2, box.y2-box.y1, AdviceButton.box_color)
+    rect(box.x1, box.y1+1, box.x2-box.x1, box.y2-box.y1-2, AdviceButton.box_color)
+end
+
 function AdviceButton:draw(colorkey)
     colorkey = colorkey or 0
 
@@ -257,13 +265,13 @@ function AdviceButton:draw(colorkey)
         spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
     elseif self.window_status == 'button_to_window' or self.window_status == 'window_to_button' then
         local box = self.animator.current_box
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
+        self:draw_box(box)
     elseif self.window_status == 'window' then
         local box = self.animator.current_box
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
-        rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
-        local y = box.y1 + 8
+        self:draw_box(box)
+        -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
+        -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
+        local y = box.y1 + 7
         local dy = 9
         -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
         -- print(self.name, box.x1 + 6, y, 9, false, 2)

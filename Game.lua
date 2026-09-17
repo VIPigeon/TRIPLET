@@ -403,6 +403,8 @@ function game.init()
 
     if not ALL_LEVELS_AVAILABLE then
         mem.load() -- SaveAndLoad
+    else
+        Settings.QUICK = true
     end
     for _, level in ipairs(game.level_map.levels) do
         if level.name == FIRST_LEVEL_NAME then
