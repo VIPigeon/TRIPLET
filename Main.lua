@@ -87,6 +87,7 @@ end
 require 'Vector2D'
 require 'SaveAndLoad'
 require 'pslib'
+require 'pink_palette'
 require 'Levels'
 require 'StretchingAnimator'
 require 'Palette'

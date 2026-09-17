@@ -824,8 +824,10 @@ function game.draw()
         --     print(score, ScoringAnimator.TEXT_SLOTS.tiles.x, ScoringAnimator.TEXT_SLOTS.tiles.y, ScoringAnimator.TEXT_COLOR.tiles)
         end
     elseif mini_status == "well done" then
-        local score = game.current_level.best_score.score
-        local time = game.current_level.best_time.time
+        -- local score = game.current_level.best_score.score
+        -- local time = game.current_level.best_time.time
+        local score = game.current_level.last_score
+        local time = game.current_level.last_time
 
         -- пока что медаль и пончик выдаем прямо здесь
 

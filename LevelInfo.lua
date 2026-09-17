@@ -149,7 +149,7 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['NIGHT'] = 6,
     ['SUPERPOSITION'] = 6, -- костыль
 
-    ['PANDA LEVEL'] = 3*5,
+    ['PANDA LEVEL'] = 3*4,
 
     -- ['GETTING STARTED'] = 6, -- для дебага
     -- ['LAMA LEVEL'] = 3,  -- чтобы не затягивать шутку

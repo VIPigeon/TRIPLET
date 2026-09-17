@@ -399,8 +399,14 @@ end
 
 function Level:improve_result(time, score)
     -- if not self:is_completed() then
-    self.best_time = {time=time, score=score}
-    self.best_score = {time=time, score=score}
+    self.last_score = score
+    self.last_time = time
+    if not self.best_time or time < self.best_time.time then
+        self.best_time = {time=time, score=score}
+    end
+    if not self.best_score or score > self.best_score.score then
+        self.best_score = {time=time, score=score}
+    end
 
     local bad = 'bad '  -- bad
     if self:get_donut(score) == 17 then
