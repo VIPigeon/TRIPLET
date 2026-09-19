@@ -1,16 +1,16 @@
 TextWithOutline = {}
 
-function TextWithOutline.print(text, x, y, outline_width, color_text, color_outline, size, is_square)
+function TextWithOutline.print(text, x, y, outline_width, color_text, color_outline, size, is_square, is_fixed)
     -- is_square значит, что обводка квадратная, а не круглая
     size = size or 1
     for dx = -outline_width, outline_width do
         for dy = -outline_width, outline_width do
             if is_square or dx^2 + dy^2 <= outline_width^2 then
-                print(text, x+dx, y+dy, color_outline, false, size)
+                print(text, x+dx, y+dy, color_outline, is_fixed, size)
             end
         end
     end
-    print(text, x, y, color_text, false, size)
+    print(text, x, y, color_text, is_fixed, size)
 end
 
 

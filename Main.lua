@@ -105,6 +105,7 @@ require 'Hand'
 require 'Spectator'
 require 'ScoringAnimator'
 require 'Settings'
+require 'StartLevelScreen'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
 require 'Sound'

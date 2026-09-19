@@ -118,6 +118,7 @@ function MapDecor.update_click()
     local tile_y = math.floor(y / 8) + MapDecor.Y
     local tile = mget(tile_x, tile_y)
     if table.contains(MapDecor.animations, tile) then
+        Sound.decor_interact()
         MapDecor.change_frame(tile_x, tile_y)
         -- local table_x = tile_x - MapDecor.X + 1
         -- local table_y = tile_y - MapDecor.Y + 1

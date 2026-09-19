@@ -46,6 +46,25 @@ function Sound.tile_drop()
     sfx(3, hit, -1, 0)
 end
 
+function Sound.button_click()
+    -- звук, когда тайл отпускают
+    if not Settings.SFX then
+        return
+    end
+    local hit = Sound.get_arpegio_note(4)
+    sfx(3, hit, -1, 0)
+end
+
+function Sound.decor_interact()
+    -- звук взаимодействия с декором
+    if not Settings.SFX then
+        return
+    end
+    local hit = Sound.get_arpegio_note(8)
+    sfx(28, hit, -1, 0)
+    Sound.update_arpegio_note()
+end
+
 
 Sound.tile_draw_arpegio = {{id=0, note='G-4'}, {id=2, note='A#4'}, {id=1, note='D-5'}, {id=0, note='G-5'}, {id=2, note='A#5'},}
 function Sound.tile_draw()

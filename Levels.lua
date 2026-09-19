@@ -666,15 +666,21 @@ end
 
 function Level:print_name()
     -- костыли по переименовке
+    local name = self:real_name()
+
+    print(name, 0, 16*8 + 3)
+    -- TextWithOutline.print(name, 1, 16*8 + 2, 1, 0, 15, 1, true)
+end
+
+function Level:real_name()
+    -- костыли по переименовке
     local name = self.name
     if name == 'GRAVITATION' then
         name = 'FALL'
     elseif name == 'LAMA LEVEL' then
         name = 'LLAMA LLEVEL'
     end
-
-    print(name, 0, 16*8 + 3)
-    -- TextWithOutline.print(name, 1, 16*8 + 2, 1, 0, 15, 1, true)
+    return name
 end
 
 Level.__index = Level

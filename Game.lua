@@ -266,18 +266,17 @@ function game.set_status(status)
         if game.status == 'well done' then
             game.buttons.ok:set_visibility(true)
         end
-    elseif status == "game" then
+    elseif status == "game preview" then
         if game.current_level.name == 'ROSE-TINTED' then
             palette.set_color('pink')
             pink_seed = pink_seed + 1
         else
             palette.set_color('green')
         end
-
+    elseif status == "game" then
         if game.current_level.name == 'WINDOW' then
             game.buttons.autodraw_advice:set_visibility(true)
         end
-
         -- game.buttons.burger:set_visibility(true)
         game.buttons.settings:set_visibility(true)
         game.buttons.from_level_to_map:set_visibility(true)
@@ -535,7 +534,8 @@ function game.update()
                     game.set_status('map')
                 elseif name == 'start' then
                     game.current_level = game.level_map:get_available_level()
-                    game.set_status('game')
+                    -- game.set_status('game')
+                    game.set_status('game preview')
                 -- elseif name == 'done' then
                 --     game.set_status('levels')
                 elseif name == 'ok' then
@@ -562,6 +562,13 @@ function game.update()
         local current_level = game.level_map:get_starting_level()
         if current_level then
             game.current_level = current_level
+            game.set_status('game preview')
+            -- game.set_status('game')
+        end
+    end
+
+    if game.status == 'game preview' then
+        if Click.release_left() then
             game.set_status('game')
         end
     end
@@ -751,6 +758,10 @@ function game.draw()
 
     for _, c in ipairs(game.circles) do
         c:draw()
+    end
+
+    if game.status == 'game preview' then
+        StartLevelScreen.draw(game.current_level:real_name())
     end
 
     if mini_status == 'game' then
