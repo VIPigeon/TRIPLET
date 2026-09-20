@@ -69,8 +69,9 @@ MapDecor = {
     WISE_ADVICE = {  -- надписи на табличках привязаны к их абсолютным координатам на карте
         -- base_advice = {"Create your own rules", "to remember cards easier.", "Use your imagination!"},
         -- base_advice = {"Some images shamelessly", "stolen from DOTOWN Maeda", "Design Room.", "                    Huge thanks!"},
-        base_advice = {"Some images stolen from", "DOTOWN Maeda Design Room.", "","Huge thanks!"},
-        autodraw_advice = {"RMB and double click", "add a card to your hand", "automatically."},
+        -- base_advice = {"Some images stolen from", "DOTOWN Maeda Design Room.", "","Huge thanks!"},
+        base_advice = {"Huge thanks to", "DOTOWN Maeda Design Room", "for his images", "that I shamelessly stole"},
+        autodraw_advice = {"RMB / double click", "add a card to your hand", "automatically."},
     },
     ADVICE_NAMES = {  -- надписи на табличках привязаны к их абсолютным координатам на карте
         ['138 58'] = 'base_advice',

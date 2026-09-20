@@ -271,7 +271,7 @@ function AdviceButton:draw(colorkey)
         self:draw_box(box)
         -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
         -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
-        local y = box.y1 + 7
+        local y = box.y1 + 5
         local dy = 9
         -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
         -- print(self.name, box.x1 + 6, y, 9, false, 2)

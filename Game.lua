@@ -420,8 +420,13 @@ function game.init()
         end
     end
 
+
     if game.is_first_load then
         Settings.SFX = true
+    end
+
+    if ALL_LEVELS_AVAILABLE then
+        game.is_first_load = false
     end
 
     game.buttons.toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds')
