@@ -34,7 +34,7 @@ game = {
         -- settings = Button:new(1, 5*8-3, 'Settings'),
 
         -- просто кидает игрока на карту
-        continue = Button:new(12*8-2, 13*8-3, 'Continue', nil,nil,nil, 1),
+        continue = Button:new(12*8-2, 14*8-5, 'Continue', nil,nil,nil, 1),
 
         from_level_to_map = SpriteButton:new(2*8, 0, {chill=130, scared=132, pressed=134}, 12, 13),
         from_map_to_level = SpriteButton:new(2*8, 0, {chill=64, scared=66, pressed=68}, 12, 13),

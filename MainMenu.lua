@@ -8,8 +8,8 @@ function MainMenu.draw()
     local OUTLINE_COLOR = 5
     local TEXT = "TRIPLET!"
     local OUTLINE_WIDTH = 1
-    local X = 5*8
-    local Y = 4*8 + 16
+    local X = (5*8)
+    local Y = (4*8+16)
     local SIZE = 4
     local function pprint(X, Y, MAIN_COLOR)
         print(TEXT, X-OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
@@ -36,4 +36,10 @@ function MainMenu.draw()
     pprint(X-2, Y+3, OUTLINE_COLOR)
 
     pprint(X, Y, MAIN_COLOR)
+
+    -- кредиты
+    local vcroc = "A GAME BY V. CROCODILE"
+    local green = 5
+    print(vcroc, 15*8+2, 0, green)
+    --
 end
