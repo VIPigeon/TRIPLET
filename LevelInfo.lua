@@ -90,7 +90,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['TAKE FIVE 2'] = 15,
     ['XS'] = 7,
     ['NIGHT'] = 6,
-    ['SUPERPOSITION'] = 5,
+    ['SUPERPOSITION'] = 4,
 
     ['PANDA LEVEL'] = 1,
 

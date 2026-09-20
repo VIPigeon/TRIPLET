@@ -106,6 +106,7 @@ require 'Spectator'
 require 'ScoringAnimator'
 require 'Settings'
 require 'StartLevelScreen'
+require 'MainMenu'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
 require 'Sound'

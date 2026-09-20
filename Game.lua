@@ -25,14 +25,17 @@ game = {
     current_triplet_tiles_indexes = {},
     triplets_count = 0,
     buttons = {
-        start = Button:new(19*8, 11*8, 'Start', nil, nil, nil, 1),
+        start = Button:new(13*8, 13*8-3, 'Start', nil, nil, nil, 1),
         -- burger = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         settings = SpriteButton:new(0, 0, {chill=6, scared=38, pressed=70}, 12, 13),
         undo = SpriteButton:new(0, 0, {chill=8, scared=40, pressed=72}, 12, 13),
         -- levels = Button:new(1, 3*8-3, 'Levels'),
         done = Button:new(20*8, 9*8, 'Done'),
         -- settings = Button:new(1, 5*8-3, 'Settings'),
-        map = Button:new(19*8 + 6, 14*8, 'Map', nil,nil,nil, 1),
+
+        -- просто кидает игрока на карту
+        continue = Button:new(12*8-2, 13*8-3, 'Continue', nil,nil,nil, 1),
+
         from_level_to_map = SpriteButton:new(2*8, 0, {chill=130, scared=132, pressed=134}, 12, 13),
         from_map_to_level = SpriteButton:new(2*8, 0, {chill=64, scared=66, pressed=68}, 12, 13),
         -- [1] = Button:new(1, 5 + 1*12, '0. [9] ', LEVEL_BUTTON_X_SIZE),
@@ -249,10 +252,13 @@ function game.set_status(status)
     --         game.buttons[i]:set_visibility(true)
     --     end
     if status == 'main' then
-        game.buttons.start:set_visibility(true)
+        if game.is_first_load then
+            game.buttons.start:set_visibility(true)
+        else
+            game.buttons.continue:set_visibility(true)
+        end
         -- game.buttons.levels:set_visibility(true)
         game.buttons.settings:set_visibility(true)
-        game.buttons.map:set_visibility(true)
 
         -- game.tutorial:init()
     elseif status == 'settings' then
@@ -405,10 +411,17 @@ function game.init()
     else
         Settings.QUICK = true
     end
+    game.is_first_load = false
     for _, level in ipairs(game.level_map.levels) do
-        if level.name == FIRST_LEVEL_NAME then
+        if level.name == FIRST_LEVEL_NAME and not level.is_completed then
+            game.is_first_load = true
+            -- перый уровень уже включаем на месте, чтобы потом не искать
             level.is_available = true
         end
+    end
+
+    if game.is_first_load then
+        Settings.SFX = true
     end
 
     game.buttons.toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds')
@@ -530,7 +543,7 @@ function game.update()
                 --     game.set_status('levels')
                 elseif name == 'settings' then
                     game.set_status('settings')
-                elseif name == 'map' or name == 'from_level_to_map' then
+                elseif name == 'continue' or name == 'from_level_to_map' then
                     game.set_status('map')
                 elseif name == 'start' then
                     game.current_level = game.level_map:get_available_level()
@@ -775,41 +788,7 @@ function game.draw()
         game.level_map:draw()
     elseif mini_status == 'main' then
         -- map(120, 51, 30,17,0,0, 0)
-        MapDecor.draw()
-        map(30, 0, 30,17,0,0, 0)
-
-        local MAIN_COLOR = 11
-        local OUTLINE_COLOR = 5
-        local TEXT = "TRIPLET!"
-        local OUTLINE_WIDTH = 1
-        local X = 5*8
-        local Y = 4*8 + 16
-        local SIZE = 4
-        local function pprint(X, Y, MAIN_COLOR)
-            print(TEXT, X-OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
-            print(TEXT, X+OUTLINE_WIDTH, Y, MAIN_COLOR, false, SIZE)
-            print(TEXT, X, Y-OUTLINE_WIDTH, MAIN_COLOR, false, SIZE)
-            print(TEXT, X, Y+OUTLINE_WIDTH, MAIN_COLOR, false, SIZE)
-        end
-
-        pprint(X, Y+4, OUTLINE_COLOR)
-        pprint(X, Y-4, OUTLINE_COLOR)
-        pprint(X+4, Y, OUTLINE_COLOR)
-        pprint(X-4, Y, OUTLINE_COLOR)
-
-        pprint(X+3, Y+2, OUTLINE_COLOR)
-        pprint(X+2, Y+3, OUTLINE_COLOR)
-
-        pprint(X+3, Y-2, OUTLINE_COLOR)
-        pprint(X+2, Y-3, OUTLINE_COLOR)
-
-        pprint(X-3, Y-2, OUTLINE_COLOR)
-        pprint(X-2, Y-3, OUTLINE_COLOR)
-
-        pprint(X-3, Y+2, OUTLINE_COLOR)
-        pprint(X-2, Y+3, OUTLINE_COLOR)
-
-        pprint(X, Y, MAIN_COLOR)
+        MainMenu.draw()
     end
 
     -- hand.draw_hitbox()
