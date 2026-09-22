@@ -467,7 +467,12 @@ end
 local night_backup_face = Tile.face
 local night_backup_held_face = Tile.STATUS_SPRITE.held_face
 
+
 function Tile:draw()
+    -- Неприличный костыль для ОДНОГО уровня NUMBERS
+    local must_draw_number_instead_sprite = (self.value < 100)
+    --
+
     if game.current_level.name == 'NIGHT' then
         Tile.face = Tile.night.face
         Tile.STATUS_SPRITE.held_face = Tile.night.held_face
@@ -495,13 +500,61 @@ function Tile:draw()
         br = 0
     end
 
+    local function draw_face_value(shift)
+        if must_draw_number_instead_sprite then
+            -- для уровня NUMBERS выводит числа
+            local _X = self.x + 7 - 1
+            if self.value > 9 then
+                _X = _X - 3
+            end
+            local _Y = self.y + 5
+            if shift then
+                _Y = _Y - shift
+            end
+            local color = 1
+            -- для разнообразия цветов
+            if self.value % 15 == 0 then
+                color = 13
+            elseif self.value % 3 == 0 then
+                color = 5
+            elseif self.value % 5 == 0 then
+                color = 6
+            end
+            --
+            print(self.value, _X, _Y, color)
+        else
+            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+        end
+    end
+
     local COLORKEY = 7
     if self.status == 'scared' then
         spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
         spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,bf,br,2,2)
 
         if is_face then
-            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+            draw_face_value()
+            -- if must_draw_number_instead_sprite then
+            --     -- для уровня NUMBERS выводит числа
+            --     local _X = self.x + 7 - 2
+            --     if self.value > 9 then
+            --         _X = _X - 1
+            --     end
+            --     local _Y = self.y + 5
+            --     local color = 1
+            --     -- для разнообразия цветов
+            --     if self.value % 15 == 0 then
+            --         color = 13
+            --     elseif self.value % 3 == 0 then
+            --         color = 8
+            --     elseif self.value % 5 == 0 then
+            --         color = 6
+            --     end
+            --     --
+            --     print(self.value, _X, _Y, color)
+            -- else
+            --     spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+            -- end
             -- spr(self.value, self.x, self.y, -1, 1,ff,fr,2,2)
         end
     elseif self.status == 'held' then
@@ -519,7 +572,9 @@ function Tile:draw()
             -- if game.current_level.name == 'NIGHT' then
                 -- spr(self.value, self.x, self.y-SHIFT, 0, 1,ff,fr,2,2)
             -- else
-            spr(self.value, self.x, self.y-SHIFT, 12, 1,ff,fr,2,2)
+            draw_face_value(SHIFT)
+            -- spr(self.value, self.x, self.y-SHIFT, 12, 1,ff,fr,2,2)
+
             -- end
         end
 
@@ -527,7 +582,8 @@ function Tile:draw()
         spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
 
         if is_face then
-            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+            draw_face_value()
+            -- spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
         end
     end
     -- Tile.face = night_backup_face

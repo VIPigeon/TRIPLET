@@ -679,6 +679,8 @@ function Level:real_name()
         name = 'FALL'
     elseif name == 'LAMA LEVEL' then
         name = 'LLAMA LLEVEL'
+    elseif name == 'NUMBERS' then
+        name = 'COUNT TO 10'
     end
     return name
 end

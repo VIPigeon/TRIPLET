@@ -9,7 +9,7 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL',
+    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS',
     ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
@@ -71,6 +71,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['GETTING STARTED'] = 3,
     ['NOIR'] = 4,
     ['LAMA LEVEL'] = 4,
+    ['NUMBERS'] = 10,
 
     -- ['BRIDGE'] = 5,
     ['REVERSE'] = 6,
@@ -128,6 +129,7 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['GETTING STARTED'] = 6,
     ['NOIR'] = 3,
     ['LAMA LEVEL'] = 6,
+    ['NUMBERS'] = 3,
 
     ['BRIDGE'] = 6,
     ['REVERSE'] = 6,
@@ -233,6 +235,7 @@ LEVEL_POOL = {
     ['GETTING STARTED'] = green_pool,
     ['NOIR'] = black_pool,
     ['LAMA LEVEL'] = lama_pool,
+    ['NUMBERS'] = {1,2,3,4,5,6,7,8,9,10},
 
     -- ['BRIDGE'] = river_pool,
     ['REVERSE'] = nil,
