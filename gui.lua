@@ -40,8 +40,16 @@ function Button:update()
 
     if self.x1 <= x and x <= self.x2 and self.y1 <= y and y <= self.y2 then
         if left then
+            if self.status ~= 'pressed' then
+                Sound.button_interact('press')
+            end
             self.status = 'pressed'
         else
+            if self.status == 'chill' then
+                Sound.button_interact('scare')
+            elseif self.status == 'pressed' then
+                Sound.button_interact('release')
+            end
             self.status = 'scared'
         end
         return
@@ -217,13 +225,21 @@ function AdviceButton:update()
 
         if self.x1 <= x and x <= self.x2 and self.y1 <= y and y <= self.y2 then
             if left then
+                if self.status ~= 'pressed' then
+                    Sound.button_interact('press')
+                end
                 self.status = 'pressed'
             else
+                if self.status == 'chill' then
+                    Sound.button_interact('scare')
+                elseif self.status == 'pressed' then
+                    Sound.button_interact('release')
+                end
                 self.status = 'scared'
             end
-        else
-            self.status = 'chill'
+            return
         end
+        self.status = 'chill'
     --
     end
 

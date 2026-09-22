@@ -55,14 +55,37 @@ function Sound.button_click()
     sfx(3, hit, -1, 0)
 end
 
-function Sound.decor_interact()
+function Sound.decor_interact(decor_type)
     -- звук взаимодействия с декором
     if not Settings.SFX then
         return
     end
-    local hit = Sound.get_arpegio_note(8)
-    sfx(28, hit, -1, 0)
+    if decor_type == 'flower' then
+        local hit = Sound.get_arpegio_note(8)
+        sfx(28, hit, -1, 0)
+    elseif decor_type == 'bulb' then
+        local hit = Sound.get_arpegio_note(6)
+        sfx(41, hit, -1, 0)
+    elseif decor_type == 'shell' then
+        local hit = Sound.get_arpegio_note(6)
+        sfx(40, hit, -1, 0)
+    end
     Sound.update_arpegio_note()
+end
+
+function Sound.button_interact(interact_type)
+    local note = Sound.get_arpegio_note(6)
+    if interact_type == 'scare' then
+        -- local note = 'A#5'
+        -- sfx(44, note, -1, 0)
+    elseif interact_type == 'press' then
+        -- local note = 'G-6'
+        -- sfx(44, note, -1, 0)
+    elseif interact_type == 'release' then 
+        -- local note = 'D-7'
+        -- sfx(46, note, -1, 0)
+    end
+    -- Sound.update_arpegio_note()
 end
 
 

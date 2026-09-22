@@ -121,7 +121,16 @@ function MapDecor.update_click()
     local tile_y = math.floor(y / 8) + MapDecor.Y
     local tile = mget(tile_x, tile_y)
     if table.contains(MapDecor.animations, tile) then
-        Sound.decor_interact()
+
+        local decor_type = 'flower'
+        if tile_y == 54 then
+            decor_type = 'bulb'
+        elseif tile_y == 65 then
+            decor_type = 'shell'
+        end
+
+        Sound.decor_interact(decor_type)
+
         MapDecor.change_frame(tile_x, tile_y)
         -- local table_x = tile_x - MapDecor.X + 1
         -- local table_y = tile_y - MapDecor.Y + 1
