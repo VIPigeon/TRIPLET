@@ -251,7 +251,7 @@ function AdviceButton:update()
             -- trace(self.animator.current_box.x1)
         end
     elseif self.window_status == 'window' then
-        if Click.release_left() then
+        if Click.left() or Click.right() then
             self:set_window_status('window_to_button')
             -- trace(self.animator.current_box.x1)
         end

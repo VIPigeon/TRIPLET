@@ -102,8 +102,9 @@ end
 
 function ScoreCounter:triplet()
     self.income_animation.value = (self.combo+1)*10
-    self.income_animation.time = 0.8
+    self.income_animation.time = 0.2 -- фикс бага
     self.income_animation.status = 1
+    Sound.triplet(self.combo + 1)
     -- if self.combo < 3 then
     --     self:_shake(0, 1)
     -- elseif self.combo < 5 then

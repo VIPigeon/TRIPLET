@@ -107,11 +107,12 @@ function Sound.tile_score()
     -- звук, когда тайл скорится при подсчете очков
 end
 
-function Sound.triplet()
+function Sound.triplet(combo)
     if not Settings.SFX then
         return
     end
     -- звук, когда собирается триплет
+    -- combo — целое положительное число, уровень комбо
     sfx(4, 'F#5', -1, 2)
 end
 

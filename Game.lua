@@ -693,7 +693,7 @@ function game.update()
             end
             if card_counter == _TRIPLET_SIZE then
                 game.score_counter:triplet()
-                Sound.triplet()
+                -- Sound.triplet() -- перенес в ScoreCounter
                 game.triplets_count = game.triplets_count + 1
                 game.progress_bar:add()  -- смещаем tile_slot
                 for i = #game.tiles, 1, -1 do
