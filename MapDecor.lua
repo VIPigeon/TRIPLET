@@ -74,7 +74,7 @@ MapDecor = {
         autodraw_advice = {"RMB / double click", "add a card to your hand", "automatically."},
     },
     ADVICE_NAMES = {  -- надписи на табличках привязаны к их абсолютным координатам на карте
-        ['138 58'] = 'base_advice',
+        -- ['138 58'] = 'base_advice',
         ['132 59'] = 'autodraw_advice',
     },
 

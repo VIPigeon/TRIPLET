@@ -204,7 +204,7 @@ function LevelMap:_draw_achievements()
     -- local x2 = x1 + 13
     -- local dy = 1
     -- local y = 5*8
-    local START_X = 26*8 - 23
+    local START_X = (26*8 - 23) + 36
     local x = START_X
     local dx = 23
     local shift = 10

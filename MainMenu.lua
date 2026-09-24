@@ -38,8 +38,8 @@ function MainMenu.draw()
     pprint(X, Y, MAIN_COLOR)
 
     -- кредиты
-    local vcroc = "A GAME BY V. CROCODILE"
-    local green = 5
-    print(vcroc, 15*8+2, 0, green)
+    -- local vcroc = "A GAME BY V. CROCODILE"
+    -- local green = 5
+    -- print(vcroc, 15*8+2, 0, green)
     --
 end

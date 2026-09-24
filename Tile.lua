@@ -511,19 +511,17 @@ function Tile:draw()
             if shift then
                 _Y = _Y - shift
             end
-            local color = 1
+            local color = 0
             -- для разнообразия цветов
-            if self.value % 15 == 0 then
-                color = 13
-            elseif self.value % 3 == 0 then
-                color = 5
-            elseif self.value % 5 == 0 then
-                color = 6
-            end
+            color = 1
             --
             print(self.value, _X, _Y, color)
         else
-            spr(self.value, self.x, self.y, 12, 1,ff,fr,2,2)
+            local _Y = self.y
+            if shift then
+                _Y = _Y - shift
+            end
+            spr(self.value, self.x, _Y, 12, 1,ff,fr,2,2)
         end
     end
 

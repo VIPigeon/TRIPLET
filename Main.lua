@@ -107,6 +107,7 @@ require 'ScoringAnimator'
 require 'Settings'
 require 'StartLevelScreen'
 require 'MainMenu'
+require 'CreditsScreen'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
 require 'Sound'

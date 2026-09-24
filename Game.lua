@@ -63,6 +63,7 @@ game = {
         -- toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time'),
 
         -- change_mode_button = ToggleButton:new(0, 18, 'score', ' time', true, nil,nil,nil,
+        credits = Button:new(2*8+2, 3, 'credits', nil,nil,nil, 1),
         change_mode_button = ToggleButton:new(26*8, 4, 'score', ' time', true, nil,nil,nil,
             { -- 4*8, 4
             text = {[true]=4, [false]=4},
@@ -258,6 +259,7 @@ function game.set_status(status)
             game.buttons.continue:set_visibility(true)
         end
         -- game.buttons.levels:set_visibility(true)
+        game.buttons.credits:set_visibility(true)
         game.buttons.settings:set_visibility(true)
 
         -- game.tutorial:init()
@@ -265,7 +267,7 @@ function game.set_status(status)
         palette.make_dark()  -- делаем палитру темной
         game.buttons.undo:set_visibility(true)
         game.buttons.toggle_sfx:set_visibility(true)
-        game.buttons.toggle_music:set_visibility(true)
+        -- game.buttons.toggle_music:set_visibility(true)
         game.buttons.toggle_quick:set_visibility(true)
         game.buttons.toggle_time:set_visibility(true)
 
@@ -296,12 +298,12 @@ function game.set_status(status)
 
         game.set_game_visibility(false)
         game.buttons.settings:set_visibility(true)
-        game.buttons.base_advice:set_visibility(true)
+        -- game.buttons.base_advice:set_visibility(true)
         -- trace(game.status)
         if game.status == 'game' then
             game.buttons.from_map_to_level:set_visibility(true)
         end
-        game.buttons.change_mode_button:set_visibility(true)
+        -- game.buttons.change_mode_button:set_visibility(true)
         palette.make_normal()  -- делаем палитру нормальной
         game.level_map:process_events()
     elseif status == "well done" then  -- анимация done закончилась
@@ -385,6 +387,9 @@ function game.set_status(status)
                 -- end
             end
         end
+    elseif status == "credits" then
+        -- а что делать?
+        game.buttons.undo:set_visibility(true)
     end
     -- пополняем историю статусов
     -- история чиститься при запуске игры
@@ -430,9 +435,9 @@ function game.init()
     end
 
     game.buttons.toggle_sfx = ToggleButton:new(1, 3*8 - 3, 'ON', 'OFF', Settings.SFX, 'sounds')
-    game.buttons.toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music')
-    game.buttons.toggle_quick = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations')
-    game.buttons.toggle_time = ToggleButton:new(1, 9*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time')
+    -- game.buttons.toggle_music = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.MUSIC, 'music')
+    game.buttons.toggle_quick = ToggleButton:new(1, 5*8 - 3, 'ON', 'OFF', Settings.QUICK, 'quick animations')
+    game.buttons.toggle_time = ToggleButton:new(1, 7*8 - 3, 'ON', 'OFF', Settings.SHOW_TIME_DURING_GAME, 'show time')
 
     game.set_status("main")
 
@@ -568,8 +573,10 @@ function game.update()
                     game.set_status('map')
                 elseif name == 'autodraw_advice' then
                     button:set_window_status('button_to_window')
-                elseif name == 'base_advice' then
+                elseif name == 'base_advice' then -- эта кнопка скрыта
                     button:set_window_status('button_to_window')
+                elseif name == 'credits' then
+                    game.set_status('credits')
                 end
             end
         end
@@ -864,12 +871,16 @@ function game.draw()
         end
         -- print(score, X + 16, Y + 10)
         -- print(score, X + DX, Y)
-        print('time: '..string.format("%.1f", time), X, Y + 3*8)
-        -- spr(medal, X, Y + 4*8)
-        if game.medal_animation.state > game.current_level:get_medal(time) then
-            spr(medal, X - mDX, Y + 3*8 - 1)
-        else
-            spr(medal, X - mDX, Y + 3*8 - 1 + dY)
+
+        -- скрываем показывание времени
+        if Settings.SHOW_TIME then
+            print('time: '..string.format("%.1f", time), X, Y + 3*8)
+            -- spr(medal, X, Y + 4*8)
+            if game.medal_animation.state > game.current_level:get_medal(time) then
+                spr(medal, X - mDX, Y + 3*8 - 1)
+            else
+                spr(medal, X - mDX, Y + 3*8 - 1 + dY)
+            end
         end
         -- print(string.format("%.1f", time), X + 16, Y + 4*8 + 2)
         -- print(string.format("%.1f", time), X + DX, Y + 3*8)
@@ -911,6 +922,10 @@ function game.draw()
 
     if game.status == 'game' or game.status == 'done' or game.status == 'well done' then
         game.current_level:print_name()
+    end
+
+    if game.status == 'credits' then
+        CreditsScreen.draw()
     end
 
     if game.change_screen_animation then
