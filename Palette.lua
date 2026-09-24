@@ -1,8 +1,9 @@
 ADDR = 0x3FC0
 
-palette = {
-    color = 'green',
-    green={
+local DARK_GREEN = {[5]={95, 118, 96},
+            [11]={123, 165, 103},
+            [12]={123, 165, 103},}
+local GREEN={
         [0] = {40, 40, 46},
         [1] = {108, 86, 113},
         [2] = {217, 200, 191},
@@ -20,18 +21,20 @@ palette = {
         [14] = {246, 222, 129},
         [15] = {250, 246, 238},
         -- [12] = {255, 245, 190},
-    },   
+    }
+
+palette = {
+    color = 'green',
+    green= GREEN,
     dark={
-        green = {
-            [5]={95, 118, 96},
-            [11]={123, 165, 103},
-            [12]={123, 165, 103},
-        },
+        green = DARK_GREEN,
         pink = {
             [5]  = {110, 92, 118},
             [11] = {160, 145, 145},
-        }
+        },
+        noir = make_palette_grey(DARK_GREEN),
     },
+    noir = make_palette_grey(GREEN),
     pink=PINK_PALETTE,
     -- pink={
     --     [0] = {49, 38, 50},

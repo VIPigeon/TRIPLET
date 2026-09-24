@@ -278,6 +278,8 @@ function game.set_status(status)
         if game.current_level.name == 'ROSE-TINTED' then
             palette.set_color('pink')
             pink_seed = pink_seed + 1
+        elseif game.current_level.name == 'NOIR' then
+            palette.set_color('noir')
         else
             palette.set_color('green')
         end
