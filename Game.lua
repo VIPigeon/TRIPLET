@@ -409,6 +409,8 @@ end
 function game.init()
     math.randomseed(time()*1e7)
 
+    palette.make_normal()
+
     -- game.tutorial = Tutorial:new()
 
     -- mem.clear()
@@ -484,6 +486,13 @@ function game.circles_update()
 end
 
 function game.update()
+    --
+    if btnp(4) then
+        local x, y, left, middle, right = mouse()
+        trace(x..' '..y)
+    end
+    --
+
     MapDecor.update()
     mem.save()
 

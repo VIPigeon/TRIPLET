@@ -1,12 +1,12 @@
 
 StretchingAnimator = {}
 
-function StretchingAnimator:new(init_box, target_box)
+function StretchingAnimator:new(init_box, target_box, v)
     local object = {
         init_box = init_box,  -- для ревёрса
         current_box = table.copy(init_box),
         target_box = target_box,
-        v = 19,
+        v = v or 19,
         is_reverse = false,
     }
 

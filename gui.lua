@@ -188,7 +188,7 @@ SpriteButton.__index = SpriteButton
 AdviceButton = table.copy(SpriteButton)
 -- имеет поле .advice
 
-AdviceButton.window_box = {x1=3, y1=4*8+3, x2=20*8, y2=9*8+5}
+AdviceButton.window_box = {x1=3, y1=4*8+3, x2=20*8 - 8, y2=(9*8+5) - 6}
 AdviceButton.box_color = 10
 AdviceButton.shadow_color = 4
 AdviceButton.text_color = 4
@@ -209,7 +209,7 @@ function AdviceButton:set_window_status(window_status)
                 x2=self.x2,
                 y2=self.y2,
             },
-            AdviceButton.window_box)
+            AdviceButton.window_box, 8)
     elseif window_status == 'window_to_button' then
         self.animator.is_reverse = true
     end
@@ -287,13 +287,13 @@ function AdviceButton:draw(colorkey)
         self:draw_box(box)
         -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1+1, AdviceButton.shadow_color)
         -- rect(box.x1, box.y1, box.x2-box.x1, box.y2-box.y1, AdviceButton.box_color)
-        local y = box.y1 + 5
+        local y = box.y1 + 6
         local dy = 9
         -- print(tostring(self.id)..'. '..self.name, box.x1 + 6, y, 9)
         -- print(self.name, box.x1 + 6, y, 9, false, 2)
         -- y = y + dy
         for _, line in ipairs(self.advice) do
-            print(line, box.x1 + 6, y, AdviceButton.text_color)
+            print(line, box.x1 + 7, y, AdviceButton.text_color)
             y = y + dy
         end
     end

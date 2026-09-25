@@ -9,7 +9,7 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS',
+    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS', ['43 5'] = 'BIRD LEVEL', ['45 5'] = 'BLUE MOOD',
     ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
@@ -72,6 +72,8 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['NOIR'] = 4,
     ['LAMA LEVEL'] = 4,
     ['NUMBERS'] = 10,
+    ['BLUE MOOD'] = 3,
+    ['BIRD LEVEL'] = 5,
 
     -- ['BRIDGE'] = 5,
     ['REVERSE'] = 6,
@@ -130,6 +132,8 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['NOIR'] = 3,
     ['LAMA LEVEL'] = 6,
     ['NUMBERS'] = 3,
+    ['BLUE MOOD'] = 9,
+    ['BIRD LEVEL'] = 6,
 
     ['BRIDGE'] = 6,
     ['REVERSE'] = 6,
@@ -216,6 +220,7 @@ LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 
 local base_pool = {396, 256, 298, 360, 268, 300}
 local lama_pool = {360, 362, 364, 366}
+local birds_pool = {260, 288, 292, 298, 356}
 local green_pool = {268, 292, 398} -- без крокодила (богомол в пожизненном бане)
 -- local river_pool = {262, 264, 266, 268, 270, 322}
 -- local grey_pool = {352, 354, 356, 358, 392}
@@ -236,6 +241,8 @@ LEVEL_POOL = {
     ['NOIR'] = black_pool,
     ['LAMA LEVEL'] = lama_pool,
     ['NUMBERS'] = {1,2,3,4,5,6,7,8,9,10},
+    ['BIRD LEVEL'] = birds_pool,
+    ['BLUE MOOD'] = {264, 324, 394},
 
     -- ['BRIDGE'] = river_pool,
     ['REVERSE'] = nil,

@@ -74,7 +74,7 @@ function Sound.decor_interact(decor_type)
 end
 
 function Sound.button_interact(interact_type)
-    local note = Sound.get_arpegio_note(6)
+    local note = Sound.get_arpegio_note(5)
     if interact_type == 'scare' then
         -- local note = 'A#5'
         -- sfx(44, note, -1, 0)
@@ -83,9 +83,9 @@ function Sound.button_interact(interact_type)
         -- sfx(44, note, -1, 0)
     elseif interact_type == 'release' then 
         -- local note = 'D-7'
-        -- sfx(46, note, -1, 0)
+        sfx(43, note, -1, 0)
+        Sound.update_arpegio_note()
     end
-    -- Sound.update_arpegio_note()
 end
 
 

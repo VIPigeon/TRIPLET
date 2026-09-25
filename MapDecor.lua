@@ -113,6 +113,11 @@ function MapDecor.init()
 end
 
 function MapDecor.update_click()
+    local function is_board_cover_pixel(x, y)
+        return pix(x, y) == 5 or pix(x, y) == 11
+    end
+
+
     if not ( Click.left() or Click.right() ) then
         return
     end
@@ -120,7 +125,7 @@ function MapDecor.update_click()
     local tile_x = math.floor(x / 8) + MapDecor.X
     local tile_y = math.floor(y / 8) + MapDecor.Y
     local tile = mget(tile_x, tile_y)
-    if table.contains(MapDecor.animations, tile) then
+    if table.contains(MapDecor.animations, tile) and not is_board_cover_pixel(x, y) then
 
         local decor_type = 'flower'
         if tile_y == 54 then
