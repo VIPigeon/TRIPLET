@@ -114,7 +114,7 @@ end
 
 function MapDecor.update_click()
     local function is_board_cover_pixel(x, y)
-        return pix(x, y) == 5 or pix(x, y) == 11
+        return pix(x, y) == 5 or pix(x, y) == 11 or pix(x, y) == 0
     end
 
 

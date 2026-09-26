@@ -34,10 +34,12 @@ palette = {
         },
         noir = make_palette_grey(DARK_GREEN_PALETTE),
         winter = get_dark_green_to_blue_palette(),
+        fall = get_dark_fall_palette(),
     },
     noir = make_palette_grey(GREEN_PALETTE),
     pink=PINK_PALETTE,
     winter = get_green_to_blue_palette(),
+    fall = get_fall_palette(),
     -- pink={
     --     [0] = {49, 38, 50},
     --     [1] = {121, 92, 122},

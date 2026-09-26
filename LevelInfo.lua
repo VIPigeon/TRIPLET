@@ -239,6 +239,7 @@ LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 LEVEL_PALETTE = {
     ['NOIR'] = 'noir',
     ['SLIP BOARD'] = 'winter',
+    ['GRAVITATION'] = 'fall',
 }
 
 local base_pool = {396, 256, 298, 360, 268, 300}

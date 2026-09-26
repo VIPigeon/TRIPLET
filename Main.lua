@@ -109,6 +109,7 @@ require 'MainMenu'
 require 'CreditsScreen'
 require 'make_palette_grey'
 require 'get_green_to_blue_palette'
+require 'get_fall_palette'
 require 'Palette'
 -- require 'Cursor' -- курсора не будет
 require 'Time'
