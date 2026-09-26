@@ -70,7 +70,16 @@ function Sound.decor_interact(decor_type)
         local hit = Sound.get_arpegio_note(6)
         sfx(40, hit, -1, 0)
     end
+
     Sound.update_arpegio_note()
+
+    --[[
+    ФАН ФАКТ
+    decor_interact и tile_click должны звучать на одной дорожке.
+    благодаря этому не слышно взаимодействие в декором, когда игрок берет карту. А оно там может произойти
+
+    Если хочешь понять почему, смотри MapDecor.update_click()
+    ]]
 end
 
 function Sound.button_interact(interact_type)

@@ -275,14 +275,10 @@ function game.set_status(status)
             game.buttons.ok:set_visibility(true)
         end
     elseif status == "game preview" then
-        if game.current_level.name == 'ROSE-TINTED' then
-            palette.set_color('pink')
-            pink_seed = pink_seed + 1
-        elseif game.current_level.name == 'NOIR' then
-            palette.set_color('noir')
-        else
-            palette.set_color('green')
-        end
+        -- if game.current_level.name == 'ROSE-TINTED' then
+        --     palette.set_color('pink')
+        --     pink_seed = pink_seed + 1
+        palette.set_color(game.current_level.palette)
     elseif status == "game" then
         if game.current_level.name == 'WINDOW' then
             game.buttons.autodraw_advice:set_visibility(true)

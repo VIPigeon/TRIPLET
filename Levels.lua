@@ -337,6 +337,7 @@ function Level:new(x, y, level_type, level_id)
     -- object.layout = LEVEL_LAYOUT[level_code]  -- тип расстановки
     object.layout = LEVEL_LAYOUT[object.name] or CENTER_AREA
     object.board = LEVEL_BOARD[object.name] or {x=30, y=17}
+    object.palette = LEVEL_PALETTE[object.name] or 'green'
     setmetatable(object, self)
     return object
 end
@@ -681,6 +682,8 @@ function Level:real_name()
         name = 'LLAMA LLEVEL'
     elseif name == 'NUMBERS' then
         name = 'COUNT TO 10'
+    elseif name == 'SLIP BOARD' then
+        name = 'WINTER'
     end
     return name
 end

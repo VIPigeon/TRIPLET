@@ -6,6 +6,24 @@ for i = 256, 384, 32 do
     end
 end
 
+function get_all_animals_except(t)
+    local res = table.copy(ALL_ANIMALS)
+    local remove_ids = {}
+    for i, animal in ipairs(ALL_ANIMALS) do
+        for _, animal_to_remove in ipairs(t) do
+            if animal == animal_to_remove then
+                table.insert(remove_ids, i)
+                break
+            end
+        end
+    end
+    for _, i in ipairs(table.reversed(remove_ids)) do
+        table.remove(res, i)
+    end
+    return res
+end
+
+
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
@@ -218,6 +236,11 @@ LEVEL_LAYOUT = {
 }
 LEVEL_LAYOUT['GRAVITATION'] = LEVEL_LAYOUT['UPSIDE DOWN']
 
+LEVEL_PALETTE = {
+    ['NOIR'] = 'noir',
+    ['SLIP BOARD'] = 'winter',
+}
+
 local base_pool = {396, 256, 298, 360, 268, 300}
 local lama_pool = {360, 362, 364, 366}
 local birds_pool = {260, 288, 292, 298, 356}
@@ -247,7 +270,8 @@ LEVEL_POOL = {
     -- ['BRIDGE'] = river_pool,
     ['REVERSE'] = nil,
 
-    ['SLIP BOARD'] = sea_pool,
+    ['SLIP BOARD'] = get_all_animals_except({266, 268, 292, 298, 300, 330, 364, 398}), -- удалили всех животных с зеленым
+    -- ['FISHING'] = sea_pool,
     ['DEJA VU'] = nil,
     ['UPSIDE DOWN'] = nil,
     ['WINDOW'] = flying_pool,
