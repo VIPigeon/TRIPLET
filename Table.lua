@@ -66,6 +66,17 @@ function table.concat_table(destination, source)
     end
 end
 
+function table.imerge(t1, t2) -- объединяет массивы
+    local res = {}
+    for _, e in ipairs(t1) do
+        table.insert(res, e)
+    end
+    for _, e in ipairs(t2) do
+        table.insert(res, e)
+    end
+    return res
+end
+
 function table.contains_table(t, element)
     for _, value in pairs(t) do
         if table.equals(value, element) then
@@ -77,6 +88,15 @@ end
 
 function table.contains(t, element)
     for _, value in pairs(t) do
+        if value == element then
+            return true
+        end
+    end
+    return false
+end
+
+function table.icontains(t, element)
+    for _, value in ipairs(t) do
         if value == element then
             return true
         end

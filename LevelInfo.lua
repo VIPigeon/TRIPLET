@@ -27,7 +27,7 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS', ['43 5'] = 'BIRD LEVEL', ['45 5'] = 'BLUE MOOD',
+    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS', ['43 5'] = 'BIRD LEVEL', ['45 5'] = 'BLUE MOOD', ['47 5'] = 'FISHING', ['49 5'] = 'FACES',
     ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
@@ -97,6 +97,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['REVERSE'] = 6,
 
     ['SLIP BOARD'] = 5,
+    ['FISHING'] = 4,
     ['DEJA VU'] = 6,
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 5,
@@ -114,6 +115,7 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['SUPERPOSITION'] = 4,
 
     ['PANDA LEVEL'] = 1,
+    ['FACES'] = 8,
 
     -- ['GETTING STARTED'] = 3,
     -- ['LAMA LEVEL'] = 4,
@@ -157,6 +159,7 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['REVERSE'] = 6,
 
     ['SLIP BOARD'] = 6,
+    ['FISHING'] = 3,
     ['DEJA VU'] = 3,
     ['UPSIDE DOWN'] = 6,
     ['WINDOW'] = 6,
@@ -174,6 +177,7 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
     ['SUPERPOSITION'] = 6, -- костыль
 
     ['PANDA LEVEL'] = 3*4,
+    ['FACES'] = 3,
 
     -- ['GETTING STARTED'] = 6, -- для дебага
     -- ['LAMA LEVEL'] = 3,  -- чтобы не затягивать шутку
@@ -250,8 +254,16 @@ local green_pool = {268, 292, 398} -- без крокодила (богомол 
 -- local grey_pool = {352, 354, 356, 358, 392}
 local flying_pool = {292, 298, 356, 328, 330, 416}
 local insects_pool = {322, 324, 326, 328, 330, 332, 334}
-local sea_pool = {384, 386, 388, 390, 392, 394}  -- без краба и черепахи
-
+local sea_pool = {384, 386, 388, 390, 392, 394, 398}  -- без краба
+FISH_SPEED = { -- глобальная таблица для FISHING
+    [384] = 0.7,
+    [386] = 0.6,
+    [388] = 0.5,
+    [390] = 0.4,
+    [392] = 0.3,
+    [394] = 0.2,
+    [398] = 0.1,
+}
 local black_pool = {290, 298, 320, 362, 384}
 -- local night_pool = {
 --     290, 298, 320, 362, -- black
@@ -259,6 +271,10 @@ local black_pool = {290, 298, 320, 362, 384}
 --     366, 300, -- white
 -- }
 local autumn_pool = {256, 258, 270, 260, 288, 296, 302, 322, 328, 330, 334, 386, 388, 390, 396}
+
+-- глобальные пулы для уровня FACES
+YELLOW_POOL = {260, 288, 386, 302,}
+BLUE_POOL = {264, 324, 394, 418,}
 
 LEVEL_POOL = {
     ['GETTING STARTED'] = green_pool,
@@ -272,7 +288,7 @@ LEVEL_POOL = {
     ['REVERSE'] = nil,
 
     ['SLIP BOARD'] = get_all_animals_except({266, 268, 292, 298, 300, 330, 364, 398}), -- удалили всех животных с зеленым
-    -- ['FISHING'] = sea_pool,
+    ['FISHING'] = sea_pool,
     ['DEJA VU'] = nil,
     ['UPSIDE DOWN'] = nil,
     ['WINDOW'] = flying_pool,
@@ -289,4 +305,5 @@ LEVEL_POOL = {
     ['SUPERPOSITION'] = nil,
 
     ['PANDA LEVEL'] = {300},
+    ['FACES'] = table.imerge(YELLOW_POOL, BLUE_POOL),
 }

@@ -13,6 +13,13 @@ Tile.STATUS_SPRITE = {
 }
 Tile.back = 96 -- BICYCLE_BACK
 Tile.face = 98 -- EMPTY FACE
+
+-- картинки рубашки
+Tile.angel = 480
+Tile.fun_face = 484
+Tile.sad_face = 482
+--
+
 Tile.SHADOW = 128
 
 Tile.night = {
@@ -83,6 +90,10 @@ function Tile:new(x, y, value, flip, rotate, is_back_static, is_reverse)
             value_to_switch = 0,
             t=0,
         },
+        fishing = {
+            is_left = math.random() > 0.5,
+            speed = FISH_SPEED[value],
+        },
     }
 
     setmetatable(object, self)
@@ -119,15 +130,41 @@ function Tile:update_gravity()
         return
     end
     self.gravity_speed = self.gravity_speed + 0.033
-    self.y = self.y + self.gravity_speed
+    self.y = self.y + self.gravity_speed *60*Time.dt()
 
     local x1 = (self.x+1)/8
     local y1 = (self.y+1)/8
     local x2 = (self.x+14)/8
     local y2 = (self.y+14)/8
     if not self:is_legal_position(x1, y1, x2, y2) then
-        self.y = self.y - self.gravity_speed
+        self.y = self.y - self.gravity_speed *60*Time.dt()
         self.gravity_speed = 0
+    end
+end
+
+function Tile:update_fishing()
+    -- if self.triplet_status ~= 'no' then
+    if self.triplet_status ~= 'no' or self.hand_status == 'in' or self.hand_status == 'to' then
+        return
+    end
+
+    local function swim()
+        local speed = self.fishing.speed *60*Time.dt()
+        if self.fishing.is_left then
+            self.x = self.x - speed
+        else
+            self.x = self.x + speed
+        end
+    end
+
+    swim()
+    local x1 = (self.x+1)/8
+    local y1 = (self.y+1)/8
+    local x2 = (self.x+14)/8
+    local y2 = (self.y+14)/8
+    if not self:is_legal_position(x1, y1, x2, y2) or self:is_tile_in_hand_area(x1, y1, x2, y2) then
+        self.fishing.is_left = not self.fishing.is_left
+        swim()
     end
 end
 
@@ -166,22 +203,22 @@ function Tile:update_slip()
         local STOP_EPS = 0.066    -- порог полной остановки
 
         -- плавно изменяем текущую скорость в сторону target_v
-        self.slip.vx = self.slip.vx + (self.slip.target_vx - self.slip.vx) * GRIP
-        self.slip.vy = self.slip.vy + (self.slip.target_vy - self.slip.vy) * GRIP
+        self.slip.vx = self.slip.vx + (self.slip.target_vx - self.slip.vx) * GRIP *60*Time.dt()
+        self.slip.vy = self.slip.vy + (self.slip.target_vy - self.slip.vy) * GRIP *60*Time.dt()
 
         -- на льду внешнее воздействие постепенно исчезает,
         -- поэтому и target_v медленно затухает к нулю
-        self.slip.target_vx = self.slip.target_vx * FRICTION
-        self.slip.target_vy = self.slip.target_vy * FRICTION
+        self.slip.target_vx = self.slip.target_vx * FRICTION *60*Time.dt()
+        self.slip.target_vy = self.slip.target_vy * FRICTION *60*Time.dt()
 
         -- обновляем позицию
         local MAX_SPEED = 5
-        local d_x = self.slip.vx
-        local d_y = self.slip.vy
+        local d_x = self.slip.vx *60*Time.dt()
+        local d_y = self.slip.vy *60*Time.dt()
         if MAX_SPEED^2 < self.slip.vx^2 + self.slip.vy^2 then
             local vec = vector2d.normalize({x=self.slip.vx, y=self.slip.vy})
-            d_x = vec.x*MAX_SPEED
-            d_y = vec.y*MAX_SPEED
+            d_x = vec.x*MAX_SPEED *60*Time.dt()
+            d_y = vec.y*MAX_SPEED *60*Time.dt()
         end
 
         self.x = self.x + d_x
@@ -246,6 +283,8 @@ function Tile:update()
         self:update_gravity()
     elseif game.current_level.name == 'SLIP BOARD' then
         self:update_slip()
+    elseif game.current_level.name == 'FISHING' then
+        self:update_fishing()
     elseif game.current_level.name == 'SUPERPOSITION' then
         self:update_superposition()
     end
@@ -423,12 +462,18 @@ function Tile:what_are_you_doing_with_me()
     return 'hold'
 end
 
+function Tile:is_tile_in_hand_area(x1, y1, x2, y2)
+    return not (
+        (BOARD[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
+        (BOARD[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
+        (BOARD[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
+        (BOARD[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)])
+    )
+end
+
 function Tile:is_legal_position(x1, y1, x2, y2)
     if hand.full() then
-        return (BOARD[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
-       (BOARD[mget(x1, y2)] or HAND_BORDER[mget(x1, y2)]) and 
-       (BOARD[mget(x2, y1)] or HAND_BORDER[mget(x2, y1)]) and 
-       (BOARD[mget(x2, y2)] or HAND_BORDER[mget(x2, y2)])
+        return not self:is_tile_in_hand_area(x1, y1, x2, y2)
     end
 
     return (BOARD[mget(x1, y1)] or HAND[mget(x1, y1)] or HAND_BORDER[mget(x1, y1)]) and 
@@ -526,8 +571,36 @@ function Tile:draw()
     end
 
     local COLORKEY = 7
+
+    local function draw_back_image(y_shift)
+        y_shift = y_shift or 0
+        local drawing_colorkey = 11
+        if game.current_level.name == 'FACES' then
+            local smile = Tile.sad_face
+            if table.icontains(YELLOW_POOL, self.value) then
+                smile = Tile.fun_face
+            end
+            spr(smile, self.x, self.y - y_shift, drawing_colorkey, 1,bf,br,2,2)
+        else
+            spr(Tile.angel, self.x, self.y - y_shift, drawing_colorkey, 1,bf,br,2,2)
+        end
+    end
+    local function draw_card(y_shift)
+        y_shift = y_shift or 0
+
+        -- карточка без картинки
+        if is_face then
+            spr(Tile.face, self.x, self.y - y_shift, COLORKEY, 1,bf,br,2,2)
+        else
+            spr(Tile.back, self.x, self.y - y_shift, COLORKEY, 1,bf,br,2,2)            
+            draw_back_image(y_shift)
+        end
+    end
+
+
     if self.status == 'scared' then
-        spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
+        -- spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
+        draw_card()
         spr(Tile.STATUS_SPRITE.scared, self.x, self.y, 11, 1,bf,br,2,2)
 
         if is_face then
@@ -559,11 +632,13 @@ function Tile:draw()
         -- поднимаем вверх
         local SHIFT = 2
         spr(Tile.SHADOW, self.x, self.y, 11, 1,0,0,2,2)
-        spr(is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
+        -- spr(is_face and Tile.face or Tile.back, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
+        draw_card(SHIFT)
         if is_face then
             spr(Tile.STATUS_SPRITE.held_face, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
         else
             spr(Tile.STATUS_SPRITE.held, self.x, self.y-SHIFT, COLORKEY, 1,bf,br,2,2)
+            draw_back_image(SHIFT)
         end
 
         if is_face then
@@ -577,7 +652,8 @@ function Tile:draw()
         end
 
     elseif self.status == 'chill' then
-        spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
+        -- spr(is_face and Tile.face or Tile.back, self.x, self.y, COLORKEY, 1,bf,br,2,2)
+        draw_card()
 
         if is_face then
             draw_face_value()

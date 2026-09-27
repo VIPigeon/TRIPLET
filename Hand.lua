@@ -133,6 +133,19 @@ function hand.full()
     return true
 end
 
+function hand.almost_full()
+    local k = 2
+    for _, value in ipairs(hand.tiles) do
+        if value == -1 then
+            k = k - 1
+            if k <= 0 then
+                return false
+            end
+        end
+    end
+    return true
+end
+
 function hand.remove(slot_i)
     hand.tiles[slot_i] = -1
 end

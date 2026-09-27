@@ -61,3 +61,8 @@ function Basic.is_any_key_pressed()
     end
     return keyboard1 ~= 0 or keyboard2 ~= 0 or any_button_pressed
 end
+
+function Basic.random_choice(t)
+    local i = math.random(#t)
+    return t[i]
+end

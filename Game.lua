@@ -647,7 +647,7 @@ function game.update()
             end
         end
 
-        local is_any_tile_held = false
+        local is_any_tile_held = false -- извините. теперь это глобальная переменная
         local is_any_tile_going_to_hand = false
         for i = #game.tiles, 1, -1 do
             tile = game.tiles[i]
