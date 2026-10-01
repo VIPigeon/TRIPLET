@@ -1,4 +1,4 @@
-ALL_LEVELS_AVAILABLE = true
+ALL_LEVELS_AVAILABLE = false
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
@@ -60,8 +60,8 @@ function LevelMap:open_new_levels(x, y)
         -- плохой код!
         if math.abs(level.x - x) + math.abs(level.y - y) == 2 then
             if not level.is_available then
-                -- TODO: сделать лучше через ивенты
-                level.is_available = true
+                level:set_state('opening')
+                -- level.is_available = true
             end
         end
     end
@@ -156,6 +156,7 @@ function LevelMap:process_events()
     self.timer = 0.3
 end
 
+-- УЖЕ НЕ ИСПОЛЬЗУЕТСЯ
 function LevelMap:get_available_level()
     -- для кнопки start
     -- возвращает правый нижний доступный непройденный уровень
@@ -306,7 +307,9 @@ function Level:new(x, y, level_type, level_id)
             16*3, 16*3, 3
             ),
             back_flag = false, -- особая переменная для выхода из окна
-        }
+        },
+
+        opening = {t=0, T=0.8},
     }
     object.disabled_button_sprite = 10
     if object.is_scoring then
@@ -541,6 +544,9 @@ function Level:set_state(state)
         -- какой дикий костыль 🐗
         self.animator.is_reverse = true
         self.animator.init_box = Level.info_box
+    elseif state == 'opening' then
+        self.opening.t = self.opening.T
+    -- elseif state == 'button' then
     end
 
     self.state = state
@@ -584,6 +590,16 @@ function Level:update()
             self:set_state('game')
         end
         return
+    end
+
+    if self.state == 'opening' then
+        self.opening.t = Basic.tick_timer(self.opening.t)
+        trace(self.opening.t)
+        if self.opening.t == 0 then
+            self:set_state('button')
+            trace(self.name..' available')
+            self.is_available = true
+        end
     end
 
     if not self.is_available then
@@ -646,8 +662,11 @@ function Level:draw()
         return
     end
 
-    if self.is_available then
+    if self.state == 'opening' then
+        self.button:draw_with_blink(-1)
+    elseif self.is_available then
         self.button:draw(-1)
+
         if self.button.status ~= 'chill' then
             -- print(tostring(self.id)..'. '..self.name, 0, 16*8)
             -- print(self.name, 0, 16*8)

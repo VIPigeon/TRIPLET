@@ -27,7 +27,7 @@ end
 FIRST_LEVEL_NAME = 'GETTING STARTED'
 
 LEVEL_NAME = {
-    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS', ['43 5'] = 'BIRD LEVEL', ['45 5'] = 'BLUE MOOD', ['47 5'] = 'FISHING', ['49 5'] = 'FACES',
+    ['37 5'] = 'GETTING STARTED', ['39 5'] = 'LAMA LEVEL', ['41 5'] = 'NUMBERS', ['43 5'] = 'BIRD LEVEL', ['45 5'] = 'BLUE MOOD', ['47 5'] = 'FISHING', ['49 5'] = 'FACES',['51 5'] = 'PANDA LEVEL',
     ['37 7'] = 'NOIR',
 
     -- ['39 6'] = 'BRIDGE',
@@ -38,7 +38,7 @@ LEVEL_NAME = {
         ['45 11'] = 'TAKE FIVE', ['47 11'] = 'TAKE FIVE 2',
     ['43 13'] = 'XS', ['45 13'] = 'NIGHT', ['47 13'] = 'SUPERPOSITION',
 
-    ['32 13'] = 'PANDA LEVEL',
+    ['32 13'] = 'THANK YOU FOR PLAYING!',
 
     -- ['48 5'] = 'UPSIDE DOWN',
     -- ['50 5'] = 'TAKE FIVE',
@@ -117,6 +117,9 @@ LEVEL_SIZE = {  -- количество ВИДОВ
     ['PANDA LEVEL'] = 1,
     ['FACES'] = 8,
 
+
+    ['THANK YOU FOR PLAYING!'] = 1,
+
     -- ['GETTING STARTED'] = 3,
     -- ['LAMA LEVEL'] = 4,
     -- ['BRIDGE'] = 5, -- ⚙️
@@ -178,6 +181,8 @@ LEVEL_COPIES_OF_EACH_ANIMAL = {
 
     ['PANDA LEVEL'] = 3*4,
     ['FACES'] = 3,
+
+    ['THANK YOU FOR PLAYING!'] = 3*4,
 
     -- ['GETTING STARTED'] = 6, -- для дебага
     -- ['LAMA LEVEL'] = 3,  -- чтобы не затягивать шутку
@@ -306,4 +311,6 @@ LEVEL_POOL = {
 
     ['PANDA LEVEL'] = {300},
     ['FACES'] = table.imerge(YELLOW_POOL, BLUE_POOL),
+
+    ['THANK YOU FOR PLAYING!'] = nil,
 }

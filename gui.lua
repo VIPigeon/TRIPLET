@@ -182,6 +182,18 @@ function SpriteButton:draw(colorkey)
     spr(self.sprite[self.status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
 end
 
+function SpriteButton:draw_with_blink(colorkey)
+    colorkey = colorkey or 0
+    -- я не уверен что эти формулы корректны, нужно тестить
+    local width = (self.x2-self.x1+2+7)/8 / self.scale
+    local height = (self.y2-self.y1+2+7)/8 / self.scale
+    local status = 'chill'
+    if math.random() > 0.7 then -- пока так
+        status = 'scared'
+    end
+    spr(self.sprite[status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
+end
+
 SpriteButton.__index = SpriteButton
 
 

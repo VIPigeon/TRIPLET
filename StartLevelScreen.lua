@@ -7,7 +7,7 @@ function StartLevelScreen.draw(name)
     local is_square = false
     local is_fixed = false
 
-    local x = 120 - #name * size * 6/2
+    local x = 120 - #name * size * 2.6
     local y = 53
     local color_text = 11
     local color_outline = 5

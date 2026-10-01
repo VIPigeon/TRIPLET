@@ -365,8 +365,6 @@ function game.set_status(status)
 
         -- local SCORE_SLOT = {x=10, y=14*8 - 2}
         -- local slot = table.copy(SCORE_SLOT)
-        local COUNTER = 6 -- количество тайлов в ряду
-        local counter = COUNTER
         local _TRIPLET_SIZE = 3
         if string.find(game.current_level.name, 'TAKE FIVE') then
             _TRIPLET_SIZE = 5
@@ -647,7 +645,7 @@ function game.update()
             end
         end
 
-        local is_any_tile_held = false -- извините. теперь это глобальная переменная
+        local is_any_tile_held = false
         local is_any_tile_going_to_hand = false
         for i = #game.tiles, 1, -1 do
             tile = game.tiles[i]

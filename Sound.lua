@@ -83,6 +83,9 @@ function Sound.decor_interact(decor_type)
 end
 
 function Sound.button_interact(interact_type)
+    if not Settings.SFX then
+        return
+    end
     local note = Sound.get_arpegio_note(5)
     if interact_type == 'scare' then
         -- local note = 'A#5'
