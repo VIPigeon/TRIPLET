@@ -187,11 +187,13 @@ function SpriteButton:draw_with_blink(colorkey)
     -- я не уверен что эти формулы корректны, нужно тестить
     local width = (self.x2-self.x1+2+7)/8 / self.scale
     local height = (self.y2-self.y1+2+7)/8 / self.scale
-    local status = 'chill'
-    if math.random() > 0.7 then -- пока так
-        status = 'scared'
-    end
-    spr(self.sprite[status], self.x1-1, self.y1-1, colorkey, self.scale,0,0, width,height)
+    -- local status = 'chill'
+    -- if math.random() > 0.7 then
+    --     status = 'scared'
+    -- end
+    local dx = math.random(-1, 1)
+    local dy = math.random(-1, 1)
+    spr(self.sprite['scared'], self.x1-1 + dx, self.y1-1 + dy, colorkey, self.scale,0,0, width,height)
 end
 
 SpriteButton.__index = SpriteButton

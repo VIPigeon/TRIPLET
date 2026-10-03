@@ -1,8 +1,8 @@
-ALL_LEVELS_AVAILABLE = false
+ALL_LEVELS_AVAILABLE = true
+
 BAN_SCORING_LEVELS = false
 
 -- в этом модуле все связанное с уровнями
--- начнем и интерактивной карты уровней. просто чтобы она кликалась и все такое. без функционала
 LevelMap = {}
 
 function LevelMap:new(map_x, map_y, size_x, size_y)
@@ -64,6 +64,12 @@ function LevelMap:open_new_levels(x, y)
                 -- level.is_available = true
             end
         end
+        -- if level.x == x and level.y == y then
+        --     if level.improve_flag then
+        --         level.improve_flag = false
+        --         level:set_state('improve')
+        --     end
+        -- end
     end
 end
 
@@ -76,7 +82,7 @@ function LevelMap:update_events()
             if event.type == 'complete' then
                 Sound.level_complete()
                 self:open_new_levels(event.x, event.y)
-                table.remove(self.events, _)   
+                table.remove(self.events, _)
                 return
             end
         end
@@ -132,8 +138,8 @@ function LevelMap:draw()
             level:draw()
         end
     end
-
     self:_draw_achievements()
+
     -- self.change_mode_button:draw()
 end
 
@@ -309,7 +315,7 @@ function Level:new(x, y, level_type, level_id)
             back_flag = false, -- особая переменная для выхода из окна
         },
 
-        opening = {t=0, T=0.8},
+        opening = {t=0, T=0.01},
     }
     object.disabled_button_sprite = 10
     if object.is_scoring then
@@ -410,13 +416,13 @@ function Level:improve_result(time, score)
     end
     if not self.best_score or score > self.best_score.score then
         self.best_score = {time=time, score=score}
+        -- self.improve_flag = true
     end
 
-    local bad = 'bad '  -- bad
-    if self:get_donut(score) == 17 then
-        bad = ''
-    end
-    trace(bad..game.current_level.name..' '..math.ceil(time))
+    -- local bad = 'bad '  -- bad
+    -- if self:get_donut(score) == 17 then
+    --     bad = ''
+    -- end
     -- end
 end
 
@@ -546,6 +552,8 @@ function Level:set_state(state)
         self.animator.init_box = Level.info_box
     elseif state == 'opening' then
         self.opening.t = self.opening.T
+    -- elseif state == 'improve' then
+    --     self.improve.t = self.improve.T
     -- elseif state == 'button' then
     end
 
@@ -594,10 +602,8 @@ function Level:update()
 
     if self.state == 'opening' then
         self.opening.t = Basic.tick_timer(self.opening.t)
-        trace(self.opening.t)
         if self.opening.t == 0 then
             self:set_state('button')
-            trace(self.name..' available')
             self.is_available = true
         end
     end
